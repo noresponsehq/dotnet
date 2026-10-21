@@ -1,0 +1,4 @@
+# Hand-written files beside the generated client.
+/src/NoResponse/Webhooks/
+/src/NoResponse/Wait.cs
+/tests/NoResponse.Tests/

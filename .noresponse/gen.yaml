@@ -1,0 +1,75 @@
+configVersion: 2.0.0
+generation:
+  sdkClassName: NoResponse
+  maintainOpenAPIOrder: true
+  usageSnippets:
+    optionalPropertyRendering: withExample
+    sdkInitStyle: constructor
+  useClassNamesForArrayFields: true
+  fixes:
+    nameResolutionDec2023: true
+    nameResolutionFeb2025: true
+    parameterOrderingFeb2024: true
+    requestResponseComponentNamesFeb2024: true
+    securityFeb2025: true
+    sharedErrorComponentsApr2025: true
+    sharedNestedComponentsJan2026: true
+    nameOverrideFeb2026: true
+    openSingleValueEnumsOct2026: true
+  auth:
+    oAuth2ClientCredentialsEnabled: false
+    oAuth2PasswordEnabled: false
+    hoistGlobalSecurity: true
+  inferSSEOverload: true
+  sdkHooksConfigAccess: true
+  schemas:
+    allOfMergeStrategy: shallowMerge
+  requestBodyFieldName: body
+  versioningStrategy: automatic
+  persistentEdits: {}
+  tests:
+    generateTests: false
+    generateNewTests: false
+    skipResponseBodyAssertions: false
+csharp:
+  version: 2.0.0
+  additionalDependencies: []
+  author: NoResponse
+  baseErrorName: NoResponseException
+  clientServerStatusCodesAsErrors: true
+  defaultErrorName: APIStatusException
+  disableNamespacePascalCasingApr2024: true
+  dotnetVersion: net8.0
+  enableCancellationToken: true
+  enableFormatting: true
+  enableSourceLink: false
+  flattenGlobalSecurity: true
+  flatteningOrder: ""
+  forwardCompatibleEnumsByDefault: true
+  forwardCompatibleUnionsByDefault: tagged-and-untagged
+  httpClientPrefix: Default
+  imports:
+    option: openapi
+    paths:
+      callbacks: Models/Callbacks
+      errors: Models/Errors
+      operations: Models/Operations
+      shared: Models/Shared
+      webhooks: Models/Webhooks
+  includeDebugSymbols: false
+  inferUnionDiscriminators: true
+  inputModelSuffix: input
+  maxMethodParams: 5
+  methodArguments: infer-optional-args
+  multipartArrayFormat: standard
+  outputModelSuffix: output
+  packageName: NoResponse
+  packageTags: ""
+  presenceAwareJsonSerialization: true
+  respectTitlesForPrimitiveUnionMembers: true
+  responseFormat: flat
+  schemaValidation: strict
+  sourceDirectory: src
+  targetFramework: net8.0
+  unionStrategy: populated-fields
+  useNodatime: false

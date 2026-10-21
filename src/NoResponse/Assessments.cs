@@ -1,0 +1,1323 @@
+#nullable enable
+namespace NoResponse
+{
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+    using NoResponse.Hooks;
+    using NoResponse.Models.Errors;
+    using NoResponse.Models.Operations;
+    using NoResponse.Models.Shared;
+    using NoResponse.Utils;
+    using NoResponse.Utils.Retries;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    /// <summary>
+    /// Signup and gateway assessments.
+    /// </summary>
+    public interface IAssessments
+    {
+        /// <summary>
+        /// Assess identifiers for a signup or gateway decision.
+        /// </summary>
+        /// <remarks>
+        /// Returns within the deadline (500 ms at most) with a complete, partial or pending assessment: 200 carries complete or partial, 202 carries pending with Location and Retry-After. A pending answer has no recommendation; apply your own fallback for pending, 429, 503 or a timeout. Requires the assess scope. Idempotency-Key is required and is bound to the body for 24 hours: the same key with the same body replays the latest assessment with Idempotent-Replayed: true and starts no new work; the same key with a different body answers 409 idempotency_key_reused. response_mode defaults to standard; detailed needs the detailed scope.
+        /// </remarks>
+        /// <param name="idempotencyKey">Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours.</param>
+        /// <param name="body">A <see cref="AssessmentRequest"/> parameter.</param>
+        /// <param name="retryConfig">The retry configuration to use for this operation.</param>
+        /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
+        /// <returns>An awaitable task that returns a <see cref="CreateAssessmentResponse"/> object when completed.</returns>
+        /// <exception cref="ArgumentNullException">One of <paramref name="idempotencyKey"/> or <paramref name="body"/> is null.</exception>
+        /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
+        /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
+        /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
+        /// <exception cref="BadRequestError">The body is not JSON or does not match the request schema (an unknown member, no identifier, a malformed or oversized identifier, deadline_ms above 500), or Idempotency-Key is missing or malformed. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="AuthenticationError">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
+        /// <exception cref="PermissionDeniedError">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundError">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictError">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitError">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
+        public Task<CreateAssessmentResponse> CreateAsync(
+            string idempotencyKey,
+            AssessmentRequest body,
+            RetryConfig? retryConfig = null,
+            CancellationToken? cancellationToken = null
+        );
+
+        /// <summary>
+        /// Poll the authoritative assessment of one assessment.
+        /// </summary>
+        /// <remarks>
+        /// Returns the highest assessment_version. Requires the assess or history scope. While status is pending, or partial with a source still running, the response carries Retry-After; poll no faster than it says. Another tenant's assessment, an unknown or expired assessment and a malformed assessment_id all answer 404 not_found. response_mode=detailed needs the detailed scope.
+        /// </remarks>
+        /// <param name="assessmentId">Path segment, matched case-sensitively. A value that does not match the assessment_id shape answers 404, not 400.</param>
+        /// <param name="responseMode">Optional standard or separately authorised detailed customer view; raw is rejected.</param>
+        /// <param name="retryConfig">The retry configuration to use for this operation.</param>
+        /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
+        /// <returns>An awaitable task that returns a <see cref="GetAssessmentResponse"/> object when completed.</returns>
+        /// <exception cref="ArgumentNullException">The required parameter <paramref name="assessmentId"/> is null.</exception>
+        /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
+        /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
+        /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
+        /// <exception cref="BadRequestError">The body is not JSON or does not match the request schema (an unknown member, no identifier, a malformed or oversized identifier, deadline_ms above 500), or Idempotency-Key is missing or malformed. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="AuthenticationError">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
+        /// <exception cref="PermissionDeniedError">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundError">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictError">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitError">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
+        public Task<GetAssessmentResponse> GetAsync(
+            string assessmentId,
+            ResponseMode? responseMode = null,
+            RetryConfig? retryConfig = null,
+            CancellationToken? cancellationToken = null
+        );
+
+        /// <summary>
+        /// Report what was later learned about an assessed account.
+        /// </summary>
+        /// <remarks>
+        /// Records what you later learned about an assessed account: confirmed_abuse, account_takeover and chargeback report abuse; false_positive and legitimate withdraw your earlier report; unknown is recorded only. Outcomes are append-only and the latest one wins. Requires the assess scope. Idempotency-Key is required and handled as on POST /v1/assessments: a retry with the same key and body answers the same record with Idempotent-Replayed: true; a different body answers 409. An unknown, expired or foreign assessment answers 404 not_found.
+        /// </remarks>
+        /// <param name="assessmentId">Path segment, matched case-sensitively. A value that does not match the assessment_id shape answers 404, not 400.</param>
+        /// <param name="idempotencyKey">Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours.</param>
+        /// <param name="body">A <see cref="AssessmentOutcomeRequest"/> parameter.</param>
+        /// <param name="retryConfig">The retry configuration to use for this operation.</param>
+        /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
+        /// <returns>An awaitable task that returns a <see cref="RecordAssessmentOutcomeResponse"/> object when completed.</returns>
+        /// <exception cref="ArgumentNullException">One of <paramref name="assessmentId"/>, <paramref name="idempotencyKey"/> or <paramref name="body"/> is null.</exception>
+        /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
+        /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
+        /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
+        /// <exception cref="BadRequestError">The body is not JSON or does not match the outcome schema (an unknown outcome or member, over-long notes, an observed_at that is not an RFC 3339 time), or Idempotency-Key is missing or malformed. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="AuthenticationError">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
+        /// <exception cref="PermissionDeniedError">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundError">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictError">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitError">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
+        public Task<RecordAssessmentOutcomeResponse> RecordOutcomeAsync(
+            string assessmentId,
+            string idempotencyKey,
+            AssessmentOutcomeRequest body,
+            RetryConfig? retryConfig = null,
+            CancellationToken? cancellationToken = null
+        );
+
+        /// <summary>
+        /// Page through one account's unexpired assessments.
+        /// </summary>
+        /// <remarks>
+        /// History is a POST with account_id in the body so an account identifier stays out of URLs and access logs. Requires the history scope. Read-only and safe to retry. Newest first, each at its latest assessment_version. An account with no assessments answers 200 with empty items. The cursor is opaque and bound to your tenant and the account; a tampered or expired cursor answers 400 invalid_cursor. response_mode=detailed needs the detailed scope.
+        /// </remarks>
+        /// <param name="request">A <see cref="AssessmentQuery"/> parameter.</param>
+        /// <param name="retryConfig">The retry configuration to use for this operation.</param>
+        /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
+        /// <returns>An awaitable task that returns a <see cref="QueryAccountAssessmentsResponse"/> object when completed.</returns>
+        /// <exception cref="ArgumentNullException">The required parameter <paramref name="request"/> is null.</exception>
+        /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
+        /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
+        /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
+        /// <exception cref="BadRequestError">The body does not match the query schema, or the cursor is invalid, belongs to another tenant or account, or has expired. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="AuthenticationError">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
+        /// <exception cref="PermissionDeniedError">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundError">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictError">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitError">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
+        public Task<QueryAccountAssessmentsResponse> QueryAsync(
+            AssessmentQuery request,
+            RetryConfig? retryConfig = null,
+            CancellationToken? cancellationToken = null
+        );
+    }
+
+    /// <summary>
+    /// Signup and gateway assessments.
+    /// </summary>
+    public class Assessments : IAssessments
+    {
+        /// <summary>
+        /// SDK Configuration.
+        /// <see cref="SDKConfig"/>
+        /// </summary>
+        public SDKConfig SDKConfiguration { get; private set; }
+
+        public Assessments(SDKConfig config)
+        {
+            SDKConfiguration = config;
+        }
+
+        /// <summary>
+        /// Assess identifiers for a signup or gateway decision.
+        /// </summary>
+        /// <remarks>
+        /// Returns within the deadline (500 ms at most) with a complete, partial or pending assessment: 200 carries complete or partial, 202 carries pending with Location and Retry-After. A pending answer has no recommendation; apply your own fallback for pending, 429, 503 or a timeout. Requires the assess scope. Idempotency-Key is required and is bound to the body for 24 hours: the same key with the same body replays the latest assessment with Idempotent-Replayed: true and starts no new work; the same key with a different body answers 409 idempotency_key_reused. response_mode defaults to standard; detailed needs the detailed scope.
+        /// </remarks>
+        /// <param name="idempotencyKey">Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours.</param>
+        /// <param name="body">A <see cref="AssessmentRequest"/> parameter.</param>
+        /// <param name="retryConfig">The retry configuration to use for this operation.</param>
+        /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
+        /// <returns>An awaitable task that returns a <see cref="CreateAssessmentResponse"/> object when completed.</returns>
+        /// <exception cref="ArgumentNullException">One of <paramref name="idempotencyKey"/> or <paramref name="body"/> is null.</exception>
+        /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
+        /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
+        /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
+        /// <exception cref="BadRequestError">The body is not JSON or does not match the request schema (an unknown member, no identifier, a malformed or oversized identifier, deadline_ms above 500), or Idempotency-Key is missing or malformed. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="AuthenticationError">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
+        /// <exception cref="PermissionDeniedError">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundError">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictError">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitError">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
+        public async Task<CreateAssessmentResponse> CreateAsync(
+            string idempotencyKey,
+            AssessmentRequest body,
+            RetryConfig? retryConfig = null,
+            CancellationToken? cancellationToken = null
+        )
+        {
+            if (idempotencyKey == null) throw new ArgumentNullException(nameof(idempotencyKey));
+            if (body == null) throw new ArgumentNullException(nameof(body));
+
+            var request = new CreateAssessmentRequest() {
+                IdempotencyKey = idempotencyKey,
+                Body = body,
+            };
+
+            string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
+            var urlString = baseUrl + "/v1/assessments";
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, urlString);
+            httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
+            HeaderSerializer.PopulateHeaders(ref httpRequest, request);
+
+            if (!httpRequest.Headers.Contains("Accept"))
+            {
+                httpRequest.Headers.Add("Accept", "application/json");
+            }
+
+            var serializedBody = RequestBodySerializer.Serialize(request, "Body", "json", false, false);
+            if (serializedBody != null)
+            {
+                httpRequest.Content = serializedBody;
+            }
+
+            if (SDKConfiguration.SecuritySource != null)
+            {
+                httpRequest = new SecurityMetadata(SDKConfiguration.SecuritySource).Apply(httpRequest);
+            }
+
+            var hookCtx = new HookContext(SDKConfiguration, baseUrl, "createAssessment", null, SDKConfiguration.SecuritySource, cancellationToken);
+
+            httpRequest = await this.SDKConfiguration.Hooks.BeforeRequestAsync(new BeforeRequestContext(hookCtx), httpRequest);
+            if (retryConfig == null)
+            {
+                if (this.SDKConfiguration.RetryConfig != null)
+                {
+                    retryConfig = this.SDKConfiguration.RetryConfig;
+                }
+                else
+                {
+                    var backoff = new BackoffStrategy(
+                        initialIntervalMs: 500L,
+                        maxIntervalMs: 8000L,
+                        maxElapsedTimeMs: 30000L,
+                        exponent: 2
+                    );
+                    retryConfig = new RetryConfig(
+                        strategy: RetryConfig.RetryStrategy.BACKOFF,
+                        backoff: backoff,
+                        retryConnectionErrors: true
+                    );
+                }
+            }
+
+            List<string> statusCodes = new List<string> {
+                "408",
+                "429",
+                "5XX",
+            };
+
+            Func<Task<HttpResponseMessage>> retrySend = async () =>
+            {
+                var _httpRequest = await SDKConfiguration.Client.CloneAsync(httpRequest);
+                return await SDKConfiguration.Client.SendAsync(_httpRequest, cancellationToken);
+            };
+            var retries = new NoResponse.Utils.Retries.Retries(retrySend, retryConfig, statusCodes);
+
+            HttpResponseMessage httpResponse;
+            try
+            {
+                httpResponse = await retries.Run();
+                int _statusCode = (int)httpResponse.StatusCode;
+
+                if (_statusCode >= 400 && _statusCode < 500 || _statusCode >= 500 && _statusCode < 600)
+                {
+                    var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), httpResponse, null);
+                    if (_httpResponse != null)
+                    {
+                        httpResponse = _httpResponse;
+                    }
+                }
+            }
+            catch (Exception _hookError)
+            {
+                var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), null, _hookError);
+                if (_httpResponse != null)
+                {
+                    httpResponse = _httpResponse;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            httpResponse = await this.SDKConfiguration.Hooks.AfterSuccessAsync(new AfterSuccessContext(hookCtx), httpResponse);
+
+            var contentType = httpResponse.Content.Headers.ContentType?.MediaType;
+            int responseStatusCode = (int)httpResponse.StatusCode;
+            if (new List<int> { 200, 202 }.Contains(responseStatusCode))
+            {
+                if (Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    Assessment obj;
+                    try
+                    {
+                        obj = ResponseBodyDeserializer.DeserializeNotNull<Assessment>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into Assessment.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    var result = obj!;
+                    var response = new CreateAssessmentResponse() {
+                        Result = result,
+                        Headers = Utilities.CollectHeaders(httpResponse.Headers)
+                    };
+                    return response;
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 400)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    BadRequestErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<BadRequestErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into BadRequestErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new BadRequestError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 401)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    AuthenticationErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<AuthenticationErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into AuthenticationErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new AuthenticationError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 403)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    PermissionDeniedErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<PermissionDeniedErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into PermissionDeniedErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new PermissionDeniedError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 404)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    NotFoundErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<NotFoundErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into NotFoundErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new NotFoundError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 409)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    ConflictErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<ConflictErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into ConflictErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new ConflictError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 429)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    RateLimitErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<RateLimitErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into RateLimitErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new RateLimitError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new Models.Errors.APIStatusException("API error occurred", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode >= 500 && responseStatusCode < 600)
+            {
+                throw new Models.Errors.APIStatusException("API error occurred", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+
+            throw new Models.Errors.APIStatusException("Unknown status code received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+        }
+
+        /// <summary>
+        /// Poll the authoritative assessment of one assessment.
+        /// </summary>
+        /// <remarks>
+        /// Returns the highest assessment_version. Requires the assess or history scope. While status is pending, or partial with a source still running, the response carries Retry-After; poll no faster than it says. Another tenant's assessment, an unknown or expired assessment and a malformed assessment_id all answer 404 not_found. response_mode=detailed needs the detailed scope.
+        /// </remarks>
+        /// <param name="assessmentId">Path segment, matched case-sensitively. A value that does not match the assessment_id shape answers 404, not 400.</param>
+        /// <param name="responseMode">Optional standard or separately authorised detailed customer view; raw is rejected.</param>
+        /// <param name="retryConfig">The retry configuration to use for this operation.</param>
+        /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
+        /// <returns>An awaitable task that returns a <see cref="GetAssessmentResponse"/> object when completed.</returns>
+        /// <exception cref="ArgumentNullException">The required parameter <paramref name="assessmentId"/> is null.</exception>
+        /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
+        /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
+        /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
+        /// <exception cref="BadRequestError">The body is not JSON or does not match the request schema (an unknown member, no identifier, a malformed or oversized identifier, deadline_ms above 500), or Idempotency-Key is missing or malformed. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="AuthenticationError">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
+        /// <exception cref="PermissionDeniedError">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundError">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictError">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitError">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
+        public async Task<GetAssessmentResponse> GetAsync(
+            string assessmentId,
+            ResponseMode? responseMode = null,
+            RetryConfig? retryConfig = null,
+            CancellationToken? cancellationToken = null
+        )
+        {
+            if (assessmentId == null) throw new ArgumentNullException(nameof(assessmentId));
+
+            var request = new GetAssessmentRequest() {
+                AssessmentId = assessmentId,
+                ResponseMode = responseMode,
+            };
+
+            string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
+            var urlString = URLBuilder.Build(baseUrl, "/v1/assessments/{assessment_id}", request, null);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, urlString);
+            httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
+
+            if (!httpRequest.Headers.Contains("Accept"))
+            {
+                httpRequest.Headers.Add("Accept", "application/json");
+            }
+
+            if (SDKConfiguration.SecuritySource != null)
+            {
+                httpRequest = new SecurityMetadata(SDKConfiguration.SecuritySource).Apply(httpRequest);
+            }
+
+            var hookCtx = new HookContext(SDKConfiguration, baseUrl, "getAssessment", null, SDKConfiguration.SecuritySource, cancellationToken);
+
+            httpRequest = await this.SDKConfiguration.Hooks.BeforeRequestAsync(new BeforeRequestContext(hookCtx), httpRequest);
+            if (retryConfig == null)
+            {
+                if (this.SDKConfiguration.RetryConfig != null)
+                {
+                    retryConfig = this.SDKConfiguration.RetryConfig;
+                }
+                else
+                {
+                    var backoff = new BackoffStrategy(
+                        initialIntervalMs: 500L,
+                        maxIntervalMs: 8000L,
+                        maxElapsedTimeMs: 30000L,
+                        exponent: 2
+                    );
+                    retryConfig = new RetryConfig(
+                        strategy: RetryConfig.RetryStrategy.BACKOFF,
+                        backoff: backoff,
+                        retryConnectionErrors: true
+                    );
+                }
+            }
+
+            List<string> statusCodes = new List<string> {
+                "408",
+                "429",
+                "5XX",
+            };
+
+            Func<Task<HttpResponseMessage>> retrySend = async () =>
+            {
+                var _httpRequest = await SDKConfiguration.Client.CloneAsync(httpRequest);
+                return await SDKConfiguration.Client.SendAsync(_httpRequest, cancellationToken);
+            };
+            var retries = new NoResponse.Utils.Retries.Retries(retrySend, retryConfig, statusCodes);
+
+            HttpResponseMessage httpResponse;
+            try
+            {
+                httpResponse = await retries.Run();
+                int _statusCode = (int)httpResponse.StatusCode;
+
+                if (_statusCode >= 400 && _statusCode < 500 || _statusCode >= 500 && _statusCode < 600)
+                {
+                    var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), httpResponse, null);
+                    if (_httpResponse != null)
+                    {
+                        httpResponse = _httpResponse;
+                    }
+                }
+            }
+            catch (Exception _hookError)
+            {
+                var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), null, _hookError);
+                if (_httpResponse != null)
+                {
+                    httpResponse = _httpResponse;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            httpResponse = await this.SDKConfiguration.Hooks.AfterSuccessAsync(new AfterSuccessContext(hookCtx), httpResponse);
+
+            var contentType = httpResponse.Content.Headers.ContentType?.MediaType;
+            int responseStatusCode = (int)httpResponse.StatusCode;
+            if (responseStatusCode == 200)
+            {
+                if (Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    Assessment obj;
+                    try
+                    {
+                        obj = ResponseBodyDeserializer.DeserializeNotNull<Assessment>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into Assessment.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    var result = obj!;
+                    var response = new GetAssessmentResponse() {
+                        Result = result,
+                        Headers = Utilities.CollectHeaders(httpResponse.Headers)
+                    };
+                    return response;
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 400)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    BadRequestErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<BadRequestErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into BadRequestErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new BadRequestError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 401)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    AuthenticationErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<AuthenticationErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into AuthenticationErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new AuthenticationError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 403)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    PermissionDeniedErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<PermissionDeniedErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into PermissionDeniedErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new PermissionDeniedError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 404)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    NotFoundErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<NotFoundErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into NotFoundErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new NotFoundError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 409)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    ConflictErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<ConflictErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into ConflictErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new ConflictError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 429)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    RateLimitErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<RateLimitErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into RateLimitErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new RateLimitError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new Models.Errors.APIStatusException("API error occurred", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode >= 500 && responseStatusCode < 600)
+            {
+                throw new Models.Errors.APIStatusException("API error occurred", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+
+            throw new Models.Errors.APIStatusException("Unknown status code received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+        }
+
+        /// <summary>
+        /// Report what was later learned about an assessed account.
+        /// </summary>
+        /// <remarks>
+        /// Records what you later learned about an assessed account: confirmed_abuse, account_takeover and chargeback report abuse; false_positive and legitimate withdraw your earlier report; unknown is recorded only. Outcomes are append-only and the latest one wins. Requires the assess scope. Idempotency-Key is required and handled as on POST /v1/assessments: a retry with the same key and body answers the same record with Idempotent-Replayed: true; a different body answers 409. An unknown, expired or foreign assessment answers 404 not_found.
+        /// </remarks>
+        /// <param name="assessmentId">Path segment, matched case-sensitively. A value that does not match the assessment_id shape answers 404, not 400.</param>
+        /// <param name="idempotencyKey">Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours.</param>
+        /// <param name="body">A <see cref="AssessmentOutcomeRequest"/> parameter.</param>
+        /// <param name="retryConfig">The retry configuration to use for this operation.</param>
+        /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
+        /// <returns>An awaitable task that returns a <see cref="RecordAssessmentOutcomeResponse"/> object when completed.</returns>
+        /// <exception cref="ArgumentNullException">One of <paramref name="assessmentId"/>, <paramref name="idempotencyKey"/> or <paramref name="body"/> is null.</exception>
+        /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
+        /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
+        /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
+        /// <exception cref="BadRequestError">The body is not JSON or does not match the outcome schema (an unknown outcome or member, over-long notes, an observed_at that is not an RFC 3339 time), or Idempotency-Key is missing or malformed. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="AuthenticationError">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
+        /// <exception cref="PermissionDeniedError">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundError">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictError">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitError">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
+        public async Task<RecordAssessmentOutcomeResponse> RecordOutcomeAsync(
+            string assessmentId,
+            string idempotencyKey,
+            AssessmentOutcomeRequest body,
+            RetryConfig? retryConfig = null,
+            CancellationToken? cancellationToken = null
+        )
+        {
+            if (assessmentId == null) throw new ArgumentNullException(nameof(assessmentId));
+            if (idempotencyKey == null) throw new ArgumentNullException(nameof(idempotencyKey));
+            if (body == null) throw new ArgumentNullException(nameof(body));
+
+            var request = new RecordAssessmentOutcomeRequest() {
+                AssessmentId = assessmentId,
+                IdempotencyKey = idempotencyKey,
+                Body = body,
+            };
+
+            string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
+            var urlString = URLBuilder.Build(baseUrl, "/v1/assessments/{assessment_id}/outcomes", request, null);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, urlString);
+            httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
+            HeaderSerializer.PopulateHeaders(ref httpRequest, request);
+
+            if (!httpRequest.Headers.Contains("Accept"))
+            {
+                httpRequest.Headers.Add("Accept", "application/json");
+            }
+
+            var serializedBody = RequestBodySerializer.Serialize(request, "Body", "json", false, false);
+            if (serializedBody != null)
+            {
+                httpRequest.Content = serializedBody;
+            }
+
+            if (SDKConfiguration.SecuritySource != null)
+            {
+                httpRequest = new SecurityMetadata(SDKConfiguration.SecuritySource).Apply(httpRequest);
+            }
+
+            var hookCtx = new HookContext(SDKConfiguration, baseUrl, "recordAssessmentOutcome", null, SDKConfiguration.SecuritySource, cancellationToken);
+
+            httpRequest = await this.SDKConfiguration.Hooks.BeforeRequestAsync(new BeforeRequestContext(hookCtx), httpRequest);
+            if (retryConfig == null)
+            {
+                if (this.SDKConfiguration.RetryConfig != null)
+                {
+                    retryConfig = this.SDKConfiguration.RetryConfig;
+                }
+                else
+                {
+                    var backoff = new BackoffStrategy(
+                        initialIntervalMs: 500L,
+                        maxIntervalMs: 8000L,
+                        maxElapsedTimeMs: 30000L,
+                        exponent: 2
+                    );
+                    retryConfig = new RetryConfig(
+                        strategy: RetryConfig.RetryStrategy.BACKOFF,
+                        backoff: backoff,
+                        retryConnectionErrors: true
+                    );
+                }
+            }
+
+            List<string> statusCodes = new List<string> {
+                "408",
+                "429",
+                "5XX",
+            };
+
+            Func<Task<HttpResponseMessage>> retrySend = async () =>
+            {
+                var _httpRequest = await SDKConfiguration.Client.CloneAsync(httpRequest);
+                return await SDKConfiguration.Client.SendAsync(_httpRequest, cancellationToken);
+            };
+            var retries = new NoResponse.Utils.Retries.Retries(retrySend, retryConfig, statusCodes);
+
+            HttpResponseMessage httpResponse;
+            try
+            {
+                httpResponse = await retries.Run();
+                int _statusCode = (int)httpResponse.StatusCode;
+
+                if (_statusCode >= 400 && _statusCode < 500 || _statusCode >= 500 && _statusCode < 600)
+                {
+                    var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), httpResponse, null);
+                    if (_httpResponse != null)
+                    {
+                        httpResponse = _httpResponse;
+                    }
+                }
+            }
+            catch (Exception _hookError)
+            {
+                var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), null, _hookError);
+                if (_httpResponse != null)
+                {
+                    httpResponse = _httpResponse;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            httpResponse = await this.SDKConfiguration.Hooks.AfterSuccessAsync(new AfterSuccessContext(hookCtx), httpResponse);
+
+            var contentType = httpResponse.Content.Headers.ContentType?.MediaType;
+            int responseStatusCode = (int)httpResponse.StatusCode;
+            if (responseStatusCode == 202)
+            {
+                if (Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    AssessmentOutcome obj;
+                    try
+                    {
+                        obj = ResponseBodyDeserializer.DeserializeNotNull<AssessmentOutcome>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into AssessmentOutcome.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    var result = obj!;
+                    var response = new RecordAssessmentOutcomeResponse() {
+                        Result = result,
+                        Headers = Utilities.CollectHeaders(httpResponse.Headers)
+                    };
+                    return response;
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 400)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    BadRequestErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<BadRequestErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into BadRequestErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new BadRequestError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 401)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    AuthenticationErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<AuthenticationErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into AuthenticationErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new AuthenticationError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 403)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    PermissionDeniedErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<PermissionDeniedErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into PermissionDeniedErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new PermissionDeniedError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 404)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    NotFoundErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<NotFoundErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into NotFoundErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new NotFoundError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 409)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    ConflictErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<ConflictErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into ConflictErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new ConflictError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 429)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    RateLimitErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<RateLimitErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into RateLimitErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new RateLimitError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new Models.Errors.APIStatusException("API error occurred", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode >= 500 && responseStatusCode < 600)
+            {
+                throw new Models.Errors.APIStatusException("API error occurred", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+
+            throw new Models.Errors.APIStatusException("Unknown status code received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+        }
+
+        /// <summary>
+        /// Page through one account's unexpired assessments.
+        /// </summary>
+        /// <remarks>
+        /// History is a POST with account_id in the body so an account identifier stays out of URLs and access logs. Requires the history scope. Read-only and safe to retry. Newest first, each at its latest assessment_version. An account with no assessments answers 200 with empty items. The cursor is opaque and bound to your tenant and the account; a tampered or expired cursor answers 400 invalid_cursor. response_mode=detailed needs the detailed scope.
+        /// </remarks>
+        /// <param name="request">A <see cref="AssessmentQuery"/> parameter.</param>
+        /// <param name="retryConfig">The retry configuration to use for this operation.</param>
+        /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
+        /// <returns>An awaitable task that returns a <see cref="QueryAccountAssessmentsResponse"/> object when completed.</returns>
+        /// <exception cref="ArgumentNullException">The required parameter <paramref name="request"/> is null.</exception>
+        /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
+        /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
+        /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
+        /// <exception cref="BadRequestError">The body does not match the query schema, or the cursor is invalid, belongs to another tenant or account, or has expired. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="AuthenticationError">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
+        /// <exception cref="PermissionDeniedError">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundError">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictError">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitError">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
+        public async Task<QueryAccountAssessmentsResponse> QueryAsync(
+            AssessmentQuery request,
+            RetryConfig? retryConfig = null,
+            CancellationToken? cancellationToken = null
+        )
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
+            string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
+            var urlString = baseUrl + "/v1/assessments/query";
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, urlString);
+            httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
+
+            if (!httpRequest.Headers.Contains("Accept"))
+            {
+                httpRequest.Headers.Add("Accept", "application/json");
+            }
+
+            var serializedBody = RequestBodySerializer.Serialize(request, "Request", "json", false, false);
+            if (serializedBody != null)
+            {
+                httpRequest.Content = serializedBody;
+            }
+
+            if (SDKConfiguration.SecuritySource != null)
+            {
+                httpRequest = new SecurityMetadata(SDKConfiguration.SecuritySource).Apply(httpRequest);
+            }
+
+            var hookCtx = new HookContext(SDKConfiguration, baseUrl, "queryAccountAssessments", null, SDKConfiguration.SecuritySource, cancellationToken);
+
+            httpRequest = await this.SDKConfiguration.Hooks.BeforeRequestAsync(new BeforeRequestContext(hookCtx), httpRequest);
+            if (retryConfig == null)
+            {
+                if (this.SDKConfiguration.RetryConfig != null)
+                {
+                    retryConfig = this.SDKConfiguration.RetryConfig;
+                }
+                else
+                {
+                    var backoff = new BackoffStrategy(
+                        initialIntervalMs: 500L,
+                        maxIntervalMs: 8000L,
+                        maxElapsedTimeMs: 30000L,
+                        exponent: 2
+                    );
+                    retryConfig = new RetryConfig(
+                        strategy: RetryConfig.RetryStrategy.BACKOFF,
+                        backoff: backoff,
+                        retryConnectionErrors: true
+                    );
+                }
+            }
+
+            List<string> statusCodes = new List<string> {
+                "408",
+                "429",
+                "5XX",
+            };
+
+            Func<Task<HttpResponseMessage>> retrySend = async () =>
+            {
+                var _httpRequest = await SDKConfiguration.Client.CloneAsync(httpRequest);
+                return await SDKConfiguration.Client.SendAsync(_httpRequest, cancellationToken);
+            };
+            var retries = new NoResponse.Utils.Retries.Retries(retrySend, retryConfig, statusCodes);
+
+            HttpResponseMessage httpResponse;
+            try
+            {
+                httpResponse = await retries.Run();
+                int _statusCode = (int)httpResponse.StatusCode;
+
+                if (_statusCode >= 400 && _statusCode < 500 || _statusCode >= 500 && _statusCode < 600)
+                {
+                    var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), httpResponse, null);
+                    if (_httpResponse != null)
+                    {
+                        httpResponse = _httpResponse;
+                    }
+                }
+            }
+            catch (Exception _hookError)
+            {
+                var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), null, _hookError);
+                if (_httpResponse != null)
+                {
+                    httpResponse = _httpResponse;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            httpResponse = await this.SDKConfiguration.Hooks.AfterSuccessAsync(new AfterSuccessContext(hookCtx), httpResponse);
+
+            Func<Task<QueryAccountAssessmentsResponse?>> nextFunc = async delegate()
+            {
+                var body = JObject.Parse(await httpResponse.Content.ReadAsStringAsync());
+                var nextCursorToken = body.SelectToken("$.next_cursor");
+
+                if (nextCursorToken == null)
+                {
+                    return null;
+                }
+
+                var nextCursor = nextCursorToken.Value<string>();
+                if (string.IsNullOrWhiteSpace(nextCursor))
+                {
+                    return null;
+                }
+
+                var newRequest = new AssessmentQuery {
+                    AccountId = request.AccountId,
+                    Limit = request.Limit,
+                    Cursor = nextCursor,
+                    ResponseMode = request.ResponseMode
+                };
+
+                return await QueryAsync(
+                    request: newRequest,
+                    retryConfig: retryConfig
+                );
+            };
+
+            var contentType = httpResponse.Content.Headers.ContentType?.MediaType;
+            int responseStatusCode = (int)httpResponse.StatusCode;
+            if (responseStatusCode == 200)
+            {
+                if (Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    AssessmentList obj;
+                    try
+                    {
+                        obj = ResponseBodyDeserializer.DeserializeNotNull<AssessmentList>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into AssessmentList.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    var result = obj!;
+                    var response = new QueryAccountAssessmentsResponse() {
+                        Result = result,
+                        Next = nextFunc,
+                        Headers = Utilities.CollectHeaders(httpResponse.Headers)
+                    };
+                    return response;
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 400)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    BadRequestErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<BadRequestErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into BadRequestErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new BadRequestError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 401)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    AuthenticationErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<AuthenticationErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into AuthenticationErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new AuthenticationError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 403)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    PermissionDeniedErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<PermissionDeniedErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into PermissionDeniedErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new PermissionDeniedError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 404)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    NotFoundErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<NotFoundErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into NotFoundErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new NotFoundError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 409)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    ConflictErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<ConflictErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into ConflictErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new ConflictError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode == 429)
+            {
+                if (Utilities.IsContentTypeMatch("application/problem+json", contentType))
+                {
+                    var httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                    RateLimitErrorPayload payload;
+                    try
+                    {
+                        payload = ResponseBodyDeserializer.DeserializeNotNull<RateLimitErrorPayload>(httpResponseBody, NullValueHandling.Ignore);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ResponseValidationException("Failed to deserialize response body into RateLimitErrorPayload.", httpResponse, httpResponseBody, ex);
+                    }
+
+                    throw new RateLimitError(payload, httpResponse, httpResponseBody);
+                }
+
+                throw new Models.Errors.APIStatusException("Unknown content type received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new Models.Errors.APIStatusException("API error occurred", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+            else if (responseStatusCode >= 500 && responseStatusCode < 600)
+            {
+                throw new Models.Errors.APIStatusException("API error occurred", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+            }
+
+            throw new Models.Errors.APIStatusException("Unknown status code received", httpResponse, await httpResponse.Content.ReadAsStringAsync());
+        }
+    }
+}

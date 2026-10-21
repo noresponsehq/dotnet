@@ -1,0 +1,453 @@
+# Assessments
+
+## Overview
+
+Signup and gateway assessments.
+
+### Available Operations
+
+* [Create](#create) - Assess identifiers for a signup or gateway decision.
+* [Get](#get) - Poll the authoritative assessment of one assessment.
+* [RecordOutcome](#recordoutcome) - Report what was later learned about an assessed account.
+* [Query](#query) - Page through one account's unexpired assessments.
+
+## Create
+
+Returns within the deadline (500 ms at most) with a complete, partial or pending assessment: 200 carries complete or partial, 202 carries pending with Location and Retry-After. A pending answer has no recommendation; apply your own fallback for pending, 429, 503 or a timeout. Requires the assess scope. Idempotency-Key is required and is bound to the body for 24 hours: the same key with the same body replays the latest assessment with Idempotent-Replayed: true and starts no new work; the same key with a different body answers 409 idempotency_key_reused. response_mode defaults to standard; detailed needs the detailed scope.
+
+### Example Usage: complete
+
+<!-- UsageSnippet language="csharp" operationID="createAssessment" method="post" path="/v1/assessments" example="complete" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+var res = await sdk.Assessments.CreateAsync(
+    idempotencyKey: "<value>",
+    body: new AssessmentRequest() {
+        AccountId = "<id>",
+        Identifiers = new AssessmentRequestIdentifiers() {},
+    }
+);
+
+// handle response
+```
+### Example Usage: detailed
+
+<!-- UsageSnippet language="csharp" operationID="createAssessment" method="post" path="/v1/assessments" example="detailed" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+var res = await sdk.Assessments.CreateAsync(
+    idempotencyKey: "<value>",
+    body: new AssessmentRequest() {
+        AccountId = "<id>",
+        Identifiers = new AssessmentRequestIdentifiers() {},
+    }
+);
+
+// handle response
+```
+### Example Usage: full
+
+<!-- UsageSnippet language="csharp" operationID="createAssessment" method="post" path="/v1/assessments" example="full" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+var res = await sdk.Assessments.CreateAsync(
+    idempotencyKey: "<value>",
+    body: new AssessmentRequest() {
+        AccountId = "acct_7f3a9c",
+        Identifiers = new AssessmentRequestIdentifiers() {
+            Email = "new.user@example.com",
+            Username = "new_user_42",
+            Phone = "+447700900123",
+        },
+        PolicyContext = new AssessmentRequestPolicyContext() {
+            Flow = Flow.Signup,
+            Region = "GB",
+        },
+        RequestId = "req-2026-10-14-0001",
+        DeadlineMs = 300,
+    }
+);
+
+// handle response
+```
+### Example Usage: minimal
+
+<!-- UsageSnippet language="csharp" operationID="createAssessment" method="post" path="/v1/assessments" example="minimal" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+var res = await sdk.Assessments.CreateAsync(
+    idempotencyKey: "<value>",
+    body: new AssessmentRequest() {
+        AccountId = "acct_7f3a9c",
+        Identifiers = new AssessmentRequestIdentifiers() {
+            Email = "new.user@example.com",
+        },
+    }
+);
+
+// handle response
+```
+### Example Usage: name_and_ip
+
+<!-- UsageSnippet language="csharp" operationID="createAssessment" method="post" path="/v1/assessments" example="name_and_ip" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+var res = await sdk.Assessments.CreateAsync(
+    idempotencyKey: "<value>",
+    body: new AssessmentRequest() {
+        AccountId = "acct_8412",
+        Identifiers = new AssessmentRequestIdentifiers() {
+            Email = "jane.doe@example.com",
+            Username = "janedoe",
+            Phone = "+14155550123",
+            Name = "Jane A. Doe",
+            Ip = "73.162.18.45",
+        },
+        PolicyContext = new AssessmentRequestPolicyContext() {
+            Flow = Flow.Signup,
+            Region = "US",
+        },
+        RequestId = "req_01",
+        DeadlineMs = 500,
+        ResponseMode = ResponseMode.Standard,
+    }
+);
+
+// handle response
+```
+### Example Usage: partial
+
+<!-- UsageSnippet language="csharp" operationID="createAssessment" method="post" path="/v1/assessments" example="partial" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+var res = await sdk.Assessments.CreateAsync(
+    idempotencyKey: "<value>",
+    body: new AssessmentRequest() {
+        AccountId = "<id>",
+        Identifiers = new AssessmentRequestIdentifiers() {},
+    }
+);
+
+// handle response
+```
+### Example Usage: standard
+
+<!-- UsageSnippet language="csharp" operationID="createAssessment" method="post" path="/v1/assessments" example="standard" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+var res = await sdk.Assessments.CreateAsync(
+    idempotencyKey: "<value>",
+    body: new AssessmentRequest() {
+        AccountId = "<id>",
+        Identifiers = new AssessmentRequestIdentifiers() {},
+    }
+);
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                                                                                                                      | Type                                                                                                                                                           | Required                                                                                                                                                       | Description                                                                                                                                                    |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `IdempotencyKey`                                                                                                                                               | *string*                                                                                                                                                       | :heavy_check_mark:                                                                                                                                             | Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours. |
+| `Body`                                                                                                                                                         | [AssessmentRequest](../../Models/Shared/AssessmentRequest.md)                                                                                                  | :heavy_check_mark:                                                                                                                                             | N/A                                                                                                                                                            |
+
+### Response
+
+**[CreateAssessmentResponse](../../Models/Operations/CreateAssessmentResponse.md)**
+
+### Errors
+
+| Error Type                                     | Status Code                                    | Content Type                                   |
+| ---------------------------------------------- | ---------------------------------------------- | ---------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestError       | 400                                            | application/problem+json                       |
+| NoResponse.Models.Errors.AuthenticationError   | 401                                            | application/problem+json                       |
+| NoResponse.Models.Errors.PermissionDeniedError | 403                                            | application/problem+json                       |
+| NoResponse.Models.Errors.NotFoundError         | 404                                            | application/problem+json                       |
+| NoResponse.Models.Errors.ConflictError         | 409                                            | application/problem+json                       |
+| NoResponse.Models.Errors.RateLimitError        | 429                                            | application/problem+json                       |
+| NoResponse.Models.Errors.APIStatusException    | 4XX, 5XX                                       | \*/\*                                          |
+
+## Get
+
+Returns the highest assessment_version. Requires the assess or history scope. While status is pending, or partial with a source still running, the response carries Retry-After; poll no faster than it says. Another tenant's assessment, an unknown or expired assessment and a malformed assessment_id all answer 404 not_found. response_mode=detailed needs the detailed scope.
+
+### Example Usage: complete
+
+<!-- UsageSnippet language="csharp" operationID="getAssessment" method="get" path="/v1/assessments/{assessment_id}" example="complete" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
+
+// handle response
+```
+### Example Usage: detailed
+
+<!-- UsageSnippet language="csharp" operationID="getAssessment" method="get" path="/v1/assessments/{assessment_id}" example="detailed" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
+
+// handle response
+```
+### Example Usage: partial
+
+<!-- UsageSnippet language="csharp" operationID="getAssessment" method="get" path="/v1/assessments/{assessment_id}" example="partial" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
+
+// handle response
+```
+### Example Usage: pending
+
+<!-- UsageSnippet language="csharp" operationID="getAssessment" method="get" path="/v1/assessments/{assessment_id}" example="pending" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
+
+// handle response
+```
+### Example Usage: standard
+
+<!-- UsageSnippet language="csharp" operationID="getAssessment" method="get" path="/v1/assessments/{assessment_id}" example="standard" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                                                                         | Type                                                                                                              | Required                                                                                                          | Description                                                                                                       |
+| ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `AssessmentId`                                                                                                    | *string*                                                                                                          | :heavy_check_mark:                                                                                                | Path segment, matched case-sensitively. A value that does not match the assessment_id shape answers 404, not 400. |
+| `ResponseMode`                                                                                                    | [ResponseMode](../../Models/Shared/ResponseMode.md)                                                               | :heavy_minus_sign:                                                                                                | Optional standard or separately authorised detailed customer view; raw is rejected.                               |
+
+### Response
+
+**[GetAssessmentResponse](../../Models/Operations/GetAssessmentResponse.md)**
+
+### Errors
+
+| Error Type                                     | Status Code                                    | Content Type                                   |
+| ---------------------------------------------- | ---------------------------------------------- | ---------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestError       | 400                                            | application/problem+json                       |
+| NoResponse.Models.Errors.AuthenticationError   | 401                                            | application/problem+json                       |
+| NoResponse.Models.Errors.PermissionDeniedError | 403                                            | application/problem+json                       |
+| NoResponse.Models.Errors.NotFoundError         | 404                                            | application/problem+json                       |
+| NoResponse.Models.Errors.ConflictError         | 409                                            | application/problem+json                       |
+| NoResponse.Models.Errors.RateLimitError        | 429                                            | application/problem+json                       |
+| NoResponse.Models.Errors.APIStatusException    | 4XX, 5XX                                       | \*/\*                                          |
+
+## RecordOutcome
+
+Records what you later learned about an assessed account: confirmed_abuse, account_takeover and chargeback report abuse; false_positive and legitimate withdraw your earlier report; unknown is recorded only. Outcomes are append-only and the latest one wins. Requires the assess scope. Idempotency-Key is required and handled as on POST /v1/assessments: a retry with the same key and body answers the same record with Idempotent-Replayed: true; a different body answers 409. An unknown, expired or foreign assessment answers 404 not_found.
+
+### Example Usage: abuse
+
+<!-- UsageSnippet language="csharp" operationID="recordAssessmentOutcome" method="post" path="/v1/assessments/{assessment_id}/outcomes" example="abuse" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+var res = await sdk.Assessments.RecordOutcomeAsync(
+    assessmentId: "<id>",
+    idempotencyKey: "<value>",
+    body: new AssessmentOutcomeRequest() {
+        Outcome = Outcome.ConfirmedAbuse,
+        ObservedAt = "2026-10-20T05:00:00Z",
+        ExternalRef = "case-123",
+        Notes = "Card testing from this account; closed by trust and safety.",
+    }
+);
+
+// handle response
+```
+### Example Usage: recorded
+
+<!-- UsageSnippet language="csharp" operationID="recordAssessmentOutcome" method="post" path="/v1/assessments/{assessment_id}/outcomes" example="recorded" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+var res = await sdk.Assessments.RecordOutcomeAsync(
+    assessmentId: "<id>",
+    idempotencyKey: "<value>",
+    body: new AssessmentOutcomeRequest() {
+        Outcome = Outcome.Legitimate,
+    }
+);
+
+// handle response
+```
+### Example Usage: withdrawn
+
+<!-- UsageSnippet language="csharp" operationID="recordAssessmentOutcome" method="post" path="/v1/assessments/{assessment_id}/outcomes" example="withdrawn" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+var res = await sdk.Assessments.RecordOutcomeAsync(
+    assessmentId: "<id>",
+    idempotencyKey: "<value>",
+    body: new AssessmentOutcomeRequest() {
+        Outcome = Outcome.FalsePositive,
+    }
+);
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                                                                                                                      | Type                                                                                                                                                           | Required                                                                                                                                                       | Description                                                                                                                                                    |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AssessmentId`                                                                                                                                                 | *string*                                                                                                                                                       | :heavy_check_mark:                                                                                                                                             | Path segment, matched case-sensitively. A value that does not match the assessment_id shape answers 404, not 400.                                              |
+| `IdempotencyKey`                                                                                                                                               | *string*                                                                                                                                                       | :heavy_check_mark:                                                                                                                                             | Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours. |
+| `Body`                                                                                                                                                         | [AssessmentOutcomeRequest](../../Models/Shared/AssessmentOutcomeRequest.md)                                                                                    | :heavy_check_mark:                                                                                                                                             | N/A                                                                                                                                                            |
+
+### Response
+
+**[RecordAssessmentOutcomeResponse](../../Models/Operations/RecordAssessmentOutcomeResponse.md)**
+
+### Errors
+
+| Error Type                                     | Status Code                                    | Content Type                                   |
+| ---------------------------------------------- | ---------------------------------------------- | ---------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestError       | 400                                            | application/problem+json                       |
+| NoResponse.Models.Errors.AuthenticationError   | 401                                            | application/problem+json                       |
+| NoResponse.Models.Errors.PermissionDeniedError | 403                                            | application/problem+json                       |
+| NoResponse.Models.Errors.NotFoundError         | 404                                            | application/problem+json                       |
+| NoResponse.Models.Errors.ConflictError         | 409                                            | application/problem+json                       |
+| NoResponse.Models.Errors.RateLimitError        | 429                                            | application/problem+json                       |
+| NoResponse.Models.Errors.APIStatusException    | 4XX, 5XX                                       | \*/\*                                          |
+
+## Query
+
+History is a POST with account_id in the body so an account identifier stays out of URLs and access logs. Requires the history scope. Read-only and safe to retry. Newest first, each at its latest assessment_version. An account with no assessments answers 200 with empty items. The cursor is opaque and bound to your tenant and the account; a tampered or expired cursor answers 400 invalid_cursor. response_mode=detailed needs the detailed scope.
+
+### Example Usage: firstPage
+
+<!-- UsageSnippet language="csharp" operationID="queryAccountAssessments" method="post" path="/v1/assessments/query" example="firstPage" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Operations;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+AssessmentQuery req = new AssessmentQuery() {
+    AccountId = "acct_7f3a9c",
+};
+
+QueryAccountAssessmentsResponse? res = await sdk.Assessments.QueryAsync(req);
+
+while(res != null)
+{
+    // handle items
+
+    res = await res.Next!();
+}
+```
+### Example Usage: page
+
+<!-- UsageSnippet language="csharp" operationID="queryAccountAssessments" method="post" path="/v1/assessments/query" example="page" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Operations;
+using NoResponse.Models.Shared;
+
+var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+
+AssessmentQuery req = new AssessmentQuery() {
+    AccountId = "<id>",
+};
+
+QueryAccountAssessmentsResponse? res = await sdk.Assessments.QueryAsync(req);
+
+while(res != null)
+{
+    // handle items
+
+    res = await res.Next!();
+}
+```
+
+### Parameters
+
+| Parameter                                                 | Type                                                      | Required                                                  | Description                                               |
+| --------------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------- |
+| `request`                                                 | [AssessmentQuery](../../Models/Shared/AssessmentQuery.md) | :heavy_check_mark:                                        | The request object to use for the request.                |
+
+### Response
+
+**[QueryAccountAssessmentsResponse](../../Models/Operations/QueryAccountAssessmentsResponse.md)**
+
+### Errors
+
+| Error Type                                     | Status Code                                    | Content Type                                   |
+| ---------------------------------------------- | ---------------------------------------------- | ---------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestError       | 400                                            | application/problem+json                       |
+| NoResponse.Models.Errors.AuthenticationError   | 401                                            | application/problem+json                       |
+| NoResponse.Models.Errors.PermissionDeniedError | 403                                            | application/problem+json                       |
+| NoResponse.Models.Errors.NotFoundError         | 404                                            | application/problem+json                       |
+| NoResponse.Models.Errors.ConflictError         | 409                                            | application/problem+json                       |
+| NoResponse.Models.Errors.RateLimitError        | 429                                            | application/problem+json                       |
+| NoResponse.Models.Errors.APIStatusException    | 4XX, 5XX                                       | \*/\*                                          |

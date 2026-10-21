@@ -1,0 +1,58 @@
+#nullable enable
+namespace NoResponse.Models.Shared
+{
+    using Newtonsoft.Json;
+    using NoResponse.Models.Shared;
+    using NoResponse.Utils;
+
+    /// <summary>
+    /// POST /v1/assessments body. At least one of email, username or phone is required; name and ip only refine an assessment. No field carries a password, hash, token or breach value, and unknown members are refused. The email local part is kept as received and only the domain is lower-cased; the username is compared case-insensitively; the phone is strict E.164 and is assessed asynchronously. The whole body is capped at 32768 bytes. client_context holds bounded hints from the signup client; auth_context holds normalised claims from a session your backend has verified. Raw tokens are refused.
+    /// </summary>
+    public class AssessmentRequest
+    {
+        /// <summary>
+        /// Your own opaque identifier for the account being checked, scoped to your tenant. Use an id you mint, with no direct identifier (email, phone, name or national id) in it. '|' is accepted so an Auth0 user id such as 'auth0|64abc' passes unchanged; '@', '+', '$' and whitespace are refused, as is a JWT; a hex digest such as a SHA-256 is allowed. It travels only in request bodies.
+        /// </summary>
+        [JsonProperty("account_id", Required = Newtonsoft.Json.Required.Always)]
+        public string AccountId { get; set; } = default!;
+
+        /// <summary>
+        /// At least one of email, username or phone. name and ip refine the match and travel beside a lookup identifier; a body with only name or ip is refused with 400.
+        /// </summary>
+        [JsonProperty("identifiers", Required = Newtonsoft.Json.Required.Always)]
+        public AssessmentRequestIdentifiers Identifiers { get; set; } = new();
+
+        [JsonProperty("policy_context", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public AssessmentRequestPolicyContext? PolicyContext { get; set; }
+
+        /// <summary>
+        /// An optional provider correlation id, echoed back. It is not an idempotency key. Refuses an exact-shape JWT or a bare 40, 64 or 128 character hex digest; a UUID is accepted.
+        /// </summary>
+        [JsonProperty("request_id", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? RequestId { get; set; }
+
+        /// <summary>
+        /// Optional tighter budget, 50 to 500 ms, measured from the moment the request reaches NoResponse. Absent means the 500 ms ceiling; a value above it is refused with 400 rather than clamped.
+        /// </summary>
+        [JsonProperty("deadline_ms", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? DeadlineMs { get; set; }
+
+        /// <summary>
+        /// standard returns the consolidated risk response; detailed adds merged provider-neutral facts when the key has detailed scope. There is no raw mode.
+        /// </summary>
+        [JsonProperty("response_mode", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public ResponseMode? ResponseMode { get; set; }
+
+        /// <summary>
+        /// Optional context observed by your signup client. The server parses these hints into coarse features, leaves raw user_agent and opaque ids out of every answer, and weighs a mismatch with the other evidence.
+        /// </summary>
+        [JsonProperty("client_context", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public AssessmentRequestClientContext? ClientContext { get; set; }
+
+        /// <summary>
+        /// Normalised claims from a session your backend has already verified with WorkOS, Clerk, Auth0 or any OIDC provider. Pass the output of the SDK's auth adapters, not a raw token.
+        /// </summary>
+        [JsonProperty("auth_context", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public AuthContext? AuthContext { get; set; }
+    }
+}
