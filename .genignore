@@ -2,3 +2,6 @@
 /src/NoResponse/Webhooks/
 /src/NoResponse/Wait.cs
 /tests/NoResponse.Tests/
+/src/NoResponse/Hooks/HookRegistration.cs
+/src/NoResponse/Hooks/IdempotencyKeyHook.cs
+/README.md

@@ -7,7 +7,7 @@ namespace NoResponse.Utils
     using System.Threading.Tasks;
     using System.Threading;
 
-    public interface IDefaultHttpClient
+    public interface INoResponseHttpClient
     {
         /// <summary>
         /// Sends an HTTP request asynchronously.
@@ -32,11 +32,11 @@ namespace NoResponse.Utils
         Task<HttpRequestMessage> CloneAsync(HttpRequestMessage request);
     }
 
-    public class DefaultHttpClient : IDefaultHttpClient
+    public class NoResponseHttpClient : INoResponseHttpClient
     {
         protected readonly HttpClient httpClient;
 
-        public DefaultHttpClient()
+        public NoResponseHttpClient()
         {
             httpClient = new System.Net.Http.HttpClient();
         }

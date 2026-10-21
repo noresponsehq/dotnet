@@ -32,12 +32,12 @@ namespace NoResponse
         public static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
 
         /// <summary>
-        /// Poll Assessments.GetAsync until the assessment is no longer pending, sleeping for the
+        /// Poll GetAsync until the assessment is no longer pending, sleeping for the
         /// Retry-After the API sends (at least 1 s) between polls.
         /// </summary>
         /// <exception cref="WaitTimeoutException">The timeout (default 30 s) passed first.</exception>
         public static async Task<Assessment> WaitAsync(
-            this INoResponseSDK client,
+            this IAssessments assessments,
             string assessmentId,
             TimeSpan? timeout = null,
             CancellationToken cancellationToken = default,
@@ -66,7 +66,7 @@ namespace NoResponse
                 GetAssessmentResponse response;
                 try
                 {
-                    response = await client.Assessments.GetAsync(assessmentId, cancellationToken: requestCancellation.Token).ConfigureAwait(false);
+                    response = await assessments.GetAsync(assessmentId, cancellationToken: requestCancellation.Token).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested
                     && requestCancellation.IsCancellationRequested && last is not null)

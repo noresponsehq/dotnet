@@ -1,4 +1,4 @@
-# PermissionDeniedError
+# PermissionDeniedException
 
 HTTP 403 problem document.
 

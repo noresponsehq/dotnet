@@ -19,7 +19,7 @@ Mints a new key with the same scopes as the key that signs the request and retur
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 KeyRotationRequest req = new KeyRotationRequest() {};
 
@@ -34,7 +34,7 @@ var res = await sdk.Keys.RotateAsync(req);
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 KeyRotationRequest req = new KeyRotationRequest() {
     OverlapSeconds = 3600,
@@ -51,7 +51,7 @@ var res = await sdk.Keys.RotateAsync(req);
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 KeyRotationRequest req = new KeyRotationRequest() {};
 
@@ -72,12 +72,12 @@ var res = await sdk.Keys.RotateAsync(req);
 
 ### Errors
 
-| Error Type                                     | Status Code                                    | Content Type                                   |
-| ---------------------------------------------- | ---------------------------------------------- | ---------------------------------------------- |
-| NoResponse.Models.Errors.BadRequestError       | 400                                            | application/problem+json                       |
-| NoResponse.Models.Errors.AuthenticationError   | 401                                            | application/problem+json                       |
-| NoResponse.Models.Errors.PermissionDeniedError | 403                                            | application/problem+json                       |
-| NoResponse.Models.Errors.NotFoundError         | 404                                            | application/problem+json                       |
-| NoResponse.Models.Errors.ConflictError         | 409                                            | application/problem+json                       |
-| NoResponse.Models.Errors.RateLimitError        | 429                                            | application/problem+json                       |
-| NoResponse.Models.Errors.APIStatusException    | 4XX, 5XX                                       | \*/\*                                          |
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |

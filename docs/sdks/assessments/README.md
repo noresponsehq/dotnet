@@ -13,7 +13,7 @@ Signup and gateway assessments.
 
 ## Create
 
-Returns within the deadline (500 ms at most) with a complete, partial or pending assessment: 200 carries complete or partial, 202 carries pending with Location and Retry-After. A pending answer has no recommendation; apply your own fallback for pending, 429, 503 or a timeout. Requires the assess scope. Idempotency-Key is required and is bound to the body for 24 hours: the same key with the same body replays the latest assessment with Idempotent-Replayed: true and starts no new work; the same key with a different body answers 409 idempotency_key_reused. response_mode defaults to standard; detailed needs the detailed scope.
+Returns within the deadline (500 ms at most) with a complete, partial or pending assessment: 200 carries complete or partial, 202 carries pending with Location and Retry-After. A pending answer has no recommendation; apply your own fallback for pending, 429, 503 or a timeout. Requires the assess scope. Idempotency-Key is optional in the SDK and is bound to the body for 24 hours: the same key with the same body replays the latest assessment with Idempotent-Replayed: true and starts no new work; the same key with a different body answers 409 idempotency_key_reused. response_mode defaults to standard; detailed needs the detailed scope.
 
 ### Example Usage: complete
 
@@ -22,14 +22,14 @@ Returns within the deadline (500 ms at most) with a complete, partial or pending
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.CreateAsync(
-    idempotencyKey: "<value>",
     body: new AssessmentRequest() {
         AccountId = "<id>",
         Identifiers = new AssessmentRequestIdentifiers() {},
-    }
+    },
+    idempotencyKey: "<value>"
 );
 
 // handle response
@@ -41,14 +41,14 @@ var res = await sdk.Assessments.CreateAsync(
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.CreateAsync(
-    idempotencyKey: "<value>",
     body: new AssessmentRequest() {
         AccountId = "<id>",
         Identifiers = new AssessmentRequestIdentifiers() {},
-    }
+    },
+    idempotencyKey: "<value>"
 );
 
 // handle response
@@ -60,10 +60,9 @@ var res = await sdk.Assessments.CreateAsync(
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.CreateAsync(
-    idempotencyKey: "<value>",
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
         Identifiers = new AssessmentRequestIdentifiers() {
@@ -77,7 +76,8 @@ var res = await sdk.Assessments.CreateAsync(
         },
         RequestId = "req-2026-10-14-0001",
         DeadlineMs = 300,
-    }
+    },
+    idempotencyKey: "<value>"
 );
 
 // handle response
@@ -89,16 +89,16 @@ var res = await sdk.Assessments.CreateAsync(
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.CreateAsync(
-    idempotencyKey: "<value>",
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
         },
-    }
+    },
+    idempotencyKey: "<value>"
 );
 
 // handle response
@@ -110,10 +110,9 @@ var res = await sdk.Assessments.CreateAsync(
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.CreateAsync(
-    idempotencyKey: "<value>",
     body: new AssessmentRequest() {
         AccountId = "acct_8412",
         Identifiers = new AssessmentRequestIdentifiers() {
@@ -130,7 +129,8 @@ var res = await sdk.Assessments.CreateAsync(
         RequestId = "req_01",
         DeadlineMs = 500,
         ResponseMode = ResponseMode.Standard,
-    }
+    },
+    idempotencyKey: "<value>"
 );
 
 // handle response
@@ -142,14 +142,14 @@ var res = await sdk.Assessments.CreateAsync(
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.CreateAsync(
-    idempotencyKey: "<value>",
     body: new AssessmentRequest() {
         AccountId = "<id>",
         Identifiers = new AssessmentRequestIdentifiers() {},
-    }
+    },
+    idempotencyKey: "<value>"
 );
 
 // handle response
@@ -161,14 +161,14 @@ var res = await sdk.Assessments.CreateAsync(
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.CreateAsync(
-    idempotencyKey: "<value>",
     body: new AssessmentRequest() {
         AccountId = "<id>",
         Identifiers = new AssessmentRequestIdentifiers() {},
-    }
+    },
+    idempotencyKey: "<value>"
 );
 
 // handle response
@@ -176,10 +176,10 @@ var res = await sdk.Assessments.CreateAsync(
 
 ### Parameters
 
-| Parameter                                                                                                                                                      | Type                                                                                                                                                           | Required                                                                                                                                                       | Description                                                                                                                                                    |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `IdempotencyKey`                                                                                                                                               | *string*                                                                                                                                                       | :heavy_check_mark:                                                                                                                                             | Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours. |
-| `Body`                                                                                                                                                         | [AssessmentRequest](../../Models/Shared/AssessmentRequest.md)                                                                                                  | :heavy_check_mark:                                                                                                                                             | N/A                                                                                                                                                            |
+| Parameter                                                                                                                                                                                                                                                             | Type                                                                                                                                                                                                                                                                  | Required                                                                                                                                                                                                                                                              | Description                                                                                                                                                                                                                                                           |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Body`                                                                                                                                                                                                                                                                | [AssessmentRequest](../../Models/Shared/AssessmentRequest.md)                                                                                                                                                                                                         | :heavy_check_mark:                                                                                                                                                                                                                                                    | N/A                                                                                                                                                                                                                                                                   |
+| `IdempotencyKey`                                                                                                                                                                                                                                                      | *string*                                                                                                                                                                                                                                                              | :heavy_minus_sign:                                                                                                                                                                                                                                                    | Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours. Optional: the SDK generates a UUID when you omit it and sends the same key on every retry of the call. |
 
 ### Response
 
@@ -187,15 +187,15 @@ var res = await sdk.Assessments.CreateAsync(
 
 ### Errors
 
-| Error Type                                     | Status Code                                    | Content Type                                   |
-| ---------------------------------------------- | ---------------------------------------------- | ---------------------------------------------- |
-| NoResponse.Models.Errors.BadRequestError       | 400                                            | application/problem+json                       |
-| NoResponse.Models.Errors.AuthenticationError   | 401                                            | application/problem+json                       |
-| NoResponse.Models.Errors.PermissionDeniedError | 403                                            | application/problem+json                       |
-| NoResponse.Models.Errors.NotFoundError         | 404                                            | application/problem+json                       |
-| NoResponse.Models.Errors.ConflictError         | 409                                            | application/problem+json                       |
-| NoResponse.Models.Errors.RateLimitError        | 429                                            | application/problem+json                       |
-| NoResponse.Models.Errors.APIStatusException    | 4XX, 5XX                                       | \*/\*                                          |
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
 
 ## Get
 
@@ -208,7 +208,7 @@ Returns the highest assessment_version. Requires the assess or history scope. Wh
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
 
@@ -221,7 +221,7 @@ var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
 
@@ -234,7 +234,7 @@ var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
 
@@ -247,7 +247,7 @@ var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
 
@@ -260,7 +260,7 @@ var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
 
@@ -280,19 +280,19 @@ var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
 
 ### Errors
 
-| Error Type                                     | Status Code                                    | Content Type                                   |
-| ---------------------------------------------- | ---------------------------------------------- | ---------------------------------------------- |
-| NoResponse.Models.Errors.BadRequestError       | 400                                            | application/problem+json                       |
-| NoResponse.Models.Errors.AuthenticationError   | 401                                            | application/problem+json                       |
-| NoResponse.Models.Errors.PermissionDeniedError | 403                                            | application/problem+json                       |
-| NoResponse.Models.Errors.NotFoundError         | 404                                            | application/problem+json                       |
-| NoResponse.Models.Errors.ConflictError         | 409                                            | application/problem+json                       |
-| NoResponse.Models.Errors.RateLimitError        | 429                                            | application/problem+json                       |
-| NoResponse.Models.Errors.APIStatusException    | 4XX, 5XX                                       | \*/\*                                          |
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
 
 ## RecordOutcome
 
-Records what you later learned about an assessed account: confirmed_abuse, account_takeover and chargeback report abuse; false_positive and legitimate withdraw your earlier report; unknown is recorded only. Outcomes are append-only and the latest one wins. Requires the assess scope. Idempotency-Key is required and handled as on POST /v1/assessments: a retry with the same key and body answers the same record with Idempotent-Replayed: true; a different body answers 409. An unknown, expired or foreign assessment answers 404 not_found.
+Records what you later learned about an assessed account: confirmed_abuse, account_takeover and chargeback report abuse; false_positive and legitimate withdraw your earlier report; unknown is recorded only. Outcomes are append-only and the latest one wins. Requires the assess scope. Idempotency-Key is optional in the SDK and handled as on POST /v1/assessments: a retry with the same key and body answers the same record with Idempotent-Replayed: true; a different body answers 409. An unknown, expired or foreign assessment answers 404 not_found.
 
 ### Example Usage: abuse
 
@@ -301,17 +301,17 @@ Records what you later learned about an assessed account: confirmed_abuse, accou
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.RecordOutcomeAsync(
     assessmentId: "<id>",
-    idempotencyKey: "<value>",
     body: new AssessmentOutcomeRequest() {
         Outcome = Outcome.ConfirmedAbuse,
         ObservedAt = "2026-10-20T05:00:00Z",
         ExternalRef = "case-123",
         Notes = "Card testing from this account; closed by trust and safety.",
-    }
+    },
+    idempotencyKey: "<value>"
 );
 
 // handle response
@@ -323,14 +323,14 @@ var res = await sdk.Assessments.RecordOutcomeAsync(
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.RecordOutcomeAsync(
     assessmentId: "<id>",
-    idempotencyKey: "<value>",
     body: new AssessmentOutcomeRequest() {
         Outcome = Outcome.Legitimate,
-    }
+    },
+    idempotencyKey: "<value>"
 );
 
 // handle response
@@ -342,14 +342,14 @@ var res = await sdk.Assessments.RecordOutcomeAsync(
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.RecordOutcomeAsync(
     assessmentId: "<id>",
-    idempotencyKey: "<value>",
     body: new AssessmentOutcomeRequest() {
         Outcome = Outcome.FalsePositive,
-    }
+    },
+    idempotencyKey: "<value>"
 );
 
 // handle response
@@ -357,11 +357,11 @@ var res = await sdk.Assessments.RecordOutcomeAsync(
 
 ### Parameters
 
-| Parameter                                                                                                                                                      | Type                                                                                                                                                           | Required                                                                                                                                                       | Description                                                                                                                                                    |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `AssessmentId`                                                                                                                                                 | *string*                                                                                                                                                       | :heavy_check_mark:                                                                                                                                             | Path segment, matched case-sensitively. A value that does not match the assessment_id shape answers 404, not 400.                                              |
-| `IdempotencyKey`                                                                                                                                               | *string*                                                                                                                                                       | :heavy_check_mark:                                                                                                                                             | Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours. |
-| `Body`                                                                                                                                                         | [AssessmentOutcomeRequest](../../Models/Shared/AssessmentOutcomeRequest.md)                                                                                    | :heavy_check_mark:                                                                                                                                             | N/A                                                                                                                                                            |
+| Parameter                                                                                                                                                                                                                                                             | Type                                                                                                                                                                                                                                                                  | Required                                                                                                                                                                                                                                                              | Description                                                                                                                                                                                                                                                           |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AssessmentId`                                                                                                                                                                                                                                                        | *string*                                                                                                                                                                                                                                                              | :heavy_check_mark:                                                                                                                                                                                                                                                    | Path segment, matched case-sensitively. A value that does not match the assessment_id shape answers 404, not 400.                                                                                                                                                     |
+| `Body`                                                                                                                                                                                                                                                                | [AssessmentOutcomeRequest](../../Models/Shared/AssessmentOutcomeRequest.md)                                                                                                                                                                                           | :heavy_check_mark:                                                                                                                                                                                                                                                    | N/A                                                                                                                                                                                                                                                                   |
+| `IdempotencyKey`                                                                                                                                                                                                                                                      | *string*                                                                                                                                                                                                                                                              | :heavy_minus_sign:                                                                                                                                                                                                                                                    | Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours. Optional: the SDK generates a UUID when you omit it and sends the same key on every retry of the call. |
 
 ### Response
 
@@ -369,15 +369,15 @@ var res = await sdk.Assessments.RecordOutcomeAsync(
 
 ### Errors
 
-| Error Type                                     | Status Code                                    | Content Type                                   |
-| ---------------------------------------------- | ---------------------------------------------- | ---------------------------------------------- |
-| NoResponse.Models.Errors.BadRequestError       | 400                                            | application/problem+json                       |
-| NoResponse.Models.Errors.AuthenticationError   | 401                                            | application/problem+json                       |
-| NoResponse.Models.Errors.PermissionDeniedError | 403                                            | application/problem+json                       |
-| NoResponse.Models.Errors.NotFoundError         | 404                                            | application/problem+json                       |
-| NoResponse.Models.Errors.ConflictError         | 409                                            | application/problem+json                       |
-| NoResponse.Models.Errors.RateLimitError        | 429                                            | application/problem+json                       |
-| NoResponse.Models.Errors.APIStatusException    | 4XX, 5XX                                       | \*/\*                                          |
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
 
 ## Query
 
@@ -391,7 +391,7 @@ using NoResponse;
 using NoResponse.Models.Operations;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 AssessmentQuery req = new AssessmentQuery() {
     AccountId = "acct_7f3a9c",
@@ -414,7 +414,7 @@ using NoResponse;
 using NoResponse.Models.Operations;
 using NoResponse.Models.Shared;
 
-var sdk = new NoResponseSDK(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 AssessmentQuery req = new AssessmentQuery() {
     AccountId = "<id>",
@@ -442,12 +442,12 @@ while(res != null)
 
 ### Errors
 
-| Error Type                                     | Status Code                                    | Content Type                                   |
-| ---------------------------------------------- | ---------------------------------------------- | ---------------------------------------------- |
-| NoResponse.Models.Errors.BadRequestError       | 400                                            | application/problem+json                       |
-| NoResponse.Models.Errors.AuthenticationError   | 401                                            | application/problem+json                       |
-| NoResponse.Models.Errors.PermissionDeniedError | 403                                            | application/problem+json                       |
-| NoResponse.Models.Errors.NotFoundError         | 404                                            | application/problem+json                       |
-| NoResponse.Models.Errors.ConflictError         | 409                                            | application/problem+json                       |
-| NoResponse.Models.Errors.RateLimitError        | 429                                            | application/problem+json                       |
-| NoResponse.Models.Errors.APIStatusException    | 4XX, 5XX                                       | \*/\*                                          |
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |

@@ -1,4 +1,4 @@
-# AuthenticationError
+# AuthenticationException
 
 HTTP 401 problem document.
 

@@ -18,7 +18,7 @@ namespace NoResponse
     /// <remarks>
     /// Assess a signup or gateway event, poll a pending assessment, page through an account's history, record what you later learned, and rotate your API key. Every response carries X-Request-ID; every error is an RFC 9457 problem document. Keep the API key on your server.
     /// </remarks>
-    public interface INoResponseSDK
+    public interface INoResponseClient
     {
         /// <summary>
         /// Signup and gateway assessments.
@@ -37,7 +37,7 @@ namespace NoResponse
     /// <remarks>
     /// Assess a signup or gateway event, poll a pending assessment, page through an account's history, record what you later learned, and rotate your API key. Every response carries X-Request-ID; every error is an RFC 9457 problem document. Keep the API key on your server.
     /// </remarks>
-    public class NoResponseSDK : INoResponseSDK
+    public class NoResponseClient : INoResponseClient
     {
         /// <summary>
         /// The main SDK Configuration.
@@ -56,7 +56,7 @@ namespace NoResponse
         /// Initializes a new instance of the SDK based on a <see cref="SDKConfig"/> configuration object.
         /// </summary>
         /// <param name="config">The SDK configuration object.</param>
-        public NoResponseSDK(SDKConfig config)
+        public NoResponseClient(SDKConfig config)
         {
             SDKConfiguration = config;
             InitHooks();
@@ -74,17 +74,17 @@ namespace NoResponse
         /// <param name="serverIndex">The index of the server to use from the predefined server list. Must be between 0 and the length of the server list. Defaults to 0 if not specified.</param>
         /// <param name="serverUrl">A custom server URL to use instead of the predefined server list. If provided with urlParams, the URL will be templated with the provided parameters.</param>
         /// <param name="urlParams">A dictionary of parameters to use for templating the serverUrl. Only used when serverUrl is provided.</param>
-        /// <param name="client">A custom HTTP client implementation to use for making API requests. If not provided, the default DefaultHttpClient will be used.</param>
+        /// <param name="client">A custom HTTP client implementation to use for making API requests. If not provided, the default NoResponseHttpClient will be used.</param>
         /// <param name="retryConfig">Configuration for retry behavior when API requests fail. Defines retry strategies, backoff policies, and maximum retry attempts.</param>
         /// <exception cref="ArgumentOutOfRangeException">Invalid value provided for <paramref name="serverIndex"/>: must be between 0 (inclusive) and 1 (exclusive).</exception>
         /// <exception cref="ArgumentException">None of <paramref name="apiKey"/> and <paramref name="apiKeySource"/> were provided.</exception>
-        public NoResponseSDK(
+        public NoResponseClient(
             string? apiKey = null,
             Func<string>? apiKeySource = null,
             int? serverIndex = null,
             string? serverUrl = null,
             Dictionary<string, string>? urlParams = null,
-            IDefaultHttpClient? client = null,
+            INoResponseHttpClient? client = null,
             RetryConfig? retryConfig = null
         )
         {
@@ -142,7 +142,7 @@ namespace NoResponse
         /// </summary>
         public class SDKBuilder
         {
-            private SDKConfig _sdkConfig = new SDKConfig(client: new DefaultHttpClient());
+            private SDKConfig _sdkConfig = new SDKConfig(client: new NoResponseHttpClient());
 
             public SDKBuilder()
             {
@@ -195,7 +195,7 @@ namespace NoResponse
             /// <summary>
             /// Sets a custom HTTP client to be used by the SDK.
             /// </summary>
-            public SDKBuilder WithClient(IDefaultHttpClient client)
+            public SDKBuilder WithClient(INoResponseHttpClient client)
             {
                 _sdkConfig.Client = client;
                 return this;
@@ -213,13 +213,13 @@ namespace NoResponse
             /// <summary>
             /// Builds and returns the SDK instance.
             /// </summary>
-            public NoResponseSDK Build()
+            public NoResponseClient Build()
             {
                 if (_sdkConfig.SecuritySource == null)
                 {
                     throw new ArgumentException("securitySource cannot be null. One of `ApiKey` or `apiKeySource` needs to be defined.");
                 }
-                return new NoResponseSDK(_sdkConfig);
+                return new NoResponseClient(_sdkConfig);
             }
         }
 

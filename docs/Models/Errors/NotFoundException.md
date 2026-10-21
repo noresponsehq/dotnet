@@ -1,6 +1,6 @@
-# BadRequestError
+# NotFoundException
 
-HTTP 400 problem document.
+HTTP 404 problem document.
 
 
 ## Fields
@@ -12,6 +12,6 @@ HTTP 400 problem document.
 | `Status`                                                                | *long*                                                                  | :heavy_check_mark:                                                      | N/A                                                                     |
 | `Detail`                                                                | *string*                                                                | :heavy_check_mark:                                                      | N/A                                                                     |
 | `Instance`                                                              | *string*                                                                | :heavy_minus_sign:                                                      | N/A                                                                     |
-| `Code`                                                                  | [BadRequestErrorCode](../../Models/Shared/BadRequestErrorCode.md)       | :heavy_check_mark:                                                      | Machine codes an HTTP 400 answer can carry.                             |
+| `Code`                                                                  | [NotFoundErrorCode](../../Models/Shared/NotFoundErrorCode.md)           | :heavy_check_mark:                                                      | Machine codes an HTTP 404 answer can carry.                             |
 | `RequestId`                                                             | *string*                                                                | :heavy_check_mark:                                                      | N/A                                                                     |
 | `InvalidParams`                                                         | List<[ProblemInvalidParam](../../Models/Shared/ProblemInvalidParam.md)> | :heavy_minus_sign:                                                      | N/A                                                                     |

@@ -21,7 +21,7 @@ namespace NoResponse
             "https://api.noresponse.org",
         };
 
-        public IDefaultHttpClient Client;
+        public INoResponseHttpClient Client;
         public string ServerUrl;
         public int ServerIndex;
         public string UserAgent;
@@ -32,12 +32,12 @@ namespace NoResponse
         /// <summary>
         /// Initializes a new instance of the SDKConfig struct with default values.
         /// </summary>
-        public SDKConfig(IDefaultHttpClient? client = null)
+        public SDKConfig(INoResponseHttpClient? client = null)
         {
-            Client = client ?? new DefaultHttpClient();
+            Client = client ?? new NoResponseHttpClient();
             ServerUrl = "";
             ServerIndex = 0;
-            UserAgent = "noresponse-sdk/csharp 2.0.1 internal 1 NoResponse";
+            UserAgent = "noresponse-sdk/csharp 2.0.2 internal 1 NoResponse";
             SecuritySource = null;
             Hooks = new SDKHooks();
             RetryConfig = null;

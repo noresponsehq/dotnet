@@ -16,7 +16,7 @@ namespace NoResponse.Tests
     {
         private const string Id = "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM";
 
-        private sealed class Scripted : DefaultHttpClient
+        private sealed class Scripted : NoResponseHttpClient
         {
             private readonly (string Body, string? RetryAfter)[] answers;
 
@@ -41,8 +41,8 @@ namespace NoResponse.Tests
             }
         }
 
-        private static NoResponseSDK Client(Scripted http) =>
-            NoResponseSDK.Builder().WithApiKey("nrk_test_" + new string('k', 20)).WithServerUrl("https://api.example.test").WithClient(http).Build();
+        private static NoResponseClient Client(Scripted http) =>
+            NoResponseClient.Builder().WithApiKey("nrk_test_" + new string('k', 20)).WithServerUrl("https://api.example.test").WithClient(http).Build();
 
         [Fact]
         public async Task PollsUntilCompleteHonouringRetryAfter()
@@ -50,7 +50,7 @@ namespace NoResponse.Tests
             var http = new Scripted(("assessment-pending.json", "3"), ("assessment-pending.json", "0"), ("assessment-complete.json", null));
             var slept = new List<TimeSpan>();
             var now = TimeSpan.Zero;
-            var result = await Client(http).WaitAsync(Id, delay: (d, _) => { slept.Add(d); now += d; return Task.CompletedTask; }, clock: () => now);
+            var result = await Client(http).Assessments.WaitAsync(Id, delay: (d, _) => { slept.Add(d); now += d; return Task.CompletedTask; }, clock: () => now);
             Assert.Equal(Status.Complete, result.Status);
             Assert.Equal(new[] { TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(1) }, slept);
             Assert.Equal(3, http.Requests.Count);
@@ -64,7 +64,7 @@ namespace NoResponse.Tests
             var http = new Scripted(("assessment-pending.json", "2"));
             var slept = new List<TimeSpan>();
             var now = TimeSpan.Zero;
-            var e = await Assert.ThrowsAsync<WaitTimeoutException>(() => Client(http).WaitAsync(Id, TimeSpan.FromSeconds(5), delay: (d, _) => { slept.Add(d); now += d; return Task.CompletedTask; }, clock: () => now));
+            var e = await Assert.ThrowsAsync<WaitTimeoutException>(() => Client(http).Assessments.WaitAsync(Id, TimeSpan.FromSeconds(5), delay: (d, _) => { slept.Add(d); now += d; return Task.CompletedTask; }, clock: () => now));
             Assert.Equal(Status.Pending, e.Last.Status);
             Assert.Equal(new[] { TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2) }, slept);
         }

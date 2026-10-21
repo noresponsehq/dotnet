@@ -1,6 +1,6 @@
-# ConflictError
+# RateLimitException
 
-HTTP 409 problem document.
+HTTP 429 problem document.
 
 
 ## Fields
@@ -12,6 +12,6 @@ HTTP 409 problem document.
 | `Status`                                                                | *long*                                                                  | :heavy_check_mark:                                                      | N/A                                                                     |
 | `Detail`                                                                | *string*                                                                | :heavy_check_mark:                                                      | N/A                                                                     |
 | `Instance`                                                              | *string*                                                                | :heavy_minus_sign:                                                      | N/A                                                                     |
-| `Code`                                                                  | [ConflictErrorCode](../../Models/Shared/ConflictErrorCode.md)           | :heavy_check_mark:                                                      | Machine codes an HTTP 409 answer can carry.                             |
+| `Code`                                                                  | [RateLimitErrorCode](../../Models/Shared/RateLimitErrorCode.md)         | :heavy_check_mark:                                                      | Machine codes an HTTP 429 answer can carry.                             |
 | `RequestId`                                                             | *string*                                                                | :heavy_check_mark:                                                      | N/A                                                                     |
 | `InvalidParams`                                                         | List<[ProblemInvalidParam](../../Models/Shared/ProblemInvalidParam.md)> | :heavy_minus_sign:                                                      | N/A                                                                     |
