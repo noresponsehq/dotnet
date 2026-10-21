@@ -5,3 +5,4 @@
 /src/NoResponse/Hooks/HookRegistration.cs
 /src/NoResponse/Hooks/IdempotencyKeyHook.cs
 /README.md
+/src/NoResponse/Auth.cs
