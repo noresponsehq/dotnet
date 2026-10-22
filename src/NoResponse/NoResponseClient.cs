@@ -16,7 +16,7 @@ namespace NoResponse
     /// NoResponse API: Server-side signup and gateway risk assessment: a recommendation, polling and signed webhooks.
     /// </summary>
     /// <remarks>
-    /// Assess a signup or gateway event, poll a pending assessment, page through an account's history, record what you later learned, and rotate your API key. Every response carries X-Request-ID; every error is an RFC 9457 problem document. Keep the API key on your server.
+    /// Assess a signup or gateway event, poll a pending assessment, page through an account's history, record what you later learned, rotate your API key, and register hosted endpoints that answer your WorkOS or Auth0 sign-up and sign-in hooks. Every response carries X-Request-ID; every error is an RFC 9457 problem document. Keep the API key on your server.
     /// </remarks>
     public interface INoResponseClient
     {
@@ -29,13 +29,18 @@ namespace NoResponse
         /// Your own API keys.
         /// </summary>
         public IKeys Keys { get; }
+
+        /// <summary>
+        /// Hosted endpoints that answer your sign-up and sign-in hooks.
+        /// </summary>
+        public IIntegrations Integrations { get; }
     }
 
     /// <summary>
     /// NoResponse API: Server-side signup and gateway risk assessment: a recommendation, polling and signed webhooks.
     /// </summary>
     /// <remarks>
-    /// Assess a signup or gateway event, poll a pending assessment, page through an account's history, record what you later learned, and rotate your API key. Every response carries X-Request-ID; every error is an RFC 9457 problem document. Keep the API key on your server.
+    /// Assess a signup or gateway event, poll a pending assessment, page through an account's history, record what you later learned, rotate your API key, and register hosted endpoints that answer your WorkOS or Auth0 sign-up and sign-in hooks. Every response carries X-Request-ID; every error is an RFC 9457 problem document. Keep the API key on your server.
     /// </remarks>
     public class NoResponseClient : INoResponseClient
     {
@@ -51,6 +56,10 @@ namespace NoResponse
         /// The Keys sub-SDK.
         /// </summary>
         public IKeys Keys { get; private set; }
+        /// <summary>
+        /// The Integrations sub-SDK.
+        /// </summary>
+        public IIntegrations Integrations { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the SDK based on a <see cref="SDKConfig"/> configuration object.
@@ -64,6 +73,8 @@ namespace NoResponse
             Assessments = new Assessments(SDKConfiguration);
 
             Keys = new Keys(SDKConfiguration);
+
+            Integrations = new Integrations(SDKConfiguration);
         }
 
         /// <summary>
@@ -130,6 +141,8 @@ namespace NoResponse
             Assessments = new Assessments(SDKConfiguration);
 
             Keys = new Keys(SDKConfiguration);
+
+            Integrations = new Integrations(SDKConfiguration);
         }
 
         private void InitHooks()

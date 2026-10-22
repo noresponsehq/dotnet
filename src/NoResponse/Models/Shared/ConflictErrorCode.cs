@@ -16,11 +16,13 @@ namespace NoResponse.Models.Shared
     {
         public static readonly ConflictErrorCode IdempotencyKeyReused = new ConflictErrorCode("idempotency_key_reused");
         public static readonly ConflictErrorCode KeyRotationInProgress = new ConflictErrorCode("key_rotation_in_progress");
+        public static readonly ConflictErrorCode TooManyIntegrations = new ConflictErrorCode("too_many_integrations");
 
         private static readonly Dictionary<string, ConflictErrorCode> _knownValues =
             new Dictionary<string, ConflictErrorCode>() {
                 ["idempotency_key_reused"] = IdempotencyKeyReused,
-                ["key_rotation_in_progress"] = KeyRotationInProgress
+                ["key_rotation_in_progress"] = KeyRotationInProgress,
+                ["too_many_integrations"] = TooManyIntegrations
             };
 
         private static readonly ConcurrentDictionary<string, ConflictErrorCode> _values =

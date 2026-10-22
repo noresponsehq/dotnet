@@ -15,13 +15,15 @@ namespace NoResponse.Models.Shared
         public static readonly Scope History = new Scope("history");
         public static readonly Scope Webhooks = new Scope("webhooks");
         public static readonly Scope Detailed = new Scope("detailed");
+        public static readonly Scope Integrations = new Scope("integrations");
 
         private static readonly Dictionary<string, Scope> _knownValues =
             new Dictionary<string, Scope>() {
                 ["assess"] = Assess,
                 ["history"] = History,
                 ["webhooks"] = Webhooks,
-                ["detailed"] = Detailed
+                ["detailed"] = Detailed,
+                ["integrations"] = Integrations
             };
 
         private static readonly ConcurrentDictionary<string, Scope> _values =

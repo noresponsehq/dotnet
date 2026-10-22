@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.0.17
+
+* `Sdk.Integrations.Create()`: **Added**
+* `Sdk.Integrations.List()`: **Added**
+* `Sdk.Integrations.Delete()`: **Added**
+* `Sdk.Integrations.Rotate()`: **Added**
+* `Sdk.Assessments.Create()`:  `error.code.Enum(tooManyIntegrations)` **Added**
+* `Sdk.Assessments.Get()`:  `error.code.Enum(tooManyIntegrations)` **Added**
+* `Sdk.Assessments.RecordOutcome()`:  `error.code.Enum(tooManyIntegrations)` **Added**
+* `Sdk.Assessments.Query()`:  `error.code.Enum(tooManyIntegrations)` **Added**
+* `Sdk.Keys.Rotate()`: 
+  *  `response.scopes[].Enum(integrations)` **Added**
+  *  `error.code.Enum(tooManyIntegrations)` **Added**
+
 ## 2.0.16
 
 * `Sdk.Assessments.Create()`: 

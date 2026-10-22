@@ -14,9 +14,10 @@ var custom = Scope.Of("custom_value");
 
 ## Values
 
-| Name       | Value      |
-| ---------- | ---------- |
-| `Assess`   | assess     |
-| `History`  | history    |
-| `Webhooks` | webhooks   |
-| `Detailed` | detailed   |
+| Name           | Value          |
+| -------------- | -------------- |
+| `Assess`       | assess         |
+| `History`      | history        |
+| `Webhooks`     | webhooks       |
+| `Detailed`     | detailed       |
+| `Integrations` | integrations   |
