@@ -16,7 +16,7 @@ namespace NoResponse
     /// NoResponse API: Server-side signup and gateway risk assessment: a recommendation, polling and signed webhooks.
     /// </summary>
     /// <remarks>
-    /// Assess a signup or gateway event, poll a pending assessment, page through an account's history, record what you later learned, rotate your API key, and register hosted endpoints that answer your WorkOS or Auth0 sign-up and sign-in hooks. Every response carries X-Request-ID; every error is an RFC 9457 problem document. Keep the API key on your server.
+    /// Assess a signup or gateway event, poll a pending assessment, page through an account's history, record what you later learned, rotate your API key, manage your webhook endpoints, and register hosted endpoints that answer your WorkOS or Auth0 sign-up and sign-in hooks. Every response carries X-Request-ID; every error is an RFC 9457 problem document. Keep the API key on your server.
     /// </remarks>
     public interface INoResponseClient
     {
@@ -34,13 +34,18 @@ namespace NoResponse
         /// Hosted endpoints that answer your sign-up and sign-in hooks.
         /// </summary>
         public IIntegrations Integrations { get; }
+
+        /// <summary>
+        /// Your webhook endpoints: register, list, rotate signing keys, send test events and delete.
+        /// </summary>
+        public IWebhookEndpoints WebhookEndpoints { get; }
     }
 
     /// <summary>
     /// NoResponse API: Server-side signup and gateway risk assessment: a recommendation, polling and signed webhooks.
     /// </summary>
     /// <remarks>
-    /// Assess a signup or gateway event, poll a pending assessment, page through an account's history, record what you later learned, rotate your API key, and register hosted endpoints that answer your WorkOS or Auth0 sign-up and sign-in hooks. Every response carries X-Request-ID; every error is an RFC 9457 problem document. Keep the API key on your server.
+    /// Assess a signup or gateway event, poll a pending assessment, page through an account's history, record what you later learned, rotate your API key, manage your webhook endpoints, and register hosted endpoints that answer your WorkOS or Auth0 sign-up and sign-in hooks. Every response carries X-Request-ID; every error is an RFC 9457 problem document. Keep the API key on your server.
     /// </remarks>
     public class NoResponseClient : INoResponseClient
     {
@@ -60,6 +65,10 @@ namespace NoResponse
         /// The Integrations sub-SDK.
         /// </summary>
         public IIntegrations Integrations { get; private set; }
+        /// <summary>
+        /// The WebhookEndpoints sub-SDK.
+        /// </summary>
+        public IWebhookEndpoints WebhookEndpoints { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the SDK based on a <see cref="SDKConfig"/> configuration object.
@@ -75,6 +84,8 @@ namespace NoResponse
             Keys = new Keys(SDKConfiguration);
 
             Integrations = new Integrations(SDKConfiguration);
+
+            WebhookEndpoints = new WebhookEndpoints(SDKConfiguration);
         }
 
         /// <summary>
@@ -143,6 +154,8 @@ namespace NoResponse
             Keys = new Keys(SDKConfiguration);
 
             Integrations = new Integrations(SDKConfiguration);
+
+            WebhookEndpoints = new WebhookEndpoints(SDKConfiguration);
         }
 
         private void InitHooks()

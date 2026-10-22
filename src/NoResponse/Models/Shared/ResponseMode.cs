@@ -4,46 +4,66 @@ namespace NoResponse.Models.Shared
     using Newtonsoft.Json;
     using NoResponse.Utils;
     using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// standard returns the consolidated risk response; detailed adds merged provider-neutral facts when the key has detailed scope. There is no raw mode.
     /// </summary>
-    public enum ResponseMode
+    [JsonConverter(typeof(OpenEnumConverter))]
+    public class ResponseMode : IEquatable<ResponseMode>, IOpenEnum<string>
     {
-        [JsonProperty("standard")] Standard,
-        [JsonProperty("detailed")] Detailed,
-    }
+        public static readonly ResponseMode Standard = new ResponseMode("standard");
+        public static readonly ResponseMode Detailed = new ResponseMode("detailed");
 
-    public static class ResponseModeExtension
-    {
-        public static string Value(this ResponseMode value)
+        private static readonly Dictionary<string, ResponseMode> _knownValues =
+            new Dictionary<string, ResponseMode>() {
+                ["standard"] = Standard,
+                ["detailed"] = Detailed
+            };
+
+        private static readonly ConcurrentDictionary<string, ResponseMode> _values =
+            new ConcurrentDictionary<string, ResponseMode>(_knownValues);
+
+        private ResponseMode(string value)
         {
-            return ((JsonPropertyAttribute)value.GetType().GetMember(value.ToString()) [0].GetCustomAttributes(typeof(JsonPropertyAttribute), false)[0]).PropertyName ?? value.ToString();
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            Value = value;
         }
 
-        public static ResponseMode ToEnum(this string value)
+        public string Value { get; }
+
+        public static ResponseMode Of(string value)
         {
-            foreach (var field in typeof(ResponseMode).GetFields())
-            {
-                var attributes = field.GetCustomAttributes(typeof(JsonPropertyAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    continue;
-                }
-
-                var attribute = attributes[0] as JsonPropertyAttribute;
-                if (attribute != null && attribute.PropertyName == value)
-                {
-                    var enumVal = field.GetValue(null);
-
-                    if (enumVal is ResponseMode)
-                    {
-                        return (ResponseMode)enumVal;
-                    }
-                }
-            }
-
-            throw new Exception($"Unknown value {value} for enum ResponseMode");
+            return _values.GetOrAdd(value,
+                                    _ => new ResponseMode(value));
         }
+
+        public static implicit operator ResponseMode(string value) => Of(value);
+        public static implicit operator string(ResponseMode responsemode) => responsemode.Value;
+
+        public static ResponseMode[] Values()
+        {
+            return _values.Values.ToArray();
+        }
+
+        public override string ToString() => Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        public bool IsKnown()
+        {
+            return _knownValues.ContainsKey(Value);
+        }
+
+        public override bool Equals(object? obj) => Equals(obj as ResponseMode);
+
+        public bool Equals(ResponseMode? other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other is null) return false;
+            return string.Equals(Value, other.Value);
+        }
+
+        public override int GetHashCode() => Value.GetHashCode();
     }
 }

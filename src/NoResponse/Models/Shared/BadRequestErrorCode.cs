@@ -17,12 +17,14 @@ namespace NoResponse.Models.Shared
         public static readonly BadRequestErrorCode InvalidRequest = new BadRequestErrorCode("invalid_request");
         public static readonly BadRequestErrorCode InvalidIdempotencyKey = new BadRequestErrorCode("invalid_idempotency_key");
         public static readonly BadRequestErrorCode InvalidCursor = new BadRequestErrorCode("invalid_cursor");
+        public static readonly BadRequestErrorCode WebhookUrlRefused = new BadRequestErrorCode("webhook_url_refused");
 
         private static readonly Dictionary<string, BadRequestErrorCode> _knownValues =
             new Dictionary<string, BadRequestErrorCode>() {
                 ["invalid_request"] = InvalidRequest,
                 ["invalid_idempotency_key"] = InvalidIdempotencyKey,
-                ["invalid_cursor"] = InvalidCursor
+                ["invalid_cursor"] = InvalidCursor,
+                ["webhook_url_refused"] = WebhookUrlRefused
             };
 
         private static readonly ConcurrentDictionary<string, BadRequestErrorCode> _values =

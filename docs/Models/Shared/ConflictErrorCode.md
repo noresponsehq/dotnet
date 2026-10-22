@@ -16,8 +16,10 @@ var custom = ConflictErrorCode.Of("custom_value");
 
 ## Values
 
-| Name                     | Value                    |
-| ------------------------ | ------------------------ |
-| `IdempotencyKeyReused`   | idempotency_key_reused   |
-| `KeyRotationInProgress`  | key_rotation_in_progress |
-| `TooManyIntegrations`    | too_many_integrations    |
+| Name                           | Value                          |
+| ------------------------------ | ------------------------------ |
+| `IdempotencyKeyReused`         | idempotency_key_reused         |
+| `KeyRotationInProgress`        | key_rotation_in_progress       |
+| `WebhookEndpointLimitReached`  | webhook_endpoint_limit_reached |
+| `WebhookEndpointUnverified`    | webhook_endpoint_unverified    |
+| `TooManyIntegrations`          | too_many_integrations          |

@@ -1,8 +1,13 @@
 #nullable enable
 namespace NoResponse.Models.Operations
 {
+    using Newtonsoft.Json;
     using NoResponse.Models.Shared;
     using NoResponse.Utils;
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
 
     public class GetAssessmentRequest
     {

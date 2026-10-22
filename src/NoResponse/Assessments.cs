@@ -10,6 +10,7 @@ namespace NoResponse
     using NoResponse.Utils;
     using NoResponse.Utils.Retries;
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;

@@ -21,3 +21,4 @@ var custom = BadRequestErrorCode.Of("custom_value");
 | `InvalidRequest`        | invalid_request         |
 | `InvalidIdempotencyKey` | invalid_idempotency_key |
 | `InvalidCursor`         | invalid_cursor          |
+| `WebhookUrlRefused`     | webhook_url_refused     |

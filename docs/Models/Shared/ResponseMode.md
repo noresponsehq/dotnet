@@ -8,6 +8,9 @@ standard returns the consolidated risk response; detailed adds merged provider-n
 using NoResponse.Models.Shared;
 
 var value = ResponseMode.Standard;
+
+// Open enum: use .Of() to create instances from custom string values
+var custom = ResponseMode.Of("custom_value");
 ```
 
 
