@@ -33,6 +33,8 @@ namespace NoResponse.Tests
                 "workos" => Auth.FromWorkOS(claims, overrides),
                 "clerk" => Auth.FromClerk(claims, overrides),
                 "auth0" => Auth.FromAuth0(claims, overrides),
+                "supabase" => Auth.FromSupabase(claims, overrides),
+                "firebase" => Auth.FromFirebase(claims, overrides),
                 var provider => Auth.FromOIDC(provider!, claims, overrides),
             };
         }
