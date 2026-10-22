@@ -21,13 +21,63 @@ Returns within the deadline (500 ms at most) with a complete, partial or pending
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System.Collections.Generic;
 
 var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "<id>",
-        Identifiers = new AssessmentRequestIdentifiers() {},
+        Identifiers = new AssessmentRequestIdentifiers() {
+            Email = "new.user@example.com",
+            Username = "new.user",
+            Phone = "+61412345678",
+            Name = "Alex Example",
+            Ip = "203.0.113.45",
+        },
+        PolicyContext = new AssessmentRequestPolicyContext() {
+            Region = "AU",
+        },
+        RequestId = "req-2026-10-14-0001",
+        ClientContext = new AssessmentRequestClientContext() {
+            Timezone = "Australia/Sydney",
+            Locale = "en-AU",
+            AppVersion = "4.12.0",
+            UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
+            DeviceId = "dev_5c1e8a",
+            SessionId = "sess_9b2d41",
+            ClientObservedAt = "2026-10-14T08:59:58.000Z",
+        },
+        AuthContext = new AuthContext() {
+            Provider = "clerk",
+            Issuer = "https://example-app.clerk.accounts.dev",
+            Audience = "https://app.example.com",
+            Audiences = new List<string>() {
+                "https://app.example.com",
+            },
+            Subject = "user_2EXAMPLE",
+            SessionId = "sess_2EXAMPLE",
+            OrganizationId = "org_2EXAMPLE",
+            TenantId = "tenant_2EXAMPLE",
+            TokenId = "2EXAMPLEJTI",
+            IssuedAt = "2026-10-14T08:59:40.000Z",
+            ExpiresAt = "2026-10-14T09:00:40.000Z",
+            SessionCreatedAt = "2026-10-14T08:57:00.000Z",
+            AuthTime = "2026-10-14T08:55:00.000Z",
+            AccountCreatedAt = "2026-10-14T08:56:00.000Z",
+            Verified = false,
+            Mfa = new AuthContextMfa() {
+                Methods = new List<string>() {
+                    "totp",
+                },
+            },
+            Roles = new List<string>() {
+                "admin",
+            },
+            Scopes = new List<string>() {
+                "org:sys_profile:manage",
+            },
+        },
     },
     idempotencyKey: "<value>"
 );
@@ -40,13 +90,63 @@ var res = await sdk.Assessments.CreateAsync(
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System.Collections.Generic;
 
 var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "<id>",
-        Identifiers = new AssessmentRequestIdentifiers() {},
+        Identifiers = new AssessmentRequestIdentifiers() {
+            Email = "new.user@example.com",
+            Username = "new.user",
+            Phone = "+61412345678",
+            Name = "Alex Example",
+            Ip = "203.0.113.45",
+        },
+        PolicyContext = new AssessmentRequestPolicyContext() {
+            Region = "AU",
+        },
+        RequestId = "req-2026-10-14-0001",
+        ClientContext = new AssessmentRequestClientContext() {
+            Timezone = "Australia/Sydney",
+            Locale = "en-AU",
+            AppVersion = "4.12.0",
+            UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
+            DeviceId = "dev_5c1e8a",
+            SessionId = "sess_9b2d41",
+            ClientObservedAt = "2026-10-14T08:59:58.000Z",
+        },
+        AuthContext = new AuthContext() {
+            Provider = "clerk",
+            Issuer = "https://example-app.clerk.accounts.dev",
+            Audience = "https://app.example.com",
+            Audiences = new List<string>() {
+                "https://app.example.com",
+            },
+            Subject = "user_2EXAMPLE",
+            SessionId = "sess_2EXAMPLE",
+            OrganizationId = "org_2EXAMPLE",
+            TenantId = "tenant_2EXAMPLE",
+            TokenId = "2EXAMPLEJTI",
+            IssuedAt = "2026-10-14T08:59:40.000Z",
+            ExpiresAt = "2026-10-14T09:00:40.000Z",
+            SessionCreatedAt = "2026-10-14T08:57:00.000Z",
+            AuthTime = "2026-10-14T08:55:00.000Z",
+            AccountCreatedAt = "2026-10-14T08:56:00.000Z",
+            Verified = false,
+            Mfa = new AuthContextMfa() {
+                Methods = new List<string>() {
+                    "totp",
+                },
+            },
+            Roles = new List<string>() {
+                "admin",
+            },
+            Scopes = new List<string>() {
+                "org:sys_profile:manage",
+            },
+        },
     },
     idempotencyKey: "<value>"
 );
@@ -141,13 +241,63 @@ var res = await sdk.Assessments.CreateAsync(
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System.Collections.Generic;
 
 var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "<id>",
-        Identifiers = new AssessmentRequestIdentifiers() {},
+        Identifiers = new AssessmentRequestIdentifiers() {
+            Email = "new.user@example.com",
+            Username = "new.user",
+            Phone = "+61412345678",
+            Name = "Alex Example",
+            Ip = "203.0.113.45",
+        },
+        PolicyContext = new AssessmentRequestPolicyContext() {
+            Region = "AU",
+        },
+        RequestId = "req-2026-10-14-0001",
+        ClientContext = new AssessmentRequestClientContext() {
+            Timezone = "Australia/Sydney",
+            Locale = "en-AU",
+            AppVersion = "4.12.0",
+            UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
+            DeviceId = "dev_5c1e8a",
+            SessionId = "sess_9b2d41",
+            ClientObservedAt = "2026-10-14T08:59:58.000Z",
+        },
+        AuthContext = new AuthContext() {
+            Provider = "clerk",
+            Issuer = "https://example-app.clerk.accounts.dev",
+            Audience = "https://app.example.com",
+            Audiences = new List<string>() {
+                "https://app.example.com",
+            },
+            Subject = "user_2EXAMPLE",
+            SessionId = "sess_2EXAMPLE",
+            OrganizationId = "org_2EXAMPLE",
+            TenantId = "tenant_2EXAMPLE",
+            TokenId = "2EXAMPLEJTI",
+            IssuedAt = "2026-10-14T08:59:40.000Z",
+            ExpiresAt = "2026-10-14T09:00:40.000Z",
+            SessionCreatedAt = "2026-10-14T08:57:00.000Z",
+            AuthTime = "2026-10-14T08:55:00.000Z",
+            AccountCreatedAt = "2026-10-14T08:56:00.000Z",
+            Verified = false,
+            Mfa = new AuthContextMfa() {
+                Methods = new List<string>() {
+                    "totp",
+                },
+            },
+            Roles = new List<string>() {
+                "admin",
+            },
+            Scopes = new List<string>() {
+                "org:sys_profile:manage",
+            },
+        },
     },
     idempotencyKey: "<value>"
 );
@@ -160,13 +310,63 @@ var res = await sdk.Assessments.CreateAsync(
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System.Collections.Generic;
 
 var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "<id>",
-        Identifiers = new AssessmentRequestIdentifiers() {},
+        Identifiers = new AssessmentRequestIdentifiers() {
+            Email = "new.user@example.com",
+            Username = "new.user",
+            Phone = "+61412345678",
+            Name = "Alex Example",
+            Ip = "203.0.113.45",
+        },
+        PolicyContext = new AssessmentRequestPolicyContext() {
+            Region = "AU",
+        },
+        RequestId = "req-2026-10-14-0001",
+        ClientContext = new AssessmentRequestClientContext() {
+            Timezone = "Australia/Sydney",
+            Locale = "en-AU",
+            AppVersion = "4.12.0",
+            UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
+            DeviceId = "dev_5c1e8a",
+            SessionId = "sess_9b2d41",
+            ClientObservedAt = "2026-10-14T08:59:58.000Z",
+        },
+        AuthContext = new AuthContext() {
+            Provider = "clerk",
+            Issuer = "https://example-app.clerk.accounts.dev",
+            Audience = "https://app.example.com",
+            Audiences = new List<string>() {
+                "https://app.example.com",
+            },
+            Subject = "user_2EXAMPLE",
+            SessionId = "sess_2EXAMPLE",
+            OrganizationId = "org_2EXAMPLE",
+            TenantId = "tenant_2EXAMPLE",
+            TokenId = "2EXAMPLEJTI",
+            IssuedAt = "2026-10-14T08:59:40.000Z",
+            ExpiresAt = "2026-10-14T09:00:40.000Z",
+            SessionCreatedAt = "2026-10-14T08:57:00.000Z",
+            AuthTime = "2026-10-14T08:55:00.000Z",
+            AccountCreatedAt = "2026-10-14T08:56:00.000Z",
+            Verified = false,
+            Mfa = new AuthContextMfa() {
+                Methods = new List<string>() {
+                    "totp",
+                },
+            },
+            Roles = new List<string>() {
+                "admin",
+            },
+            Scopes = new List<string>() {
+                "org:sys_profile:manage",
+            },
+        },
     },
     idempotencyKey: "<value>"
 );
@@ -176,10 +376,10 @@ var res = await sdk.Assessments.CreateAsync(
 
 ### Parameters
 
-| Parameter                                                                                                                                                                                                                                                             | Type                                                                                                                                                                                                                                                                  | Required                                                                                                                                                                                                                                                              | Description                                                                                                                                                                                                                                                           |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Body`                                                                                                                                                                                                                                                                | [AssessmentRequest](../../Models/Shared/AssessmentRequest.md)                                                                                                                                                                                                         | :heavy_check_mark:                                                                                                                                                                                                                                                    | N/A                                                                                                                                                                                                                                                                   |
-| `IdempotencyKey`                                                                                                                                                                                                                                                      | *string*                                                                                                                                                                                                                                                              | :heavy_minus_sign:                                                                                                                                                                                                                                                    | Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours. Optional: the SDK generates a UUID when you omit it and sends the same key on every retry of the call. |
+| Parameter                                                                                                                                                                                                                                                             | Type                                                                                                                                                                                                                                                                  | Required                                                                                                                                                                                                                                                              | Description                                                                                                                                                                                                                                                           | Example                                                                                                                                                                                                                                                               |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Body`                                                                                                                                                                                                                                                                | [AssessmentRequest](../../Models/Shared/AssessmentRequest.md)                                                                                                                                                                                                         | :heavy_check_mark:                                                                                                                                                                                                                                                    | N/A                                                                                                                                                                                                                                                                   |                                                                                                                                                                                                                                                                       |
+| `IdempotencyKey`                                                                                                                                                                                                                                                      | *string*                                                                                                                                                                                                                                                              | :heavy_minus_sign:                                                                                                                                                                                                                                                    | Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours. Optional: the SDK generates a UUID when you omit it and sends the same key on every retry of the call. | signup-7f3a9c-0001                                                                                                                                                                                                                                                    |
 
 ### Response
 
@@ -269,10 +469,10 @@ var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
 
 ### Parameters
 
-| Parameter                                                                                                         | Type                                                                                                              | Required                                                                                                          | Description                                                                                                       |
-| ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `AssessmentId`                                                                                                    | *string*                                                                                                          | :heavy_check_mark:                                                                                                | Path segment, matched case-sensitively. A value that does not match the assessment_id shape answers 404, not 400. |
-| `ResponseMode`                                                                                                    | [ResponseMode](../../Models/Shared/ResponseMode.md)                                                               | :heavy_minus_sign:                                                                                                | Optional standard or separately authorised detailed customer view; raw is rejected.                               |
+| Parameter                                                                                                         | Type                                                                                                              | Required                                                                                                          | Description                                                                                                       | Example                                                                                                           |
+| ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `AssessmentId`                                                                                                    | *string*                                                                                                          | :heavy_check_mark:                                                                                                | Path segment, matched case-sensitively. A value that does not match the assessment_id shape answers 404, not 400. | asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                                                                    |
+| `ResponseMode`                                                                                                    | [ResponseMode](../../Models/Shared/ResponseMode.md)                                                               | :heavy_minus_sign:                                                                                                | Optional standard or separately authorised detailed customer view; raw is rejected.                               |                                                                                                                   |
 
 ### Response
 
@@ -329,6 +529,9 @@ var res = await sdk.Assessments.RecordOutcomeAsync(
     assessmentId: "<id>",
     body: new AssessmentOutcomeRequest() {
         Outcome = Outcome.Legitimate,
+        ObservedAt = "2026-10-14T09:04:30.000Z",
+        ExternalRef = "case-48213",
+        Notes = "Chargeback filed two days after signup.",
     },
     idempotencyKey: "<value>"
 );
@@ -357,11 +560,11 @@ var res = await sdk.Assessments.RecordOutcomeAsync(
 
 ### Parameters
 
-| Parameter                                                                                                                                                                                                                                                             | Type                                                                                                                                                                                                                                                                  | Required                                                                                                                                                                                                                                                              | Description                                                                                                                                                                                                                                                           |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `AssessmentId`                                                                                                                                                                                                                                                        | *string*                                                                                                                                                                                                                                                              | :heavy_check_mark:                                                                                                                                                                                                                                                    | Path segment, matched case-sensitively. A value that does not match the assessment_id shape answers 404, not 400.                                                                                                                                                     |
-| `Body`                                                                                                                                                                                                                                                                | [AssessmentOutcomeRequest](../../Models/Shared/AssessmentOutcomeRequest.md)                                                                                                                                                                                           | :heavy_check_mark:                                                                                                                                                                                                                                                    | N/A                                                                                                                                                                                                                                                                   |
-| `IdempotencyKey`                                                                                                                                                                                                                                                      | *string*                                                                                                                                                                                                                                                              | :heavy_minus_sign:                                                                                                                                                                                                                                                    | Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours. Optional: the SDK generates a UUID when you omit it and sends the same key on every retry of the call. |
+| Parameter                                                                                                                                                                                                                                                             | Type                                                                                                                                                                                                                                                                  | Required                                                                                                                                                                                                                                                              | Description                                                                                                                                                                                                                                                           | Example                                                                                                                                                                                                                                                               |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AssessmentId`                                                                                                                                                                                                                                                        | *string*                                                                                                                                                                                                                                                              | :heavy_check_mark:                                                                                                                                                                                                                                                    | Path segment, matched case-sensitively. A value that does not match the assessment_id shape answers 404, not 400.                                                                                                                                                     | asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                                                                                                                                                                                                                        |
+| `Body`                                                                                                                                                                                                                                                                | [AssessmentOutcomeRequest](../../Models/Shared/AssessmentOutcomeRequest.md)                                                                                                                                                                                           | :heavy_check_mark:                                                                                                                                                                                                                                                    | N/A                                                                                                                                                                                                                                                                   |                                                                                                                                                                                                                                                                       |
+| `IdempotencyKey`                                                                                                                                                                                                                                                      | *string*                                                                                                                                                                                                                                                              | :heavy_minus_sign:                                                                                                                                                                                                                                                    | Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours. Optional: the SDK generates a UUID when you omit it and sends the same key on every retry of the call. | signup-7f3a9c-0001                                                                                                                                                                                                                                                    |
 
 ### Response
 
@@ -418,6 +621,7 @@ var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
 
 AssessmentQuery req = new AssessmentQuery() {
     AccountId = "<id>",
+    Cursor = "eyJvIjoyMH0",
 };
 
 QueryAccountAssessmentsResponse? res = await sdk.Assessments.QueryAsync(req);
