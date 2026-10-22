@@ -35,6 +35,11 @@ namespace NoResponse.Tests
                 "auth0" => Auth.FromAuth0(claims, overrides),
                 "supabase" => Auth.FromSupabase(claims, overrides),
                 "firebase" => Auth.FromFirebase(claims, overrides),
+                "cognito" => Auth.FromCognito(claims, overrides),
+                "entra" => Auth.FromEntra(claims, overrides),
+                "keycloak" => Auth.FromKeycloak(claims, overrides),
+                "ory" => Auth.FromOry(claims, overrides),
+                "ory_oauth2" => Auth.FromOryOAuth2(claims, overrides),
                 var provider => Auth.FromOIDC(provider!, claims, overrides),
             };
         }

@@ -29,7 +29,7 @@ namespace NoResponse
     /// </summary>
     public static class Auth
     {
-        private const string ClaimMapJson = "{\"version\":1,\"kinds\":{\"id\":{\"pattern\":\"[A-Za-z0-9._:@/|+=~-]+\",\"maxLength\":256},\"audience\":{\"pattern\":\"[A-Za-z0-9._:/-]+\",\"maxLength\":256},\"role\":{\"pattern\":\"[A-Za-z0-9._:@/-]+\",\"maxLength\":64},\"method\":{\"pattern\":\"[A-Za-z0-9._:-]+\",\"maxLength\":32},\"issuer\":{\"pattern\":\"https://[\\\\x21-\\\\x7e]+\",\"maxLength\":256},\"time\":{\"pattern\":\"[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\\\.[0-9]+)?(Z|[+-]([01][0-9]|2[0-3]):[0-5][0-9])\",\"maxLength\":64}},\"slug\":\"[a-z0-9][a-z0-9._-]{1,31}\",\"constants\":{\"verified\":true,\"transport\":\"backend\"},\"base\":{\"issuer\":{\"op\":\"id\",\"kind\":\"issuer\",\"claims\":[\"iss\"],\"required\":true},\"subject\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"sub\"],\"required\":true},\"audiences\":{\"op\":\"list\",\"kind\":\"audience\",\"claims\":[\"aud\"],\"split\":\"whitespace\",\"max\":8},\"issued_at\":{\"op\":\"time\",\"claims\":[\"iat\"]},\"expires_at\":{\"op\":\"time\",\"claims\":[\"exp\"]},\"auth_time\":{\"op\":\"time\",\"claims\":[\"auth_time\"]},\"session_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"sid\"]},\"token_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"jti\"]}},\"providers\":{\"workos\":{\"fields\":{\"organization_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"org_id\"]},\"roles\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"roles\",\"role\"],\"split\":\"whitespace\",\"max\":32},\"scopes\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"permissions\"],\"split\":\"whitespace\",\"max\":32},\"impersonated\":{\"op\":\"actor\",\"claims\":[\"act\"]}}},\"clerk\":{\"disable\":[\"issued_at\"],\"fields\":{\"organization_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"o.id\",\"org_id\"]},\"roles\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"o.rol\",\"org_role\"],\"split\":\"none\",\"max\":32},\"scopes\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"o.per\",\"org_permissions\"],\"split\":\"comma_whitespace\",\"max\":32},\"impersonated\":{\"op\":\"actor\",\"claims\":[\"act\"]},\"mfa\":{\"op\":\"mfa_factor_age\",\"claim\":\"fva\",\"index\":1,\"unitSeconds\":60,\"maxSeconds\":315360000}}},\"auth0\":{\"fields\":{\"organization_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"org_id\"]},\"scopes\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"scope\",\"permissions\"],\"split\":\"whitespace\",\"max\":32},\"email_verified\":{\"op\":\"bool\",\"claims\":[\"email_verified\"]},\"phone_verified\":{\"op\":\"bool\",\"claims\":[\"phone_number_verified\"]},\"impersonated\":{\"op\":\"actor\",\"claims\":[\"act\"]},\"mfa\":{\"op\":\"mfa_methods\",\"kind\":\"method\",\"claim\":\"amr\",\"max\":8,\"mfaValue\":\"mfa\",\"ignore\":[\"pwd\"]}}},\"supabase\":{\"disable\":[\"auth_time\"],\"fields\":{\"session_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"session_id\"]},\"roles\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"role\"],\"split\":\"none\",\"max\":1},\"mfa\":{\"op\":\"mfa_aal\",\"claim\":\"aal\",\"present\":[\"aal2\"],\"absent\":[\"aal1\"],\"amr\":\"amr\",\"methodKey\":\"method\",\"factors\":{\"totp\":\"totp\",\"mfa/phone\":\"mfa:phone\",\"mfa/webauthn\":\"mfa:webauthn\",\"mfa/recovery_code\":\"mfa:recovery_code\"}},\"assurance_level\":{\"op\":\"marker\",\"value\":\"low\",\"when\":[{\"claim\":\"is_anonymous\",\"equals\":true},{\"claim\":\"app_metadata.provider\",\"equals\":\"anonymous\"}]}}},\"firebase\":{\"disable\":[\"session_id\",\"token_id\"],\"fields\":{\"tenant_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"firebase.tenant\"]},\"mfa\":{\"op\":\"mfa_factor\",\"kind\":\"method\",\"claim\":\"firebase.sign_in_second_factor\"},\"assurance_level\":{\"op\":\"marker\",\"value\":\"low\",\"when\":[{\"claim\":\"firebase.sign_in_provider\",\"equals\":\"anonymous\"}]}}},\"oidc\":{\"slugArgument\":true,\"fields\":{}}}}";
+        private const string ClaimMapJson = "{\"version\":1,\"kinds\":{\"id\":{\"pattern\":\"[A-Za-z0-9._:@/|+=~-]+\",\"maxLength\":256},\"audience\":{\"pattern\":\"[A-Za-z0-9._:/-]+\",\"maxLength\":256},\"role\":{\"pattern\":\"[A-Za-z0-9._:@/-]+\",\"maxLength\":64},\"method\":{\"pattern\":\"[A-Za-z0-9._:-]+\",\"maxLength\":32},\"issuer\":{\"pattern\":\"https://[\\\\x21-\\\\x7e]+\",\"maxLength\":256},\"time\":{\"pattern\":\"[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\\\.[0-9]+)?(Z|[+-]([01][0-9]|2[0-3]):[0-5][0-9])\",\"maxLength\":64}},\"slug\":\"[a-z0-9][a-z0-9._-]{1,31}\",\"constants\":{\"verified\":true,\"transport\":\"backend\"},\"base\":{\"issuer\":{\"op\":\"id\",\"kind\":\"issuer\",\"claims\":[\"iss\"],\"required\":true},\"subject\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"sub\"],\"required\":true},\"audiences\":{\"op\":\"list\",\"kind\":\"audience\",\"claims\":[\"aud\"],\"split\":\"whitespace\",\"max\":8},\"issued_at\":{\"op\":\"time\",\"claims\":[\"iat\"]},\"expires_at\":{\"op\":\"time\",\"claims\":[\"exp\"]},\"auth_time\":{\"op\":\"time\",\"claims\":[\"auth_time\"]},\"session_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"sid\"]},\"token_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"jti\"]}},\"providers\":{\"workos\":{\"fields\":{\"organization_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"org_id\"]},\"roles\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"roles\",\"role\"],\"split\":\"whitespace\",\"max\":32},\"scopes\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"permissions\"],\"split\":\"whitespace\",\"max\":32},\"impersonated\":{\"op\":\"actor\",\"claims\":[\"act\"]}}},\"clerk\":{\"disable\":[\"issued_at\"],\"fields\":{\"organization_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"o.id\",\"org_id\"]},\"roles\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"o.rol\",\"org_role\"],\"split\":\"none\",\"max\":32},\"scopes\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"o.per\",\"org_permissions\"],\"split\":\"comma_whitespace\",\"max\":32},\"impersonated\":{\"op\":\"actor\",\"claims\":[\"act\"]},\"mfa\":{\"op\":\"mfa_factor_age\",\"claim\":\"fva\",\"index\":1,\"unitSeconds\":60,\"maxSeconds\":315360000}}},\"auth0\":{\"fields\":{\"organization_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"org_id\"]},\"scopes\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"scope\",\"permissions\"],\"split\":\"whitespace\",\"max\":32},\"email_verified\":{\"op\":\"bool\",\"claims\":[\"email_verified\"]},\"phone_verified\":{\"op\":\"bool\",\"claims\":[\"phone_number_verified\"]},\"impersonated\":{\"op\":\"actor\",\"claims\":[\"act\"]},\"mfa\":{\"op\":\"mfa_methods\",\"kind\":\"method\",\"claim\":\"amr\",\"max\":8,\"mfaValue\":\"mfa\",\"ignore\":[\"pwd\"]}}},\"supabase\":{\"disable\":[\"auth_time\"],\"fields\":{\"session_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"session_id\"]},\"roles\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"role\"],\"split\":\"none\",\"max\":1},\"mfa\":{\"op\":\"mfa_aal\",\"claim\":\"aal\",\"present\":[\"aal2\"],\"absent\":[\"aal1\"],\"amr\":\"amr\",\"methodKey\":\"method\",\"factors\":{\"totp\":\"totp\",\"mfa/phone\":\"mfa:phone\",\"mfa/webauthn\":\"mfa:webauthn\",\"mfa/recovery_code\":\"mfa:recovery_code\"}},\"assurance_level\":{\"op\":\"marker\",\"value\":\"low\",\"when\":[{\"claim\":\"is_anonymous\",\"equals\":true},{\"claim\":\"app_metadata.provider\",\"equals\":\"anonymous\"}]}}},\"firebase\":{\"disable\":[\"session_id\",\"token_id\"],\"fields\":{\"tenant_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"firebase.tenant\"]},\"mfa\":{\"op\":\"mfa_factor\",\"kind\":\"method\",\"claim\":\"firebase.sign_in_second_factor\"},\"assurance_level\":{\"op\":\"marker\",\"value\":\"low\",\"when\":[{\"claim\":\"firebase.sign_in_provider\",\"equals\":\"anonymous\"}]}}},\"cognito\":{\"fields\":{\"audiences\":{\"op\":\"list\",\"kind\":\"audience\",\"claims\":[\"aud\",\"client_id\"],\"split\":\"none\",\"max\":8},\"session_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"origin_jti\"]},\"roles\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"cognito:groups\"],\"split\":\"none\",\"max\":32},\"scopes\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"scope\"],\"split\":\"whitespace\",\"max\":32},\"mfa\":{\"op\":\"mfa_methods\",\"kind\":\"method\",\"claim\":\"amr\",\"max\":8,\"mfaValue\":\"mfa\",\"ignore\":[\"pwd\"]}}},\"entra\":{\"fields\":{\"tenant_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"tid\"]},\"token_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"uti\"]},\"roles\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"roles\"],\"split\":\"none\",\"max\":32},\"scopes\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"scp\"],\"split\":\"whitespace\",\"max\":32},\"mfa\":{\"op\":\"mfa_methods\",\"kind\":\"method\",\"claim\":\"amr\",\"max\":8,\"mfaValue\":\"mfa\",\"ignore\":[\"pwd\",\"none\"]}}},\"keycloak\":{\"fields\":{\"session_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"sid\",\"session_state\"]},\"organization_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"organization\"],\"single\":true},\"roles\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"realm_access.roles\"],\"split\":\"none\",\"max\":32},\"scopes\":{\"op\":\"list\",\"kind\":\"role\",\"claims\":[\"scope\"],\"split\":\"whitespace\",\"max\":32},\"impersonated\":{\"op\":\"actor\",\"claims\":[\"impersonator.id\",\"impersonator.username\"],\"onlyTrue\":true},\"mfa\":{\"op\":\"mfa_methods\",\"kind\":\"method\",\"claim\":\"amr\",\"max\":8,\"mfaValue\":\"mfa\",\"ignore\":[\"pwd\"],\"classes\":{\"pwd\":\"knowledge\",\"pin\":\"knowledge\",\"kba\":\"knowledge\",\"otp\":\"possession\",\"hwk\":\"possession\",\"swk\":\"possession\",\"sc\":\"possession\",\"sms\":\"possession\",\"tel\":\"possession\",\"fpt\":\"inherence\",\"face\":\"inherence\",\"iris\":\"inherence\",\"retina\":\"inherence\",\"vbm\":\"inherence\"}}}},\"ory\":{\"disable\":[\"issuer\",\"audiences\",\"issued_at\",\"token_id\"],\"fields\":{\"subject\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"identity.id\"],\"required\":true},\"session_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"id\"]},\"expires_at\":{\"op\":\"time\",\"claims\":[\"expires_at\"]},\"auth_time\":{\"op\":\"time\",\"claims\":[\"authenticated_at\"]},\"session_created_at\":{\"op\":\"time\",\"claims\":[\"issued_at\"]},\"account_created_at\":{\"op\":\"time\",\"claims\":[\"identity.created_at\"]},\"organization_id\":{\"op\":\"id\",\"kind\":\"id\",\"claims\":[\"identity.organization_id\"]},\"mfa\":{\"op\":\"mfa_aal\",\"claim\":\"authenticator_assurance_level\",\"present\":[\"aal2\"],\"absent\":[\"aal1\"],\"amr\":\"authentication_methods\",\"methodKey\":\"method\",\"levelKey\":\"aal\",\"factors\":{\"totp\":\"totp\",\"lookup_secret\":\"lookup_secret\",\"webauthn\":\"webauthn\",\"code\":\"code\"}}}},\"ory_oauth2\":{\"fields\":{\"mfa\":{\"op\":\"mfa_methods\",\"kind\":\"method\",\"claim\":\"amr\",\"max\":8,\"mfaValue\":\"mfa\",\"ignore\":[\"password\",\"pwd\"],\"classes\":{\"password\":\"knowledge\",\"totp\":\"possession\",\"lookup_secret\":\"possession\",\"webauthn\":\"possession\",\"code\":\"possession\"}}}},\"oidc\":{\"slugArgument\":true,\"fields\":{}}}}";
         private const double MaxTime = 253402300799.0;
 
         private static readonly JObject Map = JObject.Parse(ClaimMapJson, new JsonLoadSettings());
@@ -61,6 +61,26 @@ namespace NoResponse
         /// <summary>Map verified Firebase ID token claims from the Admin SDK VerifyIdTokenAsync. Custom claims never change the mapping.</summary>
         public static AuthContext FromFirebase(object claims, object? overrides = null) =>
             Build("firebase", "firebase", claims, overrides);
+
+        /// <summary>Map verified Amazon Cognito user pool ID or access token claims. Claims added by a pre token generation Lambda never change the mapping.</summary>
+        public static AuthContext FromCognito(object claims, object? overrides = null) =>
+            Build("cognito", "cognito", claims, overrides);
+
+        /// <summary>Map verified Microsoft Entra ID v1.0 or v2.0 ID or access token claims.</summary>
+        public static AuthContext FromEntra(object claims, object? overrides = null) =>
+            Build("entra", "entra", claims, overrides);
+
+        /// <summary>Map verified Keycloak ID or access token claims.</summary>
+        public static AuthContext FromKeycloak(object claims, object? overrides = null) =>
+            Build("keycloak", "keycloak", claims, overrides);
+
+        /// <summary>Map an Ory session from toSession (Kratos FrontendApi). Pass your project URL as the "issuer" override.</summary>
+        public static AuthContext FromOry(object session, object? overrides = null) =>
+            Build("ory", "ory", session, overrides);
+
+        /// <summary>Map verified Ory OAuth2 and OpenID Connect (Hydra) ID token claims.</summary>
+        public static AuthContext FromOryOAuth2(object claims, object? overrides = null) =>
+            Build("ory_oauth2", "ory", claims, overrides);
 
         /// <summary>Generic OIDC adapter for providers without a first-class helper. provider is a lowercase slug.</summary>
         public static AuthContext FromOIDC(string provider, object claims, object? overrides = null)
@@ -131,6 +151,11 @@ namespace NoResponse
                     foreach (var path in Strings(rule["claims"]))
                     {
                         var value = Lookup(claims, path);
+                        if (rule["single"]?.Value<bool>() == true && value is JArray single && single.Count == 1)
+                        {
+                            value = single[0];
+                        }
+
                         if (Matches(rule["kind"]!.Value<string>()!, value))
                         {
                             return value!.DeepClone();
@@ -171,13 +196,19 @@ namespace NoResponse
                     return null;
                 case "actor":
                 {
-                    var value = Lookup(claims, Strings(rule["claims"]).First());
-                    if (value is JObject obj)
+                    foreach (var path in Strings(rule["claims"]))
                     {
-                        return new JValue(new[] { "sub", "email" }.Any(key => !string.IsNullOrEmpty(Text(obj[key]))));
+                        var value = Lookup(claims, path);
+                        var acting = value is JObject obj
+                            ? new[] { "sub", "email" }.Any(key => !string.IsNullOrEmpty(Text(obj[key])))
+                            : !string.IsNullOrEmpty(Text(value));
+                        if (acting)
+                        {
+                            return new JValue(true);
+                        }
                     }
 
-                    return new JValue(!string.IsNullOrEmpty(Text(value)));
+                    return rule["onlyTrue"]?.Value<bool>() == true ? null : new JValue(false);
                 }
                 case "mfa_factor_age":
                 {
@@ -218,8 +249,16 @@ namespace NoResponse
                     if (Lookup(claims, rule["amr"]!.Value<string>()!) is JArray entries)
                     {
                         var factors = (JObject)rule["factors"]!;
+                        var levelKey = rule["levelKey"]?.Value<string>();
                         foreach (var entry in entries)
                         {
+                            if (levelKey != null
+                                && !(entry is JObject leveled && Text(leveled[levelKey]) is string entryLevel
+                                    && Strings(rule["present"]).Contains(entryLevel)))
+                            {
+                                continue;
+                            }
+
                             var name = entry is JObject entryObject ? entryObject[rule["methodKey"]!.Value<string>()!] : entry;
                             if (name is JValue { Type: JTokenType.String } && factors[(string)name!] is JToken mapped
                                 && !methods.Contains((string)mapped!))
@@ -277,9 +316,11 @@ namespace NoResponse
                     }
 
                     var mfaValue = rule["mfaValue"]!.Value<string>();
+                    var classes = rule["classes"] as JObject;
+                    var spanned = kept.Select(item => Text(classes?[Lower(item)])).Where(item => item != null).Distinct().Count();
                     return new JObject
                     {
-                        ["present"] = kept.Any(item => Lower(item) == mfaValue),
+                        ["present"] = kept.Any(item => Lower(item) == mfaValue) || spanned >= 2,
                         ["methods"] = new JArray(methods),
                     };
                 }
