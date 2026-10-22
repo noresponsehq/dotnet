@@ -54,5 +54,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("auth_context", Required = Newtonsoft.Json.Required.DisallowNull)]
         public AuthContext? AuthContext { get; set; }
+
+        /// <summary>
+        /// Optional. When the signup gate issues an API key to the new account, send SHA-256 of that key, so later usage of the key, or a leaked copy, ties back to this assessment. Each SDK has a helper that computes it. Send only the hash: customer keys are high-entropy, so the hash reveals nothing about them. The assessment stores it, and no response, webhook or log carries it.
+        /// </summary>
+        [JsonProperty("issued_credential", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public AssessmentRequestIssuedCredential? IssuedCredential { get; set; }
     }
 }

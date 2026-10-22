@@ -30,6 +30,18 @@ namespace NoResponse.Models.Shared
         public Recommendation Recommendation { get; set; } = default!;
 
         /// <summary>
+        /// true when the tenant's block threshold is set and score reached it. A provider hook can deny the signup on it; the provider decides and enforces. It does not change recommendation. It is false while blocking is off, the default, and a body from before the flag existed omits it: read absent as false.
+        /// </summary>
+        [JsonProperty("block", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public bool? Block { get; set; }
+
+        /// <summary>
+        /// The block threshold this answer used: block is true exactly when score is at least this value. Absent while blocking is off. NoResponse sets it per tenant on request, at or above the review threshold.
+        /// </summary>
+        [JsonProperty("block_threshold", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? BlockThreshold { get; set; }
+
+        /// <summary>
         /// How much of the planned evidence answered; it says nothing about risk.
         /// </summary>
         [JsonProperty("confidence", Required = Newtonsoft.Json.Required.Always)]

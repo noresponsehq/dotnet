@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.16
+
+* `Sdk.Assessments.Create()`: 
+  *  `request.body.IssuedCredential` **Added**
+  *  `response.risk` **Changed**
+* `Sdk.Assessments.Get()`:  `response.risk` **Changed**
+* `Sdk.Assessments.Query()`:  `response.items[].Risk` **Changed**
+
 ## 2.0.15
 
 No changes detected.

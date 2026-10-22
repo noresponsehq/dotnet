@@ -10,7 +10,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v2.0.14 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v2.0.16 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -18,7 +18,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v2.0.14
+git -C third_party/noresponse-dotnet checkout v2.0.16
 git add third_party/noresponse-dotnet
 ```
 
@@ -150,6 +150,14 @@ Connection errors, 408, 429 and every 5xx are retried with exponential backoff (
 
 ```csharp
 await client.Assessments.CreateAsync(request, retryConfig: new RetryConfig(RetryConfig.RetryStrategy.NONE));
+```
+
+## Issued keys
+
+When your signup gate issues an API key to the new account, send only its hash, as `issued_credential.sha256`; the key itself never leaves your backend.
+
+```csharp
+var sha256 = IssuedCredential.Sha256(issuedKey); // NoResponse.IssuedCredential
 ```
 
 ## Webhooks

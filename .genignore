@@ -7,4 +7,5 @@
 /README.md
 /LICENSE
 /src/NoResponse/Auth.cs
+/src/NoResponse/IssuedCredential.cs
 /src/NoResponse/LateResults/
