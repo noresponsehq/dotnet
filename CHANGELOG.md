@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.14
+
+* `Sdk.Assessments.Create()`: 
+  *  `request.body.AuthContext` **Changed**
+
 ## 2.0.13
 
 No changes detected.

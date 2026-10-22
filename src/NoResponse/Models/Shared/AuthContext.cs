@@ -36,7 +36,7 @@ namespace NoResponse.Models.Shared
         public List<string>? Audiences { get; set; }
 
         /// <summary>
-        /// The verified stable subject identifier (`sub`), opaque to NoResponse.
+        /// The verified stable subject identifier (`sub`), opaque to NoResponse. Required, except from a provider hook at pre_registration, where no user exists yet.
         /// </summary>
         [JsonProperty("subject", Required = Newtonsoft.Json.Required.Always)]
         public string Subject { get; set; } = default!;
@@ -120,10 +120,16 @@ namespace NoResponse.Models.Shared
         public bool? Impersonated { get; set; }
 
         /// <summary>
-        /// Where the customer derived this context. Backend is the trusted integration path; browser values are treated as weak hints.
+        /// Where this context was derived. Backend is the trusted integration path; browser values are treated as weak hints. provider_hook is a hosted provider hook (an Auth0 or WorkOS Action) calling at hook_point; it needs hook_point and verified false, and its authentication facts are not scored.
         /// </summary>
         [JsonProperty("transport", Required = Newtonsoft.Json.Required.DisallowNull)]
         public Transport? Transport { get; set; }
+
+        /// <summary>
+        /// The provider event a provider_hook context was sent for. pre_registration runs before the user exists, so subject and the request's account_id may be absent there. Sent only with transport provider_hook.
+        /// </summary>
+        [JsonProperty("hook_point", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public HookPoint? HookPoint { get; set; }
 
         /// <summary>
         /// Whether the customer completed signature, issuer, audience and expiry validation before calling NoResponse. False contexts are accepted only as weak hints.
