@@ -184,6 +184,19 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
 
 `ConstructEvent` refuses a missing or repeated header, a delivery older than 300 seconds (`tolerance:` changes it), an unknown key id or a bad signature, and `WebhookVerificationException.Code` says which. Deliveries are at least once: deduplicate on `webhookEvent.Id`.
 
+
+### Late results
+
+An assessment can rise to `review` after the signup was allowed. `LateResults.HandleAsync` verifies the delivery with `ConstructEvent` first, applies your policy (`LateResults.DefaultPolicy` revokes sessions on `review` and does nothing otherwise) and acts through Clerk, WorkOS or Auth0. WorkOS has no block, so its ban deletes the user permanently.
+
+```csharp
+using NoResponse.LateResults;
+
+var provider = LateResults.Clerk(Environment.GetEnvironmentVariable("CLERK_SECRET_KEY")!);
+var result = await LateResults.HandleAsync(buffer.ToArray(), request.Headers, secrets, provider);
+// result.Action is None, RevokeSessions or Ban; result.UserId is set when it acted.
+```
+
 ## Changes since 2.0.0
 
 Names that changed:

@@ -5,8 +5,8 @@ management:
   docVersion: "1"
   speakeasyVersion: internal
   generationVersion: internal
-  releaseVersion: 2.0.14
-  configChecksum: 27538cf2333c170b840412376b6413dd
+  releaseVersion: 2.0.15
+  configChecksum: 3bc782cb3756212817c0297cdd63bfab
 features:
   csharp:
     additionalDependencies: 0.1.0
@@ -438,17 +438,17 @@ trackedFiles:
   src/NoResponse/Models/Shared/WebsiteUnion.cs:
     last_write_checksum: sha1:53bf6746b6b3c7af983c7a485eded1378eb80ed7
   src/NoResponse/NoResponse.csproj:
-    last_write_checksum: sha1:0f33ca8e4629dc1e27d661fb3c401c955948b01a
+    last_write_checksum: sha1:afa0feb71f2e4d8e84211012b70831d8485f94b7
   src/NoResponse/NoResponseClient.cs:
     last_write_checksum: sha1:ff3764e4ca589815cd8c88c9134d0076b4450a45
   src/NoResponse/SDKConfig.cs:
-    last_write_checksum: sha1:287de2bbdd5811a4f00a71a6d51565e334a40f10
+    last_write_checksum: sha1:cabbc229dc769e77b459e823b2ffa6f42aaa1253
   src/NoResponse/Utils/AnyDeserializer.cs:
     last_write_checksum: sha1:2fc4560840c33ca0a329e2c1a4122510eecf6aec
   src/NoResponse/Utils/BigIntStrConverter.cs:
     last_write_checksum: sha1:8803aa46f7bca5595c22751ede125e3c4e993856
   src/NoResponse/Utils/Constants.cs:
-    last_write_checksum: sha1:834476d6ea8e8f408c8d13b304d080d42472f3fe
+    last_write_checksum: sha1:0172b37786f5d2aa1b8803a67057d665edcf4e73
   src/NoResponse/Utils/DecimalStrConverter.cs:
     last_write_checksum: sha1:1fa9c1159f476245dfff02718e434accbba46136
   src/NoResponse/Utils/EnumConverter.cs:
