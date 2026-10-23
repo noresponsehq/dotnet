@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 70bd5ecd-d923-41ca-9a42-6e3360b4ce2f
 management:
-  docChecksum: 875925f0b2aa0381cfca365241a27e11
+  docChecksum: e4527cb18c91ab02c094c9f5edac9740
   docVersion: "1"
   speakeasyVersion: internal
   generationVersion: internal
-  releaseVersion: 2.1.13
-  configChecksum: 8c588f975ae18e4c05c7a0c15744d1f6
+  releaseVersion: 2.1.14
+  configChecksum: 16ee2011c6a41d2d621cf2674f500b78
 features:
   csharp:
     additionalDependencies: 0.1.0
@@ -685,17 +685,17 @@ trackedFiles:
   src/NoResponse/Models/Shared/WebsiteUnion.cs:
     last_write_checksum: sha1:53bf6746b6b3c7af983c7a485eded1378eb80ed7
   src/NoResponse/NoResponse.csproj:
-    last_write_checksum: sha1:3bb637382fd9fc25b3623379ed1890f59e298a60
+    last_write_checksum: sha1:51f9259d5c827860e44cb05c0f021f3479bb433c
   src/NoResponse/NoResponseClient.cs:
     last_write_checksum: sha1:ebf1f77a31614654e1973464c907b03fa0384ecc
   src/NoResponse/SDKConfig.cs:
-    last_write_checksum: sha1:0650000f40e0108a5190742c428a1c5cebe96c53
+    last_write_checksum: sha1:416d51f128cf69409cc181364c97e3a5e84a845e
   src/NoResponse/Utils/AnyDeserializer.cs:
     last_write_checksum: sha1:2fc4560840c33ca0a329e2c1a4122510eecf6aec
   src/NoResponse/Utils/BigIntStrConverter.cs:
     last_write_checksum: sha1:8803aa46f7bca5595c22751ede125e3c4e993856
   src/NoResponse/Utils/Constants.cs:
-    last_write_checksum: sha1:80cd451fe0a40aade13395aa3613fa205dbc76a4
+    last_write_checksum: sha1:9e108d5090536b73d4b6b1155428955f84f8b032
   src/NoResponse/Utils/DecimalStrConverter.cs:
     last_write_checksum: sha1:1fa9c1159f476245dfff02718e434accbba46136
   src/NoResponse/Utils/EnumConverter.cs:
@@ -739,7 +739,7 @@ trackedFiles:
   src/NoResponse/Utils/Utilities.cs:
     last_write_checksum: sha1:12620d7c94b9ffadfd2c82aa279f5675b7b8901a
   src/NoResponse/WebhookEndpoints.cs:
-    last_write_checksum: sha1:f95eb722e0622a7c77053861644bac8f668e8214
+    last_write_checksum: sha1:4928511ee481f2aa97688cc38dca738931e194fc
 examples:
   createAssessment:
     minimal:

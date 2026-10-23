@@ -168,7 +168,7 @@ namespace NoResponse
         /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
         /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
-        /// <exception cref="BadRequestException">A query parameter is unknown, repeated or out of range, or the cursor fails its MAC, belongs to another tenant or endpoint, or has expired. invalid_params names the offending parameters without their values. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="BadRequestException">A query parameter is unknown, repeated or out of range (invalid_request), or the cursor is empty, fails its MAC, belongs to another tenant or endpoint, or has expired (invalid_cursor). invalid_params names the offending parameters without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No endpoint with this id for the calling tenant, including a malformed id and another tenant's endpoint. Thrown when the API returns a 404 response.</exception>
@@ -1511,7 +1511,7 @@ namespace NoResponse
         /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
         /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
-        /// <exception cref="BadRequestException">A query parameter is unknown, repeated or out of range, or the cursor fails its MAC, belongs to another tenant or endpoint, or has expired. invalid_params names the offending parameters without their values. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="BadRequestException">A query parameter is unknown, repeated or out of range (invalid_request), or the cursor is empty, fails its MAC, belongs to another tenant or endpoint, or has expired (invalid_cursor). invalid_params names the offending parameters without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No endpoint with this id for the calling tenant, including a malformed id and another tenant's endpoint. Thrown when the API returns a 404 response.</exception>
