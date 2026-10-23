@@ -53,3 +53,4 @@ var custom = ReasonCode.Of("custom_value");
 | `ContextLocaleMismatch`       | context_locale_mismatch       |
 | `ContextLineCountryMismatch`  | context_line_country_mismatch |
 | `PriorAbuseLink`              | prior_abuse_link              |
+| `TestScenario`                | test_scenario                 |

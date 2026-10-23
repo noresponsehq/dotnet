@@ -49,6 +49,7 @@ namespace NoResponse.Models.Shared
         public static readonly ReasonCode ContextLocaleMismatch = new ReasonCode("context_locale_mismatch");
         public static readonly ReasonCode ContextLineCountryMismatch = new ReasonCode("context_line_country_mismatch");
         public static readonly ReasonCode PriorAbuseLink = new ReasonCode("prior_abuse_link");
+        public static readonly ReasonCode TestScenario = new ReasonCode("test_scenario");
 
         private static readonly Dictionary<string, ReasonCode> _knownValues =
             new Dictionary<string, ReasonCode>() {
@@ -86,7 +87,8 @@ namespace NoResponse.Models.Shared
                 ["context_timezone_mismatch"] = ContextTimezoneMismatch,
                 ["context_locale_mismatch"] = ContextLocaleMismatch,
                 ["context_line_country_mismatch"] = ContextLineCountryMismatch,
-                ["prior_abuse_link"] = PriorAbuseLink
+                ["prior_abuse_link"] = PriorAbuseLink,
+                ["test_scenario"] = TestScenario
             };
 
         private static readonly ConcurrentDictionary<string, ReasonCode> _values =
