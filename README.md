@@ -10,7 +10,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v3.0.4 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v3.0.5 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -18,7 +18,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v3.0.4
+git -C third_party/noresponse-dotnet checkout v3.0.5
 git add third_party/noresponse-dotnet
 ```
 
@@ -202,6 +202,8 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
         }
         if (webhookEvent.Test) { return Results.NoContent(); } // SendTestEventAsync's fixed example assessment: apply nothing
         if (webhookEvent.Data is AccountDeleted erased) { /* account.deleted: you erased erased.AccountId with Accounts.DeleteAsync */ }
+        else if (webhookEvent.Data is TenantDeleted gone) { /* tenant.deleted: the workspace is deleted; the last event for gone.Environment */ }
+        else if (webhookEvent.Data is EndpointDisabled disabled) { /* disabled.EndpointId failed for 72 hours: fix it, verify it again */ }
         else if (webhookEvent.IsExpired) { /* forget the assessment: GET now answers 404 */ }
         else if (webhookEvent.Data is Assessment assessment) { /* act on assessment.Account?.Risk.Decision; keep the highest Detail.AssessmentVersion */ }
         return Results.NoContent();

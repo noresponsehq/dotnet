@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.5
+
+No changes detected.
+
 ## 3.0.4
 
 * `Sdk.KeyUsage.Record()`: **Added**

@@ -159,6 +159,8 @@ namespace NoResponse.Tests
             Assert.Equal(LateResultAction.None, LateResults.Action(Event((JObject)Expired["data"]!)));
             Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "endpoint.verification", "x", new EndpointVerification("whe_x", "c"))));
             Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "account.deleted", "x", new AccountDeleted("acct_1", 1, "x"))));
+            Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "tenant.deleted", "x", new TenantDeleted("tnt_1", "live", "x"))));
+            Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "webhook_endpoint.disabled", "x", new EndpointDisabled("whe_1", "x", "x"))));
             var stepUpBan = new Dictionary<string, LateResultAction> { ["step_up"] = LateResultAction.Ban };
             Assert.Equal(LateResultAction.Ban, LateResults.Action(Served("complete", "step_up"), stepUpBan));
             Assert.Equal(LateResultAction.None, LateResults.Action(Served("complete", "review"), stepUpBan));

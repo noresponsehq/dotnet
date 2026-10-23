@@ -153,6 +153,80 @@ namespace NoResponse.Tests
             }
         }
 
+        private const string TenantDeletedBody = "{\"id\":\"evt_01JA2ZD3K4M5N6P7Q8R9S0T1V2\",\"type\":\"tenant.deleted\",\"created_at\":\"2026-10-23T10:00:00.000Z\","
+            + "\"data\":{\"workspace_id\":\"tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM\",\"environment\":\"live\",\"deleted_at\":\"2026-10-23T10:00:00.000Z\"}}";
+
+        private const string EndpointDisabledBody = "{\"id\":\"evt_01JA2ZD3K4M5N6P7Q8R9S0T1V3\",\"type\":\"webhook_endpoint.disabled\",\"created_at\":\"2026-10-23T10:00:00.000Z\","
+            + "\"data\":{\"endpoint_id\":\"whe_01JA2ZD0E1F2G3H4J5K6M7N8P9\",\"failing_since\":\"2026-10-20T10:00:00.000Z\",\"disabled_at\":\"2026-10-23T10:00:00.000Z\"}}";
+
+        // Keeps date strings as written, as the verifier reads them.
+        private static JObject Literal(string json)
+        {
+            using var reader = new Newtonsoft.Json.JsonTextReader(new StringReader(json)) { DateParseHandling = Newtonsoft.Json.DateParseHandling.None };
+            return JObject.Load(reader);
+        }
+
+        private static void RefusesChangedData(string original, Action<JObject>[] mutations)
+        {
+            var secrets = new Dictionary<string, string> { ["whk_sdktest01"] = "secret" };
+            foreach (var mutate in mutations)
+            {
+                var bad = Literal(original);
+                mutate((JObject)bad["data"]!);
+                var (payload, badHeaders) = Signed(bad, "secret", (string)bad["id"]!);
+                Refused(WebhookErrorCode.InvalidPayload, payload, badHeaders, secrets);
+            }
+        }
+
+        [Fact]
+        public void TenantDeletedEvent()
+        {
+            var secrets = new Dictionary<string, string> { ["whk_sdktest01"] = "secret" };
+            var (raw, headers) = Signed(Literal(TenantDeletedBody), "secret", "evt_01JA2ZD3K4M5N6P7Q8R9S0T1V2");
+            var ev = Webhook.ConstructEvent(raw, headers, secrets, now: Now);
+            Assert.Equal("tenant.deleted", ev.Type);
+            Assert.Equal("evt_01JA2ZD3K4M5N6P7Q8R9S0T1V2", ev.Id);
+            Assert.Equal("2026-10-23T10:00:00.000Z", ev.CreatedAt);
+            Assert.False(ev.IsExpired);
+            Assert.False(ev.Test);
+            Assert.Equal(new TenantDeleted("tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM", "live", "2026-10-23T10:00:00.000Z"), Assert.IsType<TenantDeleted>(ev.Data));
+            Assert.Throws<WebhookVerificationException>(() => Webhook.VerificationResponse(ev));
+            RefusesChangedData(TenantDeletedBody, new Action<JObject>[]
+            {
+                data => data.Remove("workspace_id"),
+                data => data["workspace_id"] = "-tnt",
+                data => data["workspace_id"] = "tnt/01",
+                data => data["environment"] = "staging",
+                data => data.Remove("environment"),
+                data => data["deleted_at"] = "tomorrow",
+                data => data.Remove("deleted_at"),
+            });
+        }
+
+        [Fact]
+        public void EndpointDisabledEvent()
+        {
+            var secrets = new Dictionary<string, string> { ["whk_sdktest01"] = "secret" };
+            var (raw, headers) = Signed(Literal(EndpointDisabledBody), "secret", "evt_01JA2ZD3K4M5N6P7Q8R9S0T1V3");
+            var ev = Webhook.ConstructEvent(raw, headers, secrets, now: Now);
+            Assert.Equal("webhook_endpoint.disabled", ev.Type);
+            Assert.False(ev.IsExpired);
+            Assert.False(ev.Test);
+            Assert.Equal(
+                new EndpointDisabled("whe_01JA2ZD0E1F2G3H4J5K6M7N8P9", "2026-10-20T10:00:00.000Z", "2026-10-23T10:00:00.000Z"),
+                Assert.IsType<EndpointDisabled>(ev.Data));
+            Assert.Throws<WebhookVerificationException>(() => Webhook.VerificationResponse(ev));
+            RefusesChangedData(EndpointDisabledBody, new Action<JObject>[]
+            {
+                data => data["endpoint_id"] = "whk_01JA2ZD0E1F2G3H4J5K6M7N8P9",
+                data => data.Remove("endpoint_id"),
+                data => data["failing_since"] = "three days ago",
+                data => data.Remove("failing_since"),
+                data => data["disabled_at"] = "now",
+                data => data.Remove("disabled_at"),
+            });
+        }
+
         // ASP.NET Core's Request.Headers enumerates KeyValuePair<string, StringValues>,
         // a struct value type; this stands in for StringValues.
         private readonly struct HeaderValues : IEnumerable<string>

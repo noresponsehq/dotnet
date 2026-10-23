@@ -55,10 +55,24 @@ namespace NoResponse.Webhooks
     public sealed record AccountDeleted(string AccountId, long AssessmentsDeleted, string DeletedAt);
 
     /// <summary>
+    /// The workspace was deleted. Sent once per environment ("live" or "test") before its
+    /// endpoints are torn down: the last event this endpoint receives.
+    /// </summary>
+    public sealed record TenantDeleted(string WorkspaceId, string Environment, string DeletedAt);
+
+    /// <summary>
+    /// Another endpoint of this environment was disabled after failing continuously for 72 hours,
+    /// since FailingSince. It receives nothing more until it is verified again.
+    /// </summary>
+    public sealed record EndpointDisabled(string EndpointId, string FailingSince, string DisabledAt);
+
+    /// <summary>
     /// A verified delivery. Data is an <see cref="Assessment"/> (exactly as Assessments.GetAsync
     /// returns it) or an <see cref="AssessmentExpired"/> for type "assessment.updated", an
-    /// <see cref="EndpointVerification"/> for "endpoint.verification" and an
-    /// <see cref="AccountDeleted"/> for "account.deleted". Deliveries are at least
+    /// <see cref="EndpointVerification"/> for "endpoint.verification", an
+    /// <see cref="AccountDeleted"/> for "account.deleted", a <see cref="TenantDeleted"/> for
+    /// "tenant.deleted" and an <see cref="EndpointDisabled"/> for "webhook_endpoint.disabled".
+    /// Deliveries are at least
     /// once and unordered: deduplicate on Id and keep the highest Detail.AssessmentVersion.
     /// </summary>
     public sealed record WebhookEvent(string Id, string Type, string CreatedAt, object Data)
@@ -91,6 +105,7 @@ namespace NoResponse.Webhooks
         private static readonly Regex AssessmentId = new Regex("^asm_[0-9A-HJKMNP-TV-Z]{26}$", RegexOptions.CultureInvariant);
         private static readonly Regex AccountId = new Regex("^[A-Za-z0-9][A-Za-z0-9._:|-]{0,127}$", RegexOptions.CultureInvariant);
         private static readonly Regex EndpointId = new Regex("^whe_[0-9A-HJKMNP-TV-Z]{26}$", RegexOptions.CultureInvariant);
+        private static readonly Regex WorkspaceId = new Regex("^[A-Za-z0-9][A-Za-z0-9_.-]{0,122}$", RegexOptions.CultureInvariant);
         private static readonly Regex DateTime = new Regex("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$", RegexOptions.CultureInvariant);
 
         /// <summary>
@@ -250,6 +265,32 @@ namespace NoResponse.Webhooks
                 }
                 return new AccountDeleted((string)accountId!, (long)deleted, (string)deletedAt!);
             }
+            if (type == "tenant.deleted")
+            {
+                if (data["workspace_id"] is not JValue { Type: JTokenType.String } workspaceId
+                    || !WorkspaceId.IsMatch((string)workspaceId!)
+                    || data["environment"] is not JValue { Type: JTokenType.String } environment
+                    || ((string)environment! != "live" && (string)environment! != "test")
+                    || data["deleted_at"] is not JValue { Type: JTokenType.String } deletedAt
+                    || !ValidDateTime((string)deletedAt!))
+                {
+                    throw new WebhookVerificationException(WebhookErrorCode.InvalidPayload, "Tenant deleted event is malformed");
+                }
+                return new TenantDeleted((string)workspaceId!, (string)environment!, (string)deletedAt!);
+            }
+            if (type == "webhook_endpoint.disabled")
+            {
+                if (data["endpoint_id"] is not JValue { Type: JTokenType.String } endpointId
+                    || !EndpointId.IsMatch((string)endpointId!)
+                    || data["failing_since"] is not JValue { Type: JTokenType.String } failingSince
+                    || !ValidDateTime((string)failingSince!)
+                    || data["disabled_at"] is not JValue { Type: JTokenType.String } disabledAt
+                    || !ValidDateTime((string)disabledAt!))
+                {
+                    throw new WebhookVerificationException(WebhookErrorCode.InvalidPayload, "Endpoint disabled event is malformed");
+                }
+                return new EndpointDisabled((string)endpointId!, (string)failingSince!, (string)disabledAt!);
+            }
             if (type != "assessment.updated")
             {
                 throw new WebhookVerificationException(WebhookErrorCode.InvalidPayload, "Unknown webhook event type");
@@ -278,5 +319,10 @@ namespace NoResponse.Webhooks
                 throw new WebhookVerificationException(WebhookErrorCode.InvalidPayload, "Webhook data is not an assessment");
             }
         }
+
+        private static bool ValidDateTime(string value) =>
+            DateTime.IsMatch(value)
+            && DateTimeOffset.TryParse(value, System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.RoundtripKind, out _);
     }
 }
