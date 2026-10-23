@@ -32,7 +32,7 @@ generation:
     generateNewTests: false
     skipResponseBodyAssertions: false
 csharp:
-  version: 3.0.2
+  version: 3.0.3
   additionalDependencies: []
   author: NoResponse
   baseErrorName: NoResponseException

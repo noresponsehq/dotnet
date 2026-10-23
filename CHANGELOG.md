@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.3
+
+No changes detected.
+
 ## 3.0.2
 
 No changes detected.
