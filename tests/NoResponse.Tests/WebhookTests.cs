@@ -59,9 +59,11 @@ namespace NoResponse.Tests
             Assert.Equal("evt_01JA2ZB4N5P6Q7R8S9T0VWXYZ1", ev.Id);
             Assert.Equal("2026-10-14T09:00:02.000Z", ev.CreatedAt);
             var assessment = Assert.IsType<Assessment>(ev.Data);
-            Assert.Equal("asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM", assessment.AssessmentId);
-            Assert.Equal(2, assessment.AssessmentVersion);
-            Assert.Equal(Recommendation.StepUp, assessment.Risk!.Recommendation);
+            Assert.Equal("asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM", assessment.Id);
+            Assert.Equal(Status.Complete, assessment.Status);
+            Assert.Equal(AccountDecision.StepUp, assessment.Account!.Risk.Decision);
+            Assert.Equal(2, assessment.Detail.AssessmentVersion);
+            Assert.Equal(Recommendation.StepUp, assessment.Detail.Risk!.Recommendation);
             Assert.False(ev.IsExpired);
         }
 
@@ -89,15 +91,15 @@ namespace NoResponse.Tests
         [Fact]
         public void RotationAndEventId()
         {
-            var complete = Fixture("valid/assessment-complete.json");
+            var complete = Fixture("valid/assessment-view-complete.json");
             var ev = new JObject { ["id"] = "evt_01JA2ZB4N5P6Q7R8S9T0VWXYZ2", ["type"] = "assessment.updated", ["created_at"] = "2026-10-18T11:00:04Z", ["data"] = complete };
             var both = new Dictionary<string, string> { ["whk_sdktest01"] = "old-secret", ["whk_sdktest02"] = "new-secret" };
             var (raw, headers) = Signed(ev, "new-secret", "evt_01JA2ZB4N5P6Q7R8S9T0VWXYZ2", "whk_sdktest02");
-            Assert.Equal((string)complete["assessment_id"]!, Assert.IsType<Assessment>(Webhook.ConstructEvent(raw, headers, both, now: Now).Data).AssessmentId);
+            Assert.Equal((string)complete["id"]!, Assert.IsType<Assessment>(Webhook.ConstructEvent(raw, headers, both, now: Now).Data).Id);
             (raw, headers) = Signed(ev, "new-secret", "evt_01JA2ZB4N5P6Q7R8S9T0VWXYZ9", "whk_sdktest02");
             Refused(WebhookErrorCode.InvalidPayload, raw, headers, both);
             var pointer = (JObject)ev.DeepClone();
-            pointer["data"] = new JObject { ["assessment_id"] = complete["assessment_id"], ["assessment_url"] = "/v1/assessments/x" };
+            pointer["data"] = new JObject { ["assessment_id"] = complete["id"], ["assessment_url"] = "/v1/assessments/x" };
             (raw, headers) = Signed(pointer, "new-secret", "evt_01JA2ZB4N5P6Q7R8S9T0VWXYZ2", "whk_sdktest02");
             Refused(WebhookErrorCode.InvalidPayload, raw, headers, both);
         }

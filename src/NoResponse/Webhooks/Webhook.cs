@@ -59,7 +59,7 @@ namespace NoResponse.Webhooks
     /// returns it) or an <see cref="AssessmentExpired"/> for type "assessment.updated", an
     /// <see cref="EndpointVerification"/> for "endpoint.verification" and an
     /// <see cref="AccountDeleted"/> for "account.deleted". Deliveries are at least
-    /// once and unordered: deduplicate on Id and keep the highest AssessmentVersion.
+    /// once and unordered: deduplicate on Id and keep the highest Detail.AssessmentVersion.
     /// </summary>
     public sealed record WebhookEvent(string Id, string Type, string CreatedAt, object Data)
     {

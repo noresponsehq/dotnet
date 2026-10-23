@@ -26,7 +26,7 @@ namespace NoResponse.Models.Shared
         public AccountRisk Risk { get; set; } = new();
 
         /// <summary>
-        /// The decision for each flow. Every flow uses the tenant's signup thresholds today, so all three equal risk.decision.
+        /// The decision for each flow. Every flow uses the tenant's signup thresholds today, so all three are equal.
         /// </summary>
         [JsonProperty("decisions_by_flow", Required = Newtonsoft.Json.Required.Always)]
         public AccountDecisionsByFlow DecisionsByFlow { get; set; } = new();

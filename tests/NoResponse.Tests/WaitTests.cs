@@ -47,11 +47,12 @@ namespace NoResponse.Tests
         [Fact]
         public async Task PollsUntilCompleteHonouringRetryAfter()
         {
-            var http = new Scripted(("assessment-pending.json", "3"), ("assessment-pending.json", "0"), ("assessment-complete.json", null));
+            var http = new Scripted(("assessment-view-pending.json", "3"), ("assessment-view-pending.json", "0"), ("assessment-view-complete.json", null));
             var slept = new List<TimeSpan>();
             var now = TimeSpan.Zero;
             var result = await Client(http).Assessments.WaitAsync(Id, delay: (d, _) => { slept.Add(d); now += d; return Task.CompletedTask; }, clock: () => now);
             Assert.Equal(Status.Complete, result.Status);
+            Assert.Equal(AccountDecision.Allow, result.Account!.Risk.Decision);
             Assert.Equal(new[] { TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(1) }, slept);
             Assert.Equal(3, http.Requests.Count);
             Assert.Equal("/v1/assessments/" + Id, http.Requests[0].RequestUri!.AbsolutePath);
@@ -61,18 +62,19 @@ namespace NoResponse.Tests
         [Fact]
         public async Task TimesOutWithTheLastPendingAssessment()
         {
-            var http = new Scripted(("assessment-pending.json", "2"));
+            var http = new Scripted(("assessment-view-pending.json", "2"));
             var slept = new List<TimeSpan>();
             var now = TimeSpan.Zero;
             var e = await Assert.ThrowsAsync<WaitTimeoutException>(() => Client(http).Assessments.WaitAsync(Id, TimeSpan.FromSeconds(5), delay: (d, _) => { slept.Add(d); now += d; return Task.CompletedTask; }, clock: () => now));
             Assert.Equal(Status.Pending, e.Last.Status);
+            Assert.Null(e.Last.Account);
             Assert.Equal(new[] { TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2) }, slept);
         }
 
         [Fact]
         public async Task KeepsPollingAPartialAnswerUntilComplete()
         {
-            var http = new Scripted(("assessment-partial.json", null), ("assessment-partial.json", "2"), ("assessment-complete.json", null));
+            var http = new Scripted(("assessment-view-partial.json", null), ("assessment-view-partial.json", "2"), ("assessment-view-complete.json", null));
             var slept = new List<TimeSpan>();
             var now = TimeSpan.Zero;
             var result = await Client(http).Assessments.WaitAsync(Id, delay: (d, _) => { slept.Add(d); now += d; return Task.CompletedTask; }, clock: () => now);
@@ -84,7 +86,7 @@ namespace NoResponse.Tests
         [Fact]
         public async Task ReturnsTheLatestPartialAnswerAtTheTimeout()
         {
-            var http = new Scripted(("assessment-pending.json", "1"), ("assessment-partial.json", null));
+            var http = new Scripted(("assessment-view-pending.json", "1"), ("assessment-view-partial.json", null));
             var slept = new List<TimeSpan>();
             var now = TimeSpan.Zero;
             var result = await Client(http).Assessments.WaitAsync(Id, TimeSpan.FromSeconds(3.5), delay: (d, _) => { slept.Add(d); now += d; return Task.CompletedTask; }, clock: () => now);

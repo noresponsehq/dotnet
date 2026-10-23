@@ -8,6 +8,9 @@ How long the synchronous answer waits for sources. quick waits only for the fast
 using NoResponse.Models.Shared;
 
 var value = Depth.Quick;
+
+// Open enum: use .Of() to create instances from custom string values
+var custom = Depth.Of("custom_value");
 ```
 
 

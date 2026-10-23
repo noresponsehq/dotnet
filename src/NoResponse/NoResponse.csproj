@@ -3,12 +3,12 @@
   <PropertyGroup>
     <IsPackable>true</IsPackable>
     <PackageId>NoResponse</PackageId>
-    <Version>2.1.16</Version>
+    <Version>3.0.0</Version>
     <TargetFramework>net8.0</TargetFramework>
     <Authors>NoResponse</Authors>
     <Copyright>Copyright (c) NoResponse 2026</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <Description>Assess a signup or gateway event, poll a pending assessment, page through an account's history, record what you later learned, rotate your API key, manage your webhook endpoints, and register hosted endpoints that answer your WorkOS or Auth0 sign-up and sign-in hooks. Every response carries X-Request-ID; every error is an RFC 9457 problem document. Keep the API key on your server.</Description>
+    <Description>Assess a signup, login or purchase and get back the account's one current risk, poll a pending assessment, page through an account's history, record what you later learned, rotate your API key, manage your webhook endpoints, and register hosted endpoints that answer your WorkOS or Auth0 sign-up and sign-in hooks. Every response carries X-Request-ID; every error is an RFC 9457 problem document. Keep the API key on your server.</Description>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.0.0
+
+* `Sdk.Assessments.Create()`: 
+  *  `request.body` **Changed** (Breaking ⚠️)
+  *  `response` **Changed** (Breaking ⚠️)
+* `Sdk.Assessments.Get()`:  `response` **Changed** (Breaking ⚠️)
+
 ## 2.1.16
 
 * `Sdk.Assessments.Delete()`: **Added**

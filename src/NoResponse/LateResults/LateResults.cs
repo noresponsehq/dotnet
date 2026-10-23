@@ -21,7 +21,7 @@ namespace NoResponse.LateResults
         Ban,
     }
 
-    /// <summary>The action for each recommendation key (allow, step_up, review). A key you leave out does nothing.</summary>
+    /// <summary>The action for each account decision key (allow, step_up, review, block). A key you leave out does nothing.</summary>
     public sealed class LateResultPolicy : Dictionary<string, LateResultAction>
     {
         public LateResultPolicy() { }
@@ -74,7 +74,7 @@ namespace NoResponse.LateResults
 
     public sealed class LateResultOptions
     {
-        /// <summary>Recommendation to action. Defaults to LateResults.DefaultPolicy.</summary>
+        /// <summary>Account decision to action. Defaults to LateResults.DefaultPolicy.</summary>
         public IReadOnlyDictionary<string, LateResultAction>? Policy { get; init; }
 
         /// <summary>
@@ -103,19 +103,20 @@ namespace NoResponse.LateResults
     /// <summary>
     /// Late-result handlers. Hand-written; not generated.
     /// An assessment can be revised after the signup was allowed: a slow source settles and the
-    /// recommendation rises. NoResponse sends the new version as a signed assessment.updated webhook.
+    /// account's decision rises. NoResponse sends the new version as a signed assessment.updated webhook.
     /// HandleAsync verifies that delivery with Webhook.ConstructEvent, picks an action from your policy
     /// and acts through the auth provider's admin API. It never acts on an unverified event or a test event.
     /// Every provider call treats a 404 (user or session already gone) as done, so a repeated delivery is safe.
     /// </summary>
     public static class LateResults
     {
-        /// <summary>Revoke sessions on review; do nothing on allow or step_up. Banning is opt-in.</summary>
+        /// <summary>Revoke sessions on review or block; do nothing on allow or step_up. Banning is opt-in.</summary>
         public static readonly IReadOnlyDictionary<string, LateResultAction> DefaultPolicy = new Dictionary<string, LateResultAction>
         {
             ["allow"] = LateResultAction.None,
             ["step_up"] = LateResultAction.None,
             ["review"] = LateResultAction.RevokeSessions,
+            ["block"] = LateResultAction.RevokeSessions,
         };
 
         /// <summary>The wire string for an action: none, revoke_sessions or ban.</summary>
@@ -137,8 +138,9 @@ namespace NoResponse.LateResults
         };
 
         /// <summary>
-        /// The action your policy names for a verified event. Only a served assessment with a recommendation can act;
-        /// a test event from the send-test-event call never does.
+        /// The action your policy names for a verified event, keyed by account.risk.decision. Only a served assessment
+        /// that is no longer pending and whose account has a decision can act: a pending assessment carries an earlier
+        /// assessment's decision, which you have already acted on, and a test event from the send-test-event call never acts.
         /// </summary>
         /// <exception cref="ArgumentException">The policy holds an unknown action.</exception>
         public static LateResultAction Action(WebhookEvent webhookEvent, IReadOnlyDictionary<string, LateResultAction>? policy = null)
@@ -148,12 +150,16 @@ namespace NoResponse.LateResults
             {
                 return LateResultAction.None;
             }
-            var recommendation = (assessment.Recommendation ?? assessment.Risk?.Recommendation)?.Value;
-            if (recommendation is not ("allow" or "step_up" or "review"))
+            if (Status.Pending.Equals(assessment.Status))
             {
                 return LateResultAction.None;
             }
-            if (!policy.TryGetValue(recommendation, out var action))
+            var decision = assessment.Account?.Risk.Decision?.Value;
+            if (decision is not ("allow" or "step_up" or "review" or "block"))
+            {
+                return LateResultAction.None;
+            }
+            if (!policy.TryGetValue(decision, out var action))
             {
                 return LateResultAction.None;
             }
@@ -183,7 +189,8 @@ namespace NoResponse.LateResults
             {
                 return new LateResult(webhookEvent, LateResultAction.None);
             }
-            var userId = options.UserId is null ? assessment.AccountId : options.UserId(assessment.AccountId, webhookEvent);
+            var accountId = assessment.Detail.AccountId;
+            var userId = options.UserId is null ? accountId : options.UserId(accountId, webhookEvent);
             if (string.IsNullOrEmpty(userId))
             {
                 return new LateResult(webhookEvent, LateResultAction.None);

@@ -38,17 +38,20 @@ namespace NoResponse.Tests
                 body: new AssessmentRequest()
                 {
                     AccountId = "acct_7f3a9c",
+                    Flow = Flow.Signup,
                     Identifiers = new AssessmentRequestIdentifiers() { Email = "new.user@example.com" },
                 });
-            Assert.StartsWith("asm_", res.Result.AssessmentId);
-            Assert.Equal("acct_7f3a9c", res.Result.AccountId);
+            Assert.StartsWith("asm_", res.Result.Id);
+            Assert.Equal(res.Result.Id, res.Result.Detail.AssessmentId);
+            Assert.Equal("acct_7f3a9c", res.Result.Detail.AccountId);
         }
 
         [MockServerFact]
         public async Task GetReturnsTheDocumentedAssessment()
         {
             var res = await Client().Assessments.GetAsync("asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM");
-            Assert.StartsWith("asm_", res.Result.AssessmentId);
+            Assert.StartsWith("asm_", res.Result.Id);
+            Assert.Equal(res.Result.Status, res.Result.Detail.Status);
         }
     }
 }

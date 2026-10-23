@@ -9,7 +9,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
-        Flow = AssessmentFlow.Signup,
+        Flow = Flow.Signup,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
         },

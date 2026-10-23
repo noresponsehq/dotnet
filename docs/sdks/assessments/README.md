@@ -14,7 +14,7 @@ Signup and gateway assessments.
 
 ## Create
 
-Returns within the deadline (3000 ms at most) with a complete, partial or pending assessment: 200 carries complete or partial, 202 carries pending with Location and Retry-After. A pending answer has no recommendation; apply your own fallback for pending, 429, 503 or a timeout. risk.block says when your block threshold was reached. Requires the assess scope. Idempotency-Key is optional in the SDK and is bound to the body for 24 hours: the same key with the same body replays the latest assessment with Idempotent-Replayed: true and starts no new work; the same key with a different body answers 409 idempotency_key_reused. response_mode defaults to standard; detailed needs the detailed scope.
+Assesses one signup, login or purchase (flow) and answers with the account's one current risk: account.risk.decision is the decision for this flow (allow, step_up, review or block, where block means your block threshold was reached), and detail holds this assessment's own facts. depth sets how long the answer waits for sources: quick waits only for the fast ones (500 ms), full for the whole budget (3000 ms at most); it defaults to full for signup and purchase and quick for login. 200 carries complete or partial, 202 carries pending with Location and Retry-After. While the account's first assessment is pending, account is absent: apply your own fallback for that, 429, 503 or a timeout. NoResponse blocks nothing itself; you decide. Requires the assess scope. Idempotency-Key is optional in the SDK and is bound to the body for 24 hours: the same key with the same body replays the latest assessment with Idempotent-Replayed: true and starts no new work; the same key with a different body answers 409 idempotency_key_reused. response_mode defaults to standard; detailed needs the detailed scope.
 
 ### Example Usage: complete
 
@@ -30,6 +30,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
+        Flow = Flow.Signup,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new.user",
@@ -67,7 +68,7 @@ var res = await sdk.Assessments.CreateAsync(
             SessionCreatedAt = "2026-10-14T08:57:00.000Z",
             AuthTime = "2026-10-14T08:55:00.000Z",
             AccountCreatedAt = "2026-10-14T08:56:00.000Z",
-            Verified = false,
+            Verified = true,
             Mfa = new AuthContextMfa() {
                 Methods = new List<string>() {
                     "totp",
@@ -103,6 +104,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
+        Flow = Flow.Signup,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new.user",
@@ -140,7 +142,7 @@ var res = await sdk.Assessments.CreateAsync(
             SessionCreatedAt = "2026-10-14T08:57:00.000Z",
             AuthTime = "2026-10-14T08:55:00.000Z",
             AccountCreatedAt = "2026-10-14T08:56:00.000Z",
-            Verified = false,
+            Verified = true,
             Mfa = new AuthContextMfa() {
                 Methods = new List<string>() {
                     "totp",
@@ -175,7 +177,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
-        Flow = AssessmentFlow.Signup,
+        Flow = Flow.Signup,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new_user_42",
@@ -186,6 +188,80 @@ var res = await sdk.Assessments.CreateAsync(
         },
         RequestId = "req-2026-10-14-0001",
         DeadlineMs = 300,
+    },
+    idempotencyKey: "signup-acct_7f3a9c"
+);
+
+// handle response
+```
+### Example Usage: login
+
+<!-- UsageSnippet language="csharp" operationID="createAssessment" method="post" path="/v1/assessments" example="login" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+using System.Collections.Generic;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+var res = await sdk.Assessments.CreateAsync(
+    body: new AssessmentRequest() {
+        AccountId = "acct_7f3a9c",
+        Flow = Flow.Signup,
+        Identifiers = new AssessmentRequestIdentifiers() {
+            Email = "new.user@example.com",
+            Username = "new.user",
+            Phone = "+61412345678",
+            Name = "Alex Example",
+            Ip = "203.0.113.45",
+        },
+        PolicyContext = new AssessmentRequestPolicyContext() {
+            Region = "AU",
+        },
+        RequestId = "req-2026-10-14-0001",
+        ClientContext = new AssessmentRequestClientContext() {
+            Timezone = "Australia/Sydney",
+            Locale = "en-AU",
+            AppVersion = "4.12.0",
+            UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
+            DeviceId = "dev_5c1e8a",
+            SessionId = "sess_9b2d41",
+            ClientObservedAt = "2026-10-14T08:59:58.000Z",
+        },
+        AuthContext = new AuthContext() {
+            Provider = "clerk",
+            Issuer = "https://example-app.clerk.accounts.dev",
+            Audience = "https://app.example.com",
+            Audiences = new List<string>() {
+                "https://app.example.com",
+            },
+            Subject = "user_2EXAMPLE",
+            SessionId = "sess_2EXAMPLE",
+            OrganizationId = "org_2EXAMPLE",
+            TenantId = "tenant_2EXAMPLE",
+            TokenId = "2EXAMPLEJTI",
+            IssuedAt = "2026-10-14T08:59:40.000Z",
+            ExpiresAt = "2026-10-14T09:00:40.000Z",
+            SessionCreatedAt = "2026-10-14T08:57:00.000Z",
+            AuthTime = "2026-10-14T08:55:00.000Z",
+            AccountCreatedAt = "2026-10-14T08:56:00.000Z",
+            Verified = true,
+            Mfa = new AuthContextMfa() {
+                Methods = new List<string>() {
+                    "totp",
+                },
+            },
+            Roles = new List<string>() {
+                "admin",
+            },
+            Scopes = new List<string>() {
+                "org:sys_profile:manage",
+            },
+        },
+        IssuedCredential = new AssessmentRequestIssuedCredential() {
+            Sha256 = "2bdbf5c72f2a36df0ef40fb92203612274d4546f56dba946070a6a79c2401a1b",
+        },
     },
     idempotencyKey: "signup-acct_7f3a9c"
 );
@@ -205,7 +281,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
-        Flow = AssessmentFlow.Signup,
+        Flow = Flow.Signup,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
         },
@@ -228,7 +304,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_8412",
-        Flow = AssessmentFlow.Signup,
+        Flow = Flow.Signup,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "jane.doe@example.com",
             Username = "janedoe",
@@ -262,6 +338,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
+        Flow = Flow.Signup,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new.user",
@@ -299,80 +376,7 @@ var res = await sdk.Assessments.CreateAsync(
             SessionCreatedAt = "2026-10-14T08:57:00.000Z",
             AuthTime = "2026-10-14T08:55:00.000Z",
             AccountCreatedAt = "2026-10-14T08:56:00.000Z",
-            Verified = false,
-            Mfa = new AuthContextMfa() {
-                Methods = new List<string>() {
-                    "totp",
-                },
-            },
-            Roles = new List<string>() {
-                "admin",
-            },
-            Scopes = new List<string>() {
-                "org:sys_profile:manage",
-            },
-        },
-        IssuedCredential = new AssessmentRequestIssuedCredential() {
-            Sha256 = "2bdbf5c72f2a36df0ef40fb92203612274d4546f56dba946070a6a79c2401a1b",
-        },
-    },
-    idempotencyKey: "signup-acct_7f3a9c"
-);
-
-// handle response
-```
-### Example Usage: standard
-
-<!-- UsageSnippet language="csharp" operationID="createAssessment" method="post" path="/v1/assessments" example="standard" -->
-```csharp
-using NoResponse;
-using NoResponse.Models.Shared;
-using System;
-using System.Collections.Generic;
-
-var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
-
-var res = await sdk.Assessments.CreateAsync(
-    body: new AssessmentRequest() {
-        AccountId = "acct_7f3a9c",
-        Identifiers = new AssessmentRequestIdentifiers() {
-            Email = "new.user@example.com",
-            Username = "new.user",
-            Phone = "+61412345678",
-            Name = "Alex Example",
-            Ip = "203.0.113.45",
-        },
-        PolicyContext = new AssessmentRequestPolicyContext() {
-            Region = "AU",
-        },
-        RequestId = "req-2026-10-14-0001",
-        ClientContext = new AssessmentRequestClientContext() {
-            Timezone = "Australia/Sydney",
-            Locale = "en-AU",
-            AppVersion = "4.12.0",
-            UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
-            DeviceId = "dev_5c1e8a",
-            SessionId = "sess_9b2d41",
-            ClientObservedAt = "2026-10-14T08:59:58.000Z",
-        },
-        AuthContext = new AuthContext() {
-            Provider = "clerk",
-            Issuer = "https://example-app.clerk.accounts.dev",
-            Audience = "https://app.example.com",
-            Audiences = new List<string>() {
-                "https://app.example.com",
-            },
-            Subject = "user_2EXAMPLE",
-            SessionId = "sess_2EXAMPLE",
-            OrganizationId = "org_2EXAMPLE",
-            TenantId = "tenant_2EXAMPLE",
-            TokenId = "2EXAMPLEJTI",
-            IssuedAt = "2026-10-14T08:59:40.000Z",
-            ExpiresAt = "2026-10-14T09:00:40.000Z",
-            SessionCreatedAt = "2026-10-14T08:57:00.000Z",
-            AuthTime = "2026-10-14T08:55:00.000Z",
-            AccountCreatedAt = "2026-10-14T08:56:00.000Z",
-            Verified = false,
+            Verified = true,
             Mfa = new AuthContextMfa() {
                 Methods = new List<string>() {
                     "totp",
@@ -420,7 +424,7 @@ var res = await sdk.Assessments.CreateAsync(
 
 ## Get
 
-Returns the highest assessment_version. Requires the assess or history scope. While status is pending, or partial with a source still running, the response carries Retry-After; poll no faster than it says. Another tenant's assessment, an unknown or expired assessment and a malformed assessment_id all answer 404 not_found. response_mode=detailed needs the detailed scope.
+Returns the highest assessment_version, with the account's current risk. Requires the assess or history scope. While status is pending, or partial with a source still running, the response carries Retry-After; poll no faster than it says. Another tenant's assessment, an unknown or expired assessment and a malformed assessment_id all answer 404 not_found. response_mode=detailed needs the detailed scope.
 
 ### Example Usage: complete
 
@@ -439,6 +443,20 @@ var res = await sdk.Assessments.GetAsync(assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDE
 ### Example Usage: detailed
 
 <!-- UsageSnippet language="csharp" operationID="getAssessment" method="get" path="/v1/assessments/{assessment_id}" example="detailed" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+var res = await sdk.Assessments.GetAsync(assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM");
+
+// handle response
+```
+### Example Usage: login
+
+<!-- UsageSnippet language="csharp" operationID="getAssessment" method="get" path="/v1/assessments/{assessment_id}" example="login" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
@@ -478,9 +496,9 @@ var res = await sdk.Assessments.GetAsync(assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDE
 
 // handle response
 ```
-### Example Usage: standard
+### Example Usage: pending_known_account
 
-<!-- UsageSnippet language="csharp" operationID="getAssessment" method="get" path="/v1/assessments/{assessment_id}" example="standard" -->
+<!-- UsageSnippet language="csharp" operationID="getAssessment" method="get" path="/v1/assessments/{assessment_id}" example="pending_known_account" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;

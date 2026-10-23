@@ -4,48 +4,68 @@ namespace NoResponse.Models.Shared
     using Newtonsoft.Json;
     using NoResponse.Utils;
     using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
-    /// The provider flow the assessment gates. Use the top-level flow instead; this member is ignored when the top-level flow is present. Absent means signup.
+    /// The customer event an assessment is made for: signup (a new account), login (a returning sign-in) or purchase (a payment or credit grant). The account's risk is reported with the decision for this flow.
     /// </summary>
-    public enum Flow
+    [JsonConverter(typeof(OpenEnumConverter))]
+    public class Flow : IEquatable<Flow>, IOpenEnum<string>
     {
-        [JsonProperty("signup")] Signup,
-        [JsonProperty("login")] Login,
-        [JsonProperty("recovery")] Recovery,
-        [JsonProperty("profile_change")] ProfileChange,
-    }
+        public static readonly Flow Signup = new Flow("signup");
+        public static readonly Flow Login = new Flow("login");
+        public static readonly Flow Purchase = new Flow("purchase");
 
-    public static class FlowExtension
-    {
-        public static string Value(this Flow value)
+        private static readonly Dictionary<string, Flow> _knownValues =
+            new Dictionary<string, Flow>() {
+                ["signup"] = Signup,
+                ["login"] = Login,
+                ["purchase"] = Purchase
+            };
+
+        private static readonly ConcurrentDictionary<string, Flow> _values =
+            new ConcurrentDictionary<string, Flow>(_knownValues);
+
+        private Flow(string value)
         {
-            return ((JsonPropertyAttribute)value.GetType().GetMember(value.ToString()) [0].GetCustomAttributes(typeof(JsonPropertyAttribute), false)[0]).PropertyName ?? value.ToString();
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            Value = value;
         }
 
-        public static Flow ToEnum(this string value)
+        public string Value { get; }
+
+        public static Flow Of(string value)
         {
-            foreach (var field in typeof(Flow).GetFields())
-            {
-                var attributes = field.GetCustomAttributes(typeof(JsonPropertyAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    continue;
-                }
-
-                var attribute = attributes[0] as JsonPropertyAttribute;
-                if (attribute != null && attribute.PropertyName == value)
-                {
-                    var enumVal = field.GetValue(null);
-
-                    if (enumVal is Flow)
-                    {
-                        return (Flow)enumVal;
-                    }
-                }
-            }
-
-            throw new Exception($"Unknown value {value} for enum Flow");
+            return _values.GetOrAdd(value,
+                                    _ => new Flow(value));
         }
+
+        public static implicit operator Flow(string value) => Of(value);
+        public static implicit operator string(Flow flow) => flow.Value;
+
+        public static Flow[] Values()
+        {
+            return _values.Values.ToArray();
+        }
+
+        public override string ToString() => Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        public bool IsKnown()
+        {
+            return _knownValues.ContainsKey(Value);
+        }
+
+        public override bool Equals(object? obj) => Equals(obj as Flow);
+
+        public bool Equals(Flow? other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other is null) return false;
+            return string.Equals(Value, other.Value);
+        }
+
+        public override int GetHashCode() => Value.GetHashCode();
     }
 }

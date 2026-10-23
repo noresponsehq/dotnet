@@ -47,13 +47,14 @@ namespace NoResponse.Tests
         private static AssessmentRequest Request() => new AssessmentRequest()
         {
             AccountId = "acct_7f3a9c",
+            Flow = Flow.Signup,
             Identifiers = new AssessmentRequestIdentifiers() { Email = "new.user@example.com" },
         };
 
         [Fact]
         public async Task CreateSendsAGeneratedIdempotencyKey()
         {
-            var http = new Scripted(_ => (HttpStatusCode.OK, Fixture("assessment-complete.json"), "application/json"));
+            var http = new Scripted(_ => (HttpStatusCode.OK, Fixture("assessment-view-complete.json"), "application/json"));
             var client = Client(http);
             await client.Assessments.CreateAsync(Request());
             await client.Assessments.CreateAsync(Request());
@@ -64,7 +65,7 @@ namespace NoResponse.Tests
         [Fact]
         public async Task CreateKeepsTheCallersIdempotencyKey()
         {
-            var http = new Scripted(_ => (HttpStatusCode.OK, Fixture("assessment-complete.json"), "application/json"));
+            var http = new Scripted(_ => (HttpStatusCode.OK, Fixture("assessment-view-complete.json"), "application/json"));
             await Client(http).Assessments.CreateAsync(Request(), idempotencyKey: "signup-usr_8f2k1-0001");
             Assert.Equal("signup-usr_8f2k1-0001", http.Keys.Single());
         }
@@ -74,7 +75,7 @@ namespace NoResponse.Tests
         {
             var http = new Scripted(n => n == 1
                 ? (HttpStatusCode.ServiceUnavailable, "{}", "application/problem+json")
-                : (HttpStatusCode.OK, Fixture("assessment-complete.json"), "application/json"));
+                : (HttpStatusCode.OK, Fixture("assessment-view-complete.json"), "application/json"));
             var retry = new RetryConfig(RetryConfig.RetryStrategy.BACKOFF, new BackoffStrategy(1L, 5L, 1000L, 1.1), false);
             await Client(http).Assessments.CreateAsync(Request(), retryConfig: retry);
             Assert.Equal(2, http.Keys.Count);
@@ -88,7 +89,7 @@ namespace NoResponse.Tests
             public override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken? cancellationToken = null)
             {
                 Seen.Add(request.Headers.Authorization?.ToString());
-                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(Fixture("assessment-complete.json"), Encoding.UTF8, "application/json"), RequestMessage = request });
+                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(Fixture("assessment-view-complete.json"), Encoding.UTF8, "application/json"), RequestMessage = request });
             }
         }
 

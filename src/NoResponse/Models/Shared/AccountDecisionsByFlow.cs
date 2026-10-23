@@ -10,7 +10,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// The decision for each flow. Every flow uses the tenant's signup thresholds today, so all three equal risk.decision.
+    /// The decision for each flow. Every flow uses the tenant's signup thresholds today, so all three are equal.
     /// </summary>
     public class AccountDecisionsByFlow
     {

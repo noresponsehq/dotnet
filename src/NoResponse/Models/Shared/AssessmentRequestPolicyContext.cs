@@ -2,17 +2,13 @@
 namespace NoResponse.Models.Shared
 {
     using Newtonsoft.Json;
-    using NoResponse.Models.Shared;
     using NoResponse.Utils;
 
+    /// <summary>
+    /// Optional policy inputs: region.
+    /// </summary>
     public class AssessmentRequestPolicyContext
     {
-        /// <summary>
-        /// The provider flow the assessment gates. Use the top-level flow instead; this member is ignored when the top-level flow is present. Absent means signup.
-        /// </summary>
-        [JsonProperty("flow", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public Flow? Flow { get; set; }
-
         /// <summary>
         /// ISO 3166-1 alpha-2 region of the signup, as the provider determines it.
         /// </summary>

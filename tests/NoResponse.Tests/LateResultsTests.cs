@@ -23,9 +23,9 @@ namespace NoResponse.Tests
         private static readonly DateTimeOffset Now = DateTimeOffset.FromUnixTimeSeconds(NowSeconds);
         private static readonly Dictionary<string, string> Secrets = new() { [Key] = Secret };
 
-        private static readonly JObject Review = WebhookTests.Fixture("valid/assessment-phone-uncovered-complete.json");
-        private static readonly JObject StepUp = WebhookTests.Fixture("valid/assessment-complete.json");
-        private static readonly JObject Pending = WebhookTests.Fixture("valid/assessment-pending.json");
+        private static readonly JObject StepUp = (JObject)WebhookTests.Fixture("valid/webhook-assessment-updated.json")["data"]!;
+        private static readonly JObject Review = WithDecision(StepUp, "review");
+        private static readonly JObject Pending = WebhookTests.Fixture("valid/assessment-view-pending.json");
         private static readonly JObject Expired = WebhookTests.Fixture("valid/webhook-assessment-expired.json");
 
         private static LateResultOptions Options(IReadOnlyDictionary<string, LateResultAction>? policy = null, Func<string, WebhookEvent, string?>? userId = null, DateTimeOffset? now = null) =>
@@ -34,7 +34,7 @@ namespace NoResponse.Tests
         private static (byte[] Raw, List<KeyValuePair<string, IEnumerable<string>>> Headers) Delivery(JObject data, string? accountId = null, bool test = false)
         {
             var copy = (JObject)data.DeepClone();
-            if (accountId is not null) copy["account_id"] = accountId;
+            if (accountId is not null) copy["detail"]!["account_id"] = accountId;
             var body = new JObject { ["id"] = "evt_01JA2ZB4N5P6Q7R8S9T0VWXYZ2", ["type"] = "assessment.updated", ["created_at"] = "2026-10-18T11:00:04Z", ["data"] = copy };
             if (test) body["test"] = true;
             var raw = Encoding.UTF8.GetBytes(body.ToString(Newtonsoft.Json.Formatting.None));
@@ -56,12 +56,20 @@ namespace NoResponse.Tests
             return Webhook.ConstructEvent(raw, headers, Secrets, now: Now);
         }
 
-        private static WebhookEvent Served(string status, string? recommendation)
+        private static JObject WithDecision(JObject assessment, string decision)
         {
-            var data = (JObject)StepUp.DeepClone();
+            var data = (JObject)assessment.DeepClone();
+            data["account"]!["risk"]!["decision"] = decision;
+            foreach (var flow in new[] { "signup", "login", "purchase" }) data["account"]!["decisions_by_flow"]![flow] = decision;
+            return data;
+        }
+
+        private static WebhookEvent Served(string status, string? decision)
+        {
+            var data = decision is null ? (JObject)StepUp.DeepClone() : WithDecision(StepUp, decision);
             data["status"] = status;
-            if (recommendation is null) data.Remove("recommendation"); else data["recommendation"] = recommendation;
-            data.Remove("risk");
+            data["detail"]!["status"] = status;
+            if (decision is null) data.Remove("account");
             return Event(data);
         }
 
@@ -139,9 +147,12 @@ namespace NoResponse.Tests
         }
 
         [Fact]
-        public void DefaultPolicyRevokesOnReviewAndNothingElse()
+        public void DefaultPolicyRevokesOnReviewOrBlockAndNothingElse()
         {
             Assert.Equal(LateResultAction.RevokeSessions, LateResults.Action(Served("complete", "review")));
+            Assert.Equal(LateResultAction.RevokeSessions, LateResults.Action(Served("complete", "block")));
+            Assert.Equal(LateResultAction.None, LateResults.Action(Served("complete", null)));
+            Assert.Equal(LateResultAction.None, LateResults.Action(Served("pending", "review")));
             Assert.Equal(LateResultAction.None, LateResults.Action(Served("complete", "step_up")));
             Assert.Equal(LateResultAction.None, LateResults.Action(Served("partial", "allow")));
             Assert.Equal(LateResultAction.None, LateResults.Action(Event(Pending)));
@@ -157,7 +168,8 @@ namespace NoResponse.Tests
             Assert.Equal(LateResultAction.None, LateResults.DefaultPolicy["allow"]);
             Assert.Equal(LateResultAction.None, LateResults.DefaultPolicy["step_up"]);
             Assert.Equal(LateResultAction.RevokeSessions, LateResults.DefaultPolicy["review"]);
-            Assert.Equal(3, LateResults.DefaultPolicy.Count);
+            Assert.Equal(LateResultAction.RevokeSessions, LateResults.DefaultPolicy["block"]);
+            Assert.Equal(4, LateResults.DefaultPolicy.Count);
         }
 
         [Fact]
@@ -181,7 +193,7 @@ namespace NoResponse.Tests
             var result = await LateResults.HandleAsync(raw, headers, Secrets, clerk, Options());
             Assert.Equal(LateResultAction.RevokeSessions, result.Action);
             Assert.Equal("user_2EXAMPLE", result.UserId);
-            Assert.Equal((string)Review["assessment_id"]!, Assert.IsType<Assessment>(result.Event.Data).AssessmentId);
+            Assert.Equal((string)Review["id"]!, Assert.IsType<Assessment>(result.Event.Data).Id);
             var calls = mock.Snapshot();
             Assert.Equal(new[] { "GET /v1/sessions", "POST /v1/sessions/sess_1/revoke", "POST /v1/sessions/sess_2/revoke" }, calls.Select(c => $"{c.Method} {c.Path}"));
             Assert.Equal(new Dictionary<string, string> { ["user_id"] = "user_2EXAMPLE", ["status"] = "active", ["limit"] = "100", ["offset"] = "0" }, calls[0].Query);

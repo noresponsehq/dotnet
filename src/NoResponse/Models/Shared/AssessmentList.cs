@@ -7,7 +7,7 @@ namespace NoResponse.Models.Shared
     using System.Collections.Generic;
 
     /// <summary>
-    /// Body of the 200 answer to POST /v1/assessments/query: one page of the calling tenant's unexpired assessments for one account, newest first, each at its latest assessment_version. Every item's account_id equals the page's. An assessment past its expires_at is not listed. next_cursor is present only when another page exists.
+    /// Body of the 200 answer to POST /v1/assessments/query: one page of the calling tenant's unexpired assessments for one account, newest first, each at its latest assessment_version, as its detail; the account's current risk is GET /v1/accounts/{account_id}. Every item's account_id equals the page's. An assessment past its expires_at is not listed. next_cursor is present only when another page exists.
     /// </summary>
     public class AssessmentList
     {
@@ -24,7 +24,7 @@ namespace NoResponse.Models.Shared
         public string AccountId { get; set; } = default!;
 
         [JsonProperty("items", Required = Newtonsoft.Json.Required.Always)]
-        public List<Assessment> Items { get; set; } = default!;
+        public List<AssessmentDetail> Items { get; set; } = default!;
 
         /// <summary>
         /// Opaque cursor for the next page, bound to your tenant and the account_id it was issued for. Pass it back unchanged in the next query; a tampered, foreign or expired cursor answers 400 invalid_cursor.

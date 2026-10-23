@@ -4,7 +4,7 @@ namespace NoResponse.Models.Shared
     using Newtonsoft.Json;
     using NoResponse.Utils;
 
-    public class AssessmentTiming
+    public class AssessmentDetailTiming
     {
         /// <summary>
         /// The budget the server applied to the synchronous answer.

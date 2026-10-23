@@ -10,7 +10,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v2.1.16 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v3.0.0 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -18,7 +18,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v2.1.16
+git -C third_party/noresponse-dotnet checkout v3.0.0
 git add third_party/noresponse-dotnet
 ```
 
@@ -35,17 +35,19 @@ var client = new NoResponseClient(); // reads NORESPONSE_API_KEY
 var response = await client.Assessments.CreateAsync(new AssessmentRequest
 {
     AccountId = "usr_8f2k1",
+    Flow = Flow.Signup,
     Identifiers = new AssessmentRequestIdentifiers { Email = "jordan.lee@example.com" },
 });
 
 var assessment = response.Result;
 if (Status.Pending.Equals(assessment.Status))
 {
-    // No recommendation yet. Apply your fallback now, then wait or take the webhook.
-    assessment = await client.Assessments.WaitAsync(assessment.AssessmentId);
+    // No decision yet. Apply your fallback now, then wait or take the webhook.
+    assessment = await client.Assessments.WaitAsync(assessment.Id);
 }
 
-Console.WriteLine(assessment.Recommendation); // allow, step_up or review
+Console.WriteLine(assessment.Account?.Risk.Decision); // allow, step_up, review or block
+Console.WriteLine(assessment.Detail.Risk?.Score);     // this assessment's own facts are under Detail
 ```
 
 Every method returns an envelope: `Result` holds the object and `Headers` the response headers (`X-Request-ID`, `Retry-After`, `Idempotent-Replayed`).
@@ -69,13 +71,14 @@ var created = await client.Assessments.CreateAsync(
     new AssessmentRequest
     {
         AccountId = "usr_8f2k1",
+        Flow = Flow.Signup,
         Identifiers = new AssessmentRequestIdentifiers { Email = "jordan.lee@example.com" },
         ResponseMode = ResponseMode.Detailed, // detailed needs the detailed scope
     },
     idempotencyKey: "signup-usr_8f2k1-0001");
 
-var latest = await client.Assessments.GetAsync(created.Result.AssessmentId);
-var settled = await client.Assessments.WaitAsync(created.Result.AssessmentId, timeout: TimeSpan.FromSeconds(30));
+var latest = await client.Assessments.GetAsync(created.Result.Id);
+var settled = await client.Assessments.WaitAsync(created.Result.Id, timeout: TimeSpan.FromSeconds(30));
 ```
 
 `WaitAsync` polls `GetAsync` until the status is `Complete`, sleeping the server's `Retry-After` (at least one second) between polls. When the timeout (default 30 s) passes it returns the latest answer if that is `Partial`, with its status still `Partial`, and throws `WaitTimeoutException`, which carries the last pending assessment, if the assessment is still `Pending`.
@@ -95,7 +98,7 @@ while (page != null)
 
 ```csharp
 await client.Assessments.RecordOutcomeAsync(
-    created.Result.AssessmentId,
+    created.Result.Id,
     new AssessmentOutcomeRequest { Outcome = Outcome.Chargeback, ExternalRef = "case-42" });
 ```
 
@@ -200,7 +203,7 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
         if (webhookEvent.Test) { return Results.NoContent(); } // SendTestEventAsync's fixed example assessment: apply nothing
         if (webhookEvent.Data is AccountDeleted erased) { /* account.deleted: you erased erased.AccountId with Accounts.DeleteAsync */ }
         else if (webhookEvent.IsExpired) { /* forget the assessment: GET now answers 404 */ }
-        else if (webhookEvent.Data is Assessment assessment) { /* keep the highest AssessmentVersion */ }
+        else if (webhookEvent.Data is Assessment assessment) { /* act on assessment.Account?.Risk.Decision; keep the highest Detail.AssessmentVersion */ }
         return Results.NoContent();
     }
     catch (WebhookVerificationException)
@@ -215,7 +218,7 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
 
 ### Late results
 
-An assessment can rise to `review` after the signup was allowed. `LateResults.HandleAsync` verifies the delivery with `ConstructEvent` first, applies your policy (`LateResults.DefaultPolicy` revokes sessions on `review` and does nothing otherwise) and acts through Clerk, WorkOS or Auth0. WorkOS has no block, so its ban deletes the user permanently.
+An account's decision can rise to `review` or `block` after the signup was allowed. `LateResults.HandleAsync` verifies the delivery with `ConstructEvent` first, applies your policy to `account.risk.decision` (`LateResults.DefaultPolicy` revokes sessions on `review` and `block` and does nothing otherwise) and acts through Clerk, WorkOS or Auth0. WorkOS has no block, so its ban deletes the user permanently.
 
 ```csharp
 using NoResponse.LateResults;
