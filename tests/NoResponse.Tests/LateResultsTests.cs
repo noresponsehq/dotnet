@@ -31,11 +31,11 @@ namespace NoResponse.Tests
         private static LateResultOptions Options(IReadOnlyDictionary<string, LateResultAction>? policy = null, Func<string, WebhookEvent, string?>? userId = null, DateTimeOffset? now = null) =>
             new() { Now = now ?? Now, Policy = policy, UserId = userId };
 
-        private static (byte[] Raw, List<KeyValuePair<string, IEnumerable<string>>> Headers) Delivery(JObject data, string? accountId = null, bool test = false)
+        private static (byte[] Raw, List<KeyValuePair<string, IEnumerable<string>>> Headers) Delivery(JObject data, string? accountId = null, bool test = false, string type = "assessment.updated")
         {
             var copy = (JObject)data.DeepClone();
             if (accountId is not null) copy["detail"]!["account_id"] = accountId;
-            var body = new JObject { ["id"] = "evt_01JA2ZB4N5P6Q7R8S9T0VWXYZ2", ["type"] = "assessment.updated", ["created_at"] = "2026-10-18T11:00:04Z", ["data"] = copy };
+            var body = new JObject { ["id"] = "evt_01JA2ZB4N5P6Q7R8S9T0VWXYZ2", ["type"] = type, ["created_at"] = "2026-10-18T11:00:04Z", ["data"] = copy };
             if (test) body["test"] = true;
             var raw = Encoding.UTF8.GetBytes(body.ToString(Newtonsoft.Json.Formatting.None));
             using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(Secret));
@@ -161,6 +161,8 @@ namespace NoResponse.Tests
             Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "account.deleted", "x", new AccountDeleted("acct_1", 1, "x"))));
             Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "tenant.deleted", "x", new TenantDeleted("tnt_1", "live", "x"))));
             Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "webhook_endpoint.disabled", "x", new EndpointDisabled("whe_1", "x", "x"))));
+            var blocked = new Account { Id = "acct_1", Risk = new AccountRisk { Score = 90, Decision = AccountDecision.Block } };
+            Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "account.risk_changed", "x", new AccountRiskChanged(blocked, new AccountDecisionsByFlow()))));
             var stepUpBan = new Dictionary<string, LateResultAction> { ["step_up"] = LateResultAction.Ban };
             Assert.Equal(LateResultAction.Ban, LateResults.Action(Served("complete", "step_up"), stepUpBan));
             Assert.Equal(LateResultAction.None, LateResults.Action(Served("complete", "review"), stepUpBan));
@@ -311,6 +313,14 @@ namespace NoResponse.Tests
                 var d = Delivery(data);
                 Assert.Equal(LateResultAction.None, (await LateResults.HandleAsync(d.Raw, d.Headers, Secrets, auth0, Options())).Action);
             }
+            // account.risk_changed is verified and typed, and acts on nothing: the
+            // assessment.updated that moved the decision does.
+            var changed = WebhookTests.Fixture("valid/webhook-account-risk-changed.json");
+            var c = Delivery((JObject)changed["data"]!, type: "account.risk_changed");
+            var ignored = await LateResults.HandleAsync(c.Raw, c.Headers, Secrets, auth0, Options());
+            Assert.Equal(LateResultAction.None, ignored.Action);
+            Assert.Equal("account.risk_changed", ignored.Event.Type);
+            Assert.Equal(AccountDecision.Review, Assert.IsType<AccountRiskChanged>(ignored.Event.Data).Account.DecisionsByFlow.Login);
             Assert.Equal(LateResultAction.None, (await LateResults.HandleAsync(raw, headers, Secrets, auth0, Options(userId: (_, _) => null))).Action);
             Assert.Empty(mock.Snapshot());
             var refused = await Assert.ThrowsAsync<ProviderActionException>(() => LateResults.HandleAsync(raw, headers, Secrets, auth0, Options()));

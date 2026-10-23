@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 70bd5ecd-d923-41ca-9a42-6e3360b4ce2f
 management:
-  docChecksum: 061ec99e3737ee70945459d85ed6cb4d
+  docChecksum: 63d786c05e4c88a51db1f5e4e1adff47
   docVersion: "1"
   speakeasyVersion: internal
   generationVersion: internal
-  releaseVersion: 3.0.9
-  configChecksum: b9a32d9716712c395bb94a1314def9a4
+  releaseVersion: 4.0.0
+  configChecksum: 9a9ae2e863af8f07dd38d3732414fe32
 features:
   csharp:
     additionalDependencies: 0.1.0
@@ -202,8 +202,6 @@ trackedFiles:
     last_write_checksum: sha1:fa23b6c9fc6e2d5db9bf8991a2209112b7ceb840
   docs/Models/Shared/EmailUnion.md:
     last_write_checksum: sha1:7dcb198f01c1da96f026400acf9730f576aac327
-  docs/Models/Shared/EventType.md:
-    last_write_checksum: sha1:700cfcf328119a248451132f348839ed88106115
   docs/Models/Shared/Failure.md:
     last_write_checksum: sha1:b946c70c48fd92d624973af5c4953aa7f9f60b8f
   docs/Models/Shared/FailureReason.md:
@@ -329,7 +327,7 @@ trackedFiles:
   docs/Models/Shared/Transport.md:
     last_write_checksum: sha1:1032732a9eddddb14e931ef7ed41294773d94f6d
   docs/Models/Shared/WebhookDeliveryAttempt.md:
-    last_write_checksum: sha1:c111e2467c33a39816a2d9fe5af2a6522d42af90
+    last_write_checksum: sha1:70633f5a49d7f256a49a74e8cae9b4e90fa217a3
   docs/Models/Shared/WebhookDeliveryAttemptStatus.md:
     last_write_checksum: sha1:fcb433adee400578710b528f31fd21d5c468f1af
   docs/Models/Shared/WebhookDeliveryList.md:
@@ -349,7 +347,7 @@ trackedFiles:
   docs/Models/Shared/WebhookKeyRotationRequest.md:
     last_write_checksum: sha1:9daf33b4d44abed8a71b970893c464fd6238b56f
   docs/Models/Shared/WebhookReplay.md:
-    last_write_checksum: sha1:49bbf8d3b161e20fcd70cefa36bc6e7a5bc2ae35
+    last_write_checksum: sha1:5008e1d2ac161be986b36a510f6ea1f0957a799c
   docs/Models/Shared/WebhookReplayRequest.md:
     last_write_checksum: sha1:97bbe30c0e5e3a903301bba0428af795c5a81d6d
   docs/Models/Shared/WebhookTest.md:
@@ -564,8 +562,6 @@ trackedFiles:
     last_write_checksum: sha1:d6e50f08783aee2fe5746543bfcff41d1b2967cb
   src/NoResponse/Models/Shared/EmailUnion.cs:
     last_write_checksum: sha1:9d944bc07fbb5074ec9c4e40dde3ed06c54e6821
-  src/NoResponse/Models/Shared/EventType.cs:
-    last_write_checksum: sha1:e8544e96a477c7aca38f2a0642bcd2c10a3d25e9
   src/NoResponse/Models/Shared/Failure.cs:
     last_write_checksum: sha1:5ca45abf5af9f42f602ed21c91a0fe68355bd9b5
   src/NoResponse/Models/Shared/FailureReason.cs:
@@ -691,7 +687,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/Transport.cs:
     last_write_checksum: sha1:ebedd2dc3835d34eb5b84c41a326b8f1594e129c
   src/NoResponse/Models/Shared/WebhookDeliveryAttempt.cs:
-    last_write_checksum: sha1:225746fd9581ee8ac704b42a6e132cc4c5fc152f
+    last_write_checksum: sha1:d1307e8d62522825ea6acf96a967c3dbd0cf2bef
   src/NoResponse/Models/Shared/WebhookDeliveryAttemptStatus.cs:
     last_write_checksum: sha1:78622cc36c1fcb81b0ad5ce86ef5c904b8adbd27
   src/NoResponse/Models/Shared/WebhookDeliveryList.cs:
@@ -711,7 +707,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/WebhookKeyRotationRequest.cs:
     last_write_checksum: sha1:660bf1f63e155e93ca2649ff38d92163d5f46ba0
   src/NoResponse/Models/Shared/WebhookReplay.cs:
-    last_write_checksum: sha1:43eb461a5f0b036451509ab55c419190d9c59f28
+    last_write_checksum: sha1:51d74b4cbc4ccc2e773002b9c49f4548782a4dd6
   src/NoResponse/Models/Shared/WebhookReplayRequest.cs:
     last_write_checksum: sha1:af8fc2393a2692072782535f2bda20ebcfffd763
   src/NoResponse/Models/Shared/WebhookTest.cs:
@@ -725,17 +721,17 @@ trackedFiles:
   src/NoResponse/Models/Shared/WebsiteUnion.cs:
     last_write_checksum: sha1:53bf6746b6b3c7af983c7a485eded1378eb80ed7
   src/NoResponse/NoResponse.csproj:
-    last_write_checksum: sha1:bb3acf53119352fa474774de987c0ad8f43602e6
+    last_write_checksum: sha1:b9743a4913b74a1df02d6c8c270ba74890196bc7
   src/NoResponse/NoResponseClient.cs:
     last_write_checksum: sha1:1f61182e11615c09b0c6dc14a3f1696cc732263e
   src/NoResponse/SDKConfig.cs:
-    last_write_checksum: sha1:57ad5a7a53239490e65be8562f7c706e8f48127d
+    last_write_checksum: sha1:c701af53359af5b3896243f0f4fb850d8cb6e368
   src/NoResponse/Utils/AnyDeserializer.cs:
     last_write_checksum: sha1:2fc4560840c33ca0a329e2c1a4122510eecf6aec
   src/NoResponse/Utils/BigIntStrConverter.cs:
     last_write_checksum: sha1:8803aa46f7bca5595c22751ede125e3c4e993856
   src/NoResponse/Utils/Constants.cs:
-    last_write_checksum: sha1:0f5ec6a42ea7573dac58bc1d9e669c5b13288767
+    last_write_checksum: sha1:6e7ddce7ff87995cccfed09c387bac4d2da3be7a
   src/NoResponse/Utils/DecimalStrConverter.cs:
     last_write_checksum: sha1:1fa9c1159f476245dfff02718e434accbba46136
   src/NoResponse/Utils/EnumConverter.cs:

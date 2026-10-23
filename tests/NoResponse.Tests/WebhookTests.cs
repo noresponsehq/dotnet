@@ -227,6 +227,52 @@ namespace NoResponse.Tests
             });
         }
 
+        [Fact]
+        public void AccountRiskChangedEvent()
+        {
+            var secrets = new Dictionary<string, string> { ["whk_sdktest01"] = "secret" };
+            var changed = Fixture("valid/webhook-account-risk-changed.json");
+            var (raw, headers) = Signed(changed, "secret", (string)changed["id"]!);
+            var ev = Webhook.ConstructEvent(raw, headers, secrets, now: Now);
+            Assert.Equal("account.risk_changed", ev.Type);
+            Assert.Equal((string)changed["id"]!, ev.Id);
+            Assert.False(ev.IsExpired);
+            Assert.False(ev.Test);
+            var data = Assert.IsType<AccountRiskChanged>(ev.Data);
+            // data.Account is the same type Accounts.GetAsync returns.
+            Account account = data.Account;
+            Assert.Equal("acct_7f3a9c", account.Id);
+            Assert.Equal("1", account.SchemaVersion);
+            Assert.Equal(70, account.Risk.Score);
+            Assert.Equal(AccountDecision.Review, account.Risk.Decision);
+            Assert.Equal(2, account.Risk.Reasons.Count);
+            Assert.Equal("recent_password_exposure", account.Risk.Reasons[0].Code.Value);
+            Assert.Equal(55, account.Risk.Reasons[0].Weight);
+            Assert.Equal("asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM", account.AssessmentId);
+            Assert.Equal("2026-10-23T09:00:04.812Z", account.UpdatedAt);
+            Assert.Equal(new[] { "review", "review", "review" },
+                new[] { account.DecisionsByFlow.Signup.Value, account.DecisionsByFlow.Login.Value, account.DecisionsByFlow.Purchase.Value });
+            var previous = data.PreviousDecisionsByFlow;
+            Assert.Equal(new[] { "allow", "allow", "allow" },
+                new[] { previous.Signup.Value, previous.Login.Value, previous.Purchase.Value });
+            Assert.Throws<WebhookVerificationException>(() => Webhook.VerificationResponse(ev));
+            foreach (var mutate in new Action<JObject>[]
+            {
+                d => d.Remove("previous_decisions_by_flow"),
+                d => ((JObject)d["previous_decisions_by_flow"]!).Remove("login"),
+                d => ((JObject)d["account"]!).Remove("decisions_by_flow"),
+                d => ((JObject)d["account"]!["risk"]!).Remove("score"),
+                d => d["account"] = "acct_7f3a9c",
+                d => d["account"]!["id"] = "jane@example.com",
+            })
+            {
+                var bad = Fixture("valid/webhook-account-risk-changed.json");
+                mutate((JObject)bad["data"]!);
+                var (payload, badHeaders) = Signed(bad, "secret", (string)bad["id"]!);
+                Refused(WebhookErrorCode.InvalidPayload, payload, badHeaders, secrets);
+            }
+        }
+
         // ASP.NET Core's Request.Headers enumerates KeyValuePair<string, StringValues>,
         // a struct value type; this stands in for StringValues.
         private readonly struct HeaderValues : IEnumerable<string>

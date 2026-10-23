@@ -67,11 +67,20 @@ namespace NoResponse.Webhooks
     public sealed record EndpointDisabled(string EndpointId, string FailingSince, string DisabledAt);
 
     /// <summary>
+    /// The account's decision for at least one flow changed. Account is the account exactly as
+    /// Accounts.GetAsync returns it, with its new risk and decisions; PreviousDecisionsByFlow holds
+    /// the decisions it replaced. It is not sent when the score moves within the same decision, nor
+    /// for an account's first risk.
+    /// </summary>
+    public sealed record AccountRiskChanged(Account Account, AccountDecisionsByFlow PreviousDecisionsByFlow);
+
+    /// <summary>
     /// A verified delivery. Data is an <see cref="Assessment"/> (exactly as Assessments.GetAsync
     /// returns it) or an <see cref="AssessmentExpired"/> for type "assessment.updated", an
     /// <see cref="EndpointVerification"/> for "endpoint.verification", an
     /// <see cref="AccountDeleted"/> for "account.deleted", a <see cref="TenantDeleted"/> for
-    /// "tenant.deleted" and an <see cref="EndpointDisabled"/> for "webhook_endpoint.disabled".
+    /// "tenant.deleted", an <see cref="EndpointDisabled"/> for "webhook_endpoint.disabled"
+    /// and an <see cref="AccountRiskChanged"/> for "account.risk_changed".
     /// Deliveries are at least
     /// once and unordered: deduplicate on Id and keep the highest Detail.AssessmentVersion.
     /// </summary>
@@ -290,6 +299,29 @@ namespace NoResponse.Webhooks
                     throw new WebhookVerificationException(WebhookErrorCode.InvalidPayload, "Endpoint disabled event is malformed");
                 }
                 return new EndpointDisabled((string)endpointId!, (string)failingSince!, (string)disabledAt!);
+            }
+            if (type == "account.risk_changed")
+            {
+                try
+                {
+                    if (data["account"] is not JObject account || data["previous_decisions_by_flow"] is not JObject previous)
+                    {
+                        throw new WebhookVerificationException(WebhookErrorCode.InvalidPayload, "Account risk changed event is malformed");
+                    }
+                    var parsed = ResponseBodyDeserializer.DeserializeNotNull<Account>(
+                        account.ToString(Formatting.None), missingMemberHandling: MissingMemberHandling.Ignore);
+                    var before = ResponseBodyDeserializer.DeserializeNotNull<AccountDecisionsByFlow>(
+                        previous.ToString(Formatting.None), missingMemberHandling: MissingMemberHandling.Ignore);
+                    if (parsed.Id is null || !AccountId.IsMatch(parsed.Id))
+                    {
+                        throw new WebhookVerificationException(WebhookErrorCode.InvalidPayload, "Account risk changed event is malformed");
+                    }
+                    return new AccountRiskChanged(parsed, before);
+                }
+                catch (Exception e) when (e is JsonException || e is ArgumentException || e is FormatException || e.Message.StartsWith("Deserialization error", StringComparison.Ordinal))
+                {
+                    throw new WebhookVerificationException(WebhookErrorCode.InvalidPayload, "Account risk changed event is malformed");
+                }
             }
             if (type != "assessment.updated")
             {

@@ -2,12 +2,7 @@
 namespace NoResponse.Models.Shared
 {
     using Newtonsoft.Json;
-    using NoResponse.Models.Shared;
     using NoResponse.Utils;
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
     /// The 202 answer of POST /v1/webhooks/{endpoint_id}/deliveries/{event_id}/replay: the event queued to be sent again.
@@ -26,7 +21,10 @@ namespace NoResponse.Models.Shared
         [JsonProperty("event_id", Required = Newtonsoft.Json.Required.Always)]
         public string EventId { get; set; } = default!;
 
+        /// <summary>
+        /// The event's type, as its body's type: assessment.updated, account.deleted or account.risk_changed.
+        /// </summary>
         [JsonProperty("event_type", Required = Newtonsoft.Json.Required.Always)]
-        public EventType EventType { get; set; } = default!;
+        public string EventType { get; set; } = default!;
     }
 }

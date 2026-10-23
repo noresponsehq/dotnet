@@ -12,7 +12,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v3.0.9 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v4.0.0 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -20,7 +20,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v3.0.9
+git -C third_party/noresponse-dotnet checkout v4.0.0
 git add third_party/noresponse-dotnet
 ```
 
@@ -206,6 +206,7 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
         if (webhookEvent.Data is AccountDeleted erased) { /* account.deleted: you erased erased.AccountId with Accounts.DeleteAsync */ }
         else if (webhookEvent.Data is TenantDeleted gone) { /* tenant.deleted: the workspace is deleted; the last event for gone.Environment */ }
         else if (webhookEvent.Data is EndpointDisabled disabled) { /* disabled.EndpointId failed for 72 hours: fix it, verify it again */ }
+        else if (webhookEvent.Data is AccountRiskChanged changed) { /* account.risk_changed: changed.Account is the Account Accounts.GetAsync returns; changed.PreviousDecisionsByFlow holds the decisions it replaced */ }
         else if (webhookEvent.IsExpired) { /* forget the assessment: GET now answers 404 */ }
         else if (webhookEvent.Data is Assessment assessment) { /* act on assessment.Account?.Risk.Decision; keep the highest Detail.AssessmentVersion */ }
         return Results.NoContent();
@@ -222,7 +223,7 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
 
 ### Late results
 
-An account's decision can rise to `review` or `block` after the signup was allowed. `LateResults.HandleAsync` verifies the delivery with `ConstructEvent` first, applies your policy to `account.risk.decision` (`LateResults.DefaultPolicy` revokes sessions on `review` and `block` and does nothing otherwise) and acts through Clerk, WorkOS or Auth0. WorkOS has no block, so its ban deletes the user permanently.
+An account's decision can rise to `review` or `block` after the signup was allowed. `LateResults.HandleAsync` verifies the delivery with `ConstructEvent` first, applies your policy to `account.risk.decision` (`LateResults.DefaultPolicy` revokes sessions on `review` and `block` and does nothing otherwise) and acts through Clerk, WorkOS or Auth0. WorkOS has no block, so its ban deletes the user permanently. An `account.risk_changed` event acts on nothing: the handler acts on the `assessment.updated` that changed the decision.
 
 ```csharp
 using NoResponse.LateResults;
