@@ -21,6 +21,18 @@ namespace NoResponse.Models.Shared
         public string AccountId { get; set; } = default!;
 
         /// <summary>
+        /// The customer event an assessment is made for: signup (a new account), login (a returning sign-in) or purchase (a payment or credit grant). The account's risk is reported with the decision for this flow.
+        /// </summary>
+        [JsonProperty("flow", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public AssessmentFlow? Flow { get; set; }
+
+        /// <summary>
+        /// How long the synchronous answer waits for sources. quick waits only for the fast sources, those that answer within 500 ms of ingress (or deadline_ms when lower); full waits for the whole budget, up to 3000 ms. Sources still running at the cut continue asynchronously and update the assessment either way.
+        /// </summary>
+        [JsonProperty("depth", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public Depth? Depth { get; set; }
+
+        /// <summary>
         /// At least one of email, username or phone. name and ip refine the match and travel beside a lookup identifier; a body with only name or ip is refused with 400.
         /// </summary>
         [JsonProperty("identifiers", Required = Newtonsoft.Json.Required.Always)]

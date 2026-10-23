@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.11
+
+* `Sdk.Assessments.Create()`:  `request.body` **Changed**
+
 ## 2.1.10
 
 No changes detected.

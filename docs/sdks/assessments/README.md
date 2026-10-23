@@ -174,13 +174,13 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
+        Flow = AssessmentFlow.Signup,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new_user_42",
             Phone = "+447700900123",
         },
         PolicyContext = new AssessmentRequestPolicyContext() {
-            Flow = Flow.Signup,
             Region = "GB",
         },
         RequestId = "req-2026-10-14-0001",
@@ -204,6 +204,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
+        Flow = AssessmentFlow.Signup,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
         },
@@ -226,6 +227,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_8412",
+        Flow = AssessmentFlow.Signup,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "jane.doe@example.com",
             Username = "janedoe",
@@ -234,7 +236,6 @@ var res = await sdk.Assessments.CreateAsync(
             Ip = "73.162.18.45",
         },
         PolicyContext = new AssessmentRequestPolicyContext() {
-            Flow = Flow.Signup,
             Region = "US",
         },
         RequestId = "req_01",
