@@ -525,6 +525,91 @@ namespace NoResponse.Tests
             Assert.Equal(new[] { "DELETE /api/v2/users/auth0%7Cabc/sessions" }, scoped.Snapshot().Select(c => $"{c.Method} {c.Path}"));
         }
 
+        private const string TooMany = "{\"statusCode\":429,\"error\":\"Too Many Requests\",\"message\":\"Global limit has been reached\",\"errorCode\":\"too_many_requests\"}";
+
+        /// <summary>
+        /// An HttpClient handler standing in for the Management API: it answers 429 once, with that entry's headers, to
+        /// each call named in Limited (a GET by its type query) and passes everything else to the route.
+        /// </summary>
+        private sealed class RateLimitedHandler : System.Net.Http.HttpMessageHandler
+        {
+            private readonly Func<Call, (int Status, string? Body)?> route;
+            public Dictionary<string, Dictionary<string, string>> Limited { get; }
+            public List<string> Sent { get; } = new();
+
+            public RateLimitedHandler(Dictionary<string, Dictionary<string, string>> limited, Func<Call, (int Status, string? Body)?> route)
+            {
+                Limited = limited;
+                this.route = route;
+            }
+
+            protected override async Task<System.Net.Http.HttpResponseMessage> SendAsync(System.Net.Http.HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+            {
+                var uri = request.RequestUri!;
+                var query = new Dictionary<string, string>();
+                foreach (var pair in uri.Query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    var eq = pair.IndexOf('=');
+                    query[Uri.UnescapeDataString(pair.Substring(0, eq))] = Uri.UnescapeDataString(pair.Substring(eq + 1));
+                }
+                var body = request.Content is null ? null : await request.Content.ReadAsStringAsync(cancellationToken);
+                var call = new Call(request.Method.Method, uri.AbsolutePath, query, null, null, null, body);
+                var key = call.Method == "GET" ? $"GET {query["type"]}" : $"{call.Method} {call.Path}";
+                lock (Sent)
+                {
+                    Sent.Add(key);
+                    if (Limited.Remove(key, out var headers))
+                    {
+                        var limited = new System.Net.Http.HttpResponseMessage((HttpStatusCode)429) { Content = new System.Net.Http.StringContent(TooMany) };
+                        foreach (var (name, value) in headers) limited.Headers.TryAddWithoutValidation(name, value);
+                        return limited;
+                    }
+                }
+                var (status, text) = route(call) ?? (404, "{\"error\":\"not found\"}");
+                return new System.Net.Http.HttpResponseMessage((HttpStatusCode)status) { Content = new System.Net.Http.StringContent(text ?? "") };
+            }
+        }
+
+        [Fact]
+        public async Task Auth0WaitsOutA429FromTheManagementApiAndRetriesTheCall()
+        {
+            var tenant = new Auth0WithoutSessionsApi("auth0%7Cabc");
+            // One 429 each: Retry-After, an X-RateLimit-Reset already past, and no header (the backoff).
+            var handler = new RateLimitedHandler(
+                new Dictionary<string, Dictionary<string, string>>
+                {
+                    ["GET refresh_token"] = new() { ["Retry-After"] = "0" },
+                    ["DELETE /api/v2/device-credentials/dcr_a"] = new() { ["X-RateLimit-Reset"] = (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - 5).ToString(System.Globalization.CultureInfo.InvariantCulture) },
+                    ["DELETE /api/v2/device-credentials/dcr_b"] = new(),
+                },
+                tenant.Route);
+            using var client = new System.Net.Http.HttpClient(handler);
+            var auth0 = (ILateResultActor)LateResults.Auth0("mgmt_token", baseUrl: "https://tenant.example/api/v2", httpClient: client);
+            Assert.Equal(LateResultAction.Ban, await auth0.ActAsync(LateResultAction.RevokeSessions, "auth0|abc"));
+            Assert.True(tenant.Blocked);
+            Assert.Equal(0, tenant.Left);
+            Assert.Empty(handler.Limited);
+            Assert.Equal(2, handler.Sent.Count(k => k == "GET refresh_token"));
+            Assert.Equal(2, handler.Sent.Count(k => k == "DELETE /api/v2/device-credentials/dcr_a"));
+            Assert.Equal(2, handler.Sent.Count(k => k == "DELETE /api/v2/device-credentials/dcr_b"));
+        }
+
+        [Fact]
+        public async Task Auth0ThrowsA429AtOnceWhenTheWaitItAsksForPassesTheBudget()
+        {
+            var handler = new RateLimitedHandler(
+                new Dictionary<string, Dictionary<string, string>> { ["DELETE /api/v2/users/auth0%7Cabc/sessions"] = new() { ["Retry-After"] = "60" } },
+                _ => (200, "{}"));
+            using var client = new System.Net.Http.HttpClient(handler);
+            var auth0 = (ILateResultActor)LateResults.Auth0("mgmt_token", baseUrl: "https://tenant.example/api/v2", httpClient: client);
+            var started = System.Diagnostics.Stopwatch.StartNew();
+            var limited = await Assert.ThrowsAsync<ProviderActionException>(() => auth0.ActAsync(LateResultAction.RevokeSessions, "auth0|abc"));
+            Assert.Equal(429, limited.Status);
+            Assert.Equal("too_many_requests", limited.Code);
+            Assert.True(started.Elapsed < TimeSpan.FromSeconds(1));
+            Assert.Equal(new[] { "DELETE /api/v2/users/auth0%7Cabc/sessions" }, handler.Sent);
+        }
+
         private sealed class PlainProvider : ILateResultProvider
         {
             public List<string> Done { get; } = new();

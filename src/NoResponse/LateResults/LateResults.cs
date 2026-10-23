@@ -245,13 +245,16 @@ namespace NoResponse.LateResults
         /// refresh_token and rotating_refresh_token), which every plan has. A login session cannot be ended, so revoking
         /// blocks the user before deleting the refresh tokens, and ActAsync reports Ban. Unblock the user in the
         /// dashboard to undo it. Any other refusal, such as 403 insufficient_scope, throws.
+        /// A 429 from the Management API is waited out and retried: Retry-After, else X-RateLimit-Reset, else 250 ms
+        /// doubling, at most 4 retries a call and 3 s of waiting a revoke or ban. Past that the 429 throws as
+        /// ProviderActionException.
         /// </summary>
         public static ILateResultProvider Auth0(string token, string? domain = null, string? baseUrl = null, HttpClient? httpClient = null)
         {
             if (string.IsNullOrEmpty(token)) throw new ArgumentException("Auth0 needs a token", nameof(token));
             var root = baseUrl ?? (string.IsNullOrEmpty(domain) ? null : $"https://{domain}/api/v2");
             if (root is null) throw new ArgumentException("Auth0 needs a domain or a base URL", nameof(domain));
-            return new Auth0Provider(new Caller("auth0", root, token, httpClient));
+            return new Auth0Provider(new Caller("auth0", root, token, httpClient, retryRateLimits: true));
         }
 
         /// <summary>
@@ -305,20 +308,67 @@ namespace NoResponse.LateResults
             return null;
         }
 
+        /// <summary>
+        /// Rate limits. Auth0 answers 429 when the Management API rate limit is hit, and a 429 means it did not act, so
+        /// the call is safe to send again, a DELETE included. One revoke or ban waits at most RateLimitBudget in all,
+        /// and each call retries at most RateLimitRetries times: it waits Retry-After seconds, else until
+        /// X-RateLimit-Reset (Unix seconds), else 250 ms, 500 ms, 1 s, 2 s. A wait that would pass the budget is not
+        /// started: the 429 throws at once as ProviderActionException, the webhook answers 5xx and NoResponse
+        /// delivers it again later. The budget keeps the handler inside the 5 s a delivery has to be answered.
+        /// </summary>
+        private const int RateLimitRetries = 4;
+        private static readonly TimeSpan RateLimitBudget = TimeSpan.FromSeconds(3);
+        private static readonly TimeSpan RateLimitBackoff = TimeSpan.FromMilliseconds(250);
+
+        /// <summary>How long a 429 asks to wait.</summary>
+        private static TimeSpan RateLimitWait(HttpResponseMessage response, int retry)
+        {
+            var after = Number(Header(response, "Retry-After"));
+            // Capped at an hour so a huge header cannot overflow; anything past the budget gives up anyway.
+            if (after is { } delay && delay >= 0) return TimeSpan.FromSeconds(Math.Min(delay, 3600));
+            var reset = Number(Header(response, "X-RateLimit-Reset"));
+            if (reset is { } at)
+            {
+                var seconds = at - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000.0;
+                return TimeSpan.FromSeconds(Math.Clamp(seconds, 0, 3600));
+            }
+            return TimeSpan.FromMilliseconds(RateLimitBackoff.TotalMilliseconds * Math.Pow(2, retry));
+        }
+
+        private static string? Header(HttpResponseMessage response, string name)
+        {
+            if (response.Headers.TryGetValues(name, out var values) || response.Content.Headers.TryGetValues(name, out values))
+            {
+                foreach (var value in values) return value.Trim();
+            }
+            return null;
+        }
+
+        private static double? Number(string? text) =>
+            double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var value) && !double.IsNaN(value) && !double.IsInfinity(value) ? value : null;
+
         private sealed class Caller
         {
             private readonly string name;
             private readonly string baseUrl;
+            private readonly string credential;
             private readonly string authorization;
             private readonly HttpClient client;
+            private readonly bool retryRateLimits;
+            private TimeSpan waited = TimeSpan.Zero;
 
-            public Caller(string name, string baseUrl, string credential, HttpClient? client)
+            public Caller(string name, string baseUrl, string credential, HttpClient? client, bool retryRateLimits = false)
             {
                 this.name = name;
                 this.baseUrl = baseUrl.TrimEnd('/');
+                this.credential = credential;
                 authorization = "Bearer " + credential;
                 this.client = client ?? SharedClient;
+                this.retryRateLimits = retryRateLimits;
             }
+
+            /// <summary>A caller with the same settings and its own rate-limit budget, for one action.</summary>
+            public Caller Fresh() => new Caller(name, baseUrl, credential, client, retryRateLimits);
 
             public async Task<JToken?> SendAsync(HttpMethod method, string path, IEnumerable<KeyValuePair<string, string>>? query, JObject? body, bool allow404, CancellationToken cancellationToken)
             {
@@ -329,15 +379,34 @@ namespace NoResponse.LateResults
                     url.Append(separator).Append(Uri.EscapeDataString(pair.Key)).Append('=').Append(Uri.EscapeDataString(pair.Value));
                     separator = '&';
                 }
-                using var request = new HttpRequestMessage(method, new Uri(url.ToString()));
-                request.Headers.TryAddWithoutValidation("Authorization", authorization);
-                request.Headers.TryAddWithoutValidation("Accept", "application/json");
-                if (body is not null)
+                var target = new Uri(url.ToString());
+                for (var retry = 0; ; retry++)
                 {
-                    request.Content = new StringContent(body.ToString(Newtonsoft.Json.Formatting.None), Encoding.UTF8, "application/json");
+                    using var request = new HttpRequestMessage(method, target);
+                    request.Headers.TryAddWithoutValidation("Authorization", authorization);
+                    request.Headers.TryAddWithoutValidation("Accept", "application/json");
+                    if (body is not null)
+                    {
+                        request.Content = new StringContent(body.ToString(Newtonsoft.Json.Formatting.None), Encoding.UTF8, "application/json");
+                    }
+                    using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+                    var text = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+                    if ((int)response.StatusCode == 429 && retryRateLimits && retry < RateLimitRetries)
+                    {
+                        var wait = RateLimitWait(response, retry);
+                        if (waited + wait <= RateLimitBudget)
+                        {
+                            waited += wait;
+                            await Task.Delay(wait, cancellationToken).ConfigureAwait(false);
+                            continue;
+                        }
+                    }
+                    return Answer(method, path, response, text, allow404);
                 }
-                using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-                var text = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            }
+
+            private JToken? Answer(HttpMethod method, string path, HttpResponseMessage response, string text, bool allow404)
+            {
                 if (allow404 && response.StatusCode == HttpStatusCode.NotFound)
                 {
                     return null;
@@ -475,10 +544,11 @@ namespace NoResponse.LateResults
             public async Task BanAsync(string userId, CancellationToken cancellationToken = default)
             {
                 var user = Segment(userId);
-                await BlockAsync(user, cancellationToken).ConfigureAwait(false);
+                var call = this.call.Fresh();
+                await BlockAsync(call, user, cancellationToken).ConfigureAwait(false);
                 // The block already ends a session the plan cannot delete.
-                await DeleteSessionsAsync(user, cancellationToken).ConfigureAwait(false);
-                await DeleteRefreshTokensAsync(userId, user, cancellationToken).ConfigureAwait(false);
+                await DeleteSessionsAsync(call, user, cancellationToken).ConfigureAwait(false);
+                await DeleteRefreshTokensAsync(call, userId, user, cancellationToken).ConfigureAwait(false);
             }
 
             public async Task<LateResultAction> ActAsync(LateResultAction action, string userId, CancellationToken cancellationToken = default)
@@ -494,24 +564,25 @@ namespace NoResponse.LateResults
             private async Task<LateResultAction> RevokeAsync(string userId, CancellationToken cancellationToken)
             {
                 var user = Segment(userId);
-                var ended = await DeleteSessionsAsync(user, cancellationToken).ConfigureAwait(false);
+                var call = this.call.Fresh();
+                var ended = await DeleteSessionsAsync(call, user, cancellationToken).ConfigureAwait(false);
                 // Without the sessions API a login session survives; blocking is the only way to end it.
                 if (!ended)
                 {
-                    await BlockAsync(user, cancellationToken).ConfigureAwait(false);
+                    await BlockAsync(call, user, cancellationToken).ConfigureAwait(false);
                 }
-                await DeleteRefreshTokensAsync(userId, user, cancellationToken).ConfigureAwait(false);
+                await DeleteRefreshTokensAsync(call, userId, user, cancellationToken).ConfigureAwait(false);
                 return ended ? LateResultAction.RevokeSessions : LateResultAction.Ban;
             }
 
             /// <summary>Auth0 answers 403 feature_not_enabled when the tenant's plan does not include an endpoint.</summary>
             private static bool NotOnPlan(ProviderActionException e) => e.Status == 403 && e.Code == "feature_not_enabled";
 
-            private Task BlockAsync(string user, CancellationToken cancellationToken) =>
+            private static Task BlockAsync(Caller call, string user, CancellationToken cancellationToken) =>
                 call.SendAsync(HttpMethod.Patch, $"/users/{user}", null, new JObject { ["blocked"] = true }, true, cancellationToken);
 
             /// <summary>End every session; false when the plan has no sessions API.</summary>
-            private async Task<bool> DeleteSessionsAsync(string user, CancellationToken cancellationToken)
+            private static async Task<bool> DeleteSessionsAsync(Caller call, string user, CancellationToken cancellationToken)
             {
                 try
                 {
@@ -524,7 +595,7 @@ namespace NoResponse.LateResults
                 }
             }
 
-            private async Task DeleteRefreshTokensAsync(string userId, string user, CancellationToken cancellationToken)
+            private static async Task DeleteRefreshTokensAsync(Caller call, string userId, string user, CancellationToken cancellationToken)
             {
                 try
                 {
