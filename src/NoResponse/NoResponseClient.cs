@@ -26,6 +26,11 @@ namespace NoResponse
         public IAssessments Assessments { get; }
 
         /// <summary>
+        /// Your accounts, each with one current risk, and their assessment history.
+        /// </summary>
+        public IAccounts Accounts { get; }
+
+        /// <summary>
         /// Your own API keys.
         /// </summary>
         public IKeys Keys { get; }
@@ -58,6 +63,10 @@ namespace NoResponse
         /// </summary>
         public IAssessments Assessments { get; private set; }
         /// <summary>
+        /// The Accounts sub-SDK.
+        /// </summary>
+        public IAccounts Accounts { get; private set; }
+        /// <summary>
         /// The Keys sub-SDK.
         /// </summary>
         public IKeys Keys { get; private set; }
@@ -80,6 +89,8 @@ namespace NoResponse
             InitHooks();
 
             Assessments = new Assessments(SDKConfiguration);
+
+            Accounts = new Accounts(SDKConfiguration);
 
             Keys = new Keys(SDKConfiguration);
 
@@ -155,6 +166,8 @@ namespace NoResponse
             InitHooks();
 
             Assessments = new Assessments(SDKConfiguration);
+
+            Accounts = new Accounts(SDKConfiguration);
 
             Keys = new Keys(SDKConfiguration);
 

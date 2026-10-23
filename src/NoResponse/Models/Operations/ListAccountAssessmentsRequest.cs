@@ -1,0 +1,38 @@
+#nullable enable
+namespace NoResponse.Models.Operations
+{
+    using Newtonsoft.Json;
+    using NoResponse.Models.Shared;
+    using NoResponse.Utils;
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    public class ListAccountAssessmentsRequest
+    {
+        /// <summary>
+        /// The account_id the tenant sends with its assessments, as one path segment (percent-encode '|' and ':' if the client requires it). A value that does not match the account_id shape answers 400 invalid_request.
+        /// </summary>
+        [NoResponseMetadata("pathParam:style=simple,explode=false,name=account_id")]
+        public string AccountId { get; set; } = default!;
+
+        /// <summary>
+        /// Items per page.
+        /// </summary>
+        [NoResponseMetadata("queryParam:style=form,explode=true,name=limit")]
+        public long? Limit { get; set; } = 20;
+
+        /// <summary>
+        /// next_cursor from the previous page, unchanged.
+        /// </summary>
+        [NoResponseMetadata("queryParam:style=form,explode=true,name=cursor")]
+        public string? Cursor { get; set; }
+
+        /// <summary>
+        /// Optional standard or separately authorised detailed customer view; raw is rejected.
+        /// </summary>
+        [NoResponseMetadata("queryParam:style=form,explode=true,name=response_mode")]
+        public ResponseMode? ResponseMode { get; set; }
+    }
+}
