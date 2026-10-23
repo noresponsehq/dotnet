@@ -54,3 +54,4 @@ var custom = ReasonCode.Of("custom_value");
 | `ContextLineCountryMismatch`  | context_line_country_mismatch |
 | `PriorAbuseLink`              | prior_abuse_link              |
 | `TestScenario`                | test_scenario                 |
+| `SharedApiKey`                | shared_api_key                |
