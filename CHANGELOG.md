@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.10
+
+No changes detected.
+
 ## 2.1.9
 
 * `Sdk.WebhookEndpoints.ListDeliveries()`: **Added**

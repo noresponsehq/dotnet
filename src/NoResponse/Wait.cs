@@ -26,16 +26,18 @@ namespace NoResponse
         public Assessment Last { get; }
     }
 
-    /// <summary>Wait for a pending assessment. Hand-written beside the generated client.</summary>
+    /// <summary>Wait for an assessment to complete. Hand-written beside the generated client.</summary>
     public static class Wait
     {
         public static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
 
         /// <summary>
-        /// Poll GetAsync until the assessment is no longer pending, sleeping for the
-        /// Retry-After the API sends (at least 1 s) between polls.
+        /// Poll GetAsync until the assessment's status is complete, sleeping for the
+        /// Retry-After the API sends (at least 1 s) between polls. When the timeout
+        /// (default 30 s) passes, a partial answer is returned as it stands, its
+        /// status still <c>Status.Partial</c>.
         /// </summary>
-        /// <exception cref="WaitTimeoutException">The timeout (default 30 s) passed first.</exception>
+        /// <exception cref="WaitTimeoutException">The timeout passed while the assessment was still pending.</exception>
         public static async Task<Assessment> WaitAsync(
             this IAssessments assessments,
             string assessmentId,
@@ -56,7 +58,7 @@ namespace NoResponse
                 {
                     if (last is not null)
                     {
-                        throw new WaitTimeoutException(assessmentId, last);
+                        return TimedOut(assessmentId, last);
                     }
                     throw new TimeoutException($"Timed out waiting for assessment {assessmentId}");
                 }
@@ -71,9 +73,9 @@ namespace NoResponse
                 catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested
                     && requestCancellation.IsCancellationRequested && last is not null)
                 {
-                    throw new WaitTimeoutException(assessmentId, last);
+                    return TimedOut(assessmentId, last);
                 }
-                if (!Status.Pending.Equals(response.Result.Status))
+                if (Status.Complete.Equals(response.Result.Status))
                 {
                     return response.Result;
                 }
@@ -81,10 +83,20 @@ namespace NoResponse
                 var wait = RetryAfter(response.Headers);
                 if (clock() + wait > deadline)
                 {
-                    throw new WaitTimeoutException(assessmentId, response.Result);
+                    return TimedOut(assessmentId, last);
                 }
                 await delay(wait, cancellationToken).ConfigureAwait(false);
             }
+        }
+
+        // The wait ran out: a partial answer stands, and a pending one throws.
+        private static Assessment TimedOut(string assessmentId, Assessment last)
+        {
+            if (Status.Partial.Equals(last.Status))
+            {
+                return last;
+            }
+            throw new WaitTimeoutException(assessmentId, last);
         }
 
         private static TimeSpan RetryAfter(Dictionary<string, List<string>> headers)

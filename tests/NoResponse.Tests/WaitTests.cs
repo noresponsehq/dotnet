@@ -68,5 +68,29 @@ namespace NoResponse.Tests
             Assert.Equal(Status.Pending, e.Last.Status);
             Assert.Equal(new[] { TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2) }, slept);
         }
+
+        [Fact]
+        public async Task KeepsPollingAPartialAnswerUntilComplete()
+        {
+            var http = new Scripted(("assessment-partial.json", null), ("assessment-partial.json", "2"), ("assessment-complete.json", null));
+            var slept = new List<TimeSpan>();
+            var now = TimeSpan.Zero;
+            var result = await Client(http).Assessments.WaitAsync(Id, delay: (d, _) => { slept.Add(d); now += d; return Task.CompletedTask; }, clock: () => now);
+            Assert.Equal(Status.Complete, result.Status);
+            Assert.Equal(new[] { TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2) }, slept);
+            Assert.Equal(3, http.Requests.Count);
+        }
+
+        [Fact]
+        public async Task ReturnsTheLatestPartialAnswerAtTheTimeout()
+        {
+            var http = new Scripted(("assessment-pending.json", "1"), ("assessment-partial.json", null));
+            var slept = new List<TimeSpan>();
+            var now = TimeSpan.Zero;
+            var result = await Client(http).Assessments.WaitAsync(Id, TimeSpan.FromSeconds(3.5), delay: (d, _) => { slept.Add(d); now += d; return Task.CompletedTask; }, clock: () => now);
+            Assert.Equal(Status.Partial, result.Status);
+            Assert.Equal(new[] { TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1) }, slept);
+            Assert.Equal(4, http.Requests.Count);
+        }
     }
 }
