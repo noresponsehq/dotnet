@@ -41,7 +41,17 @@ namespace NoResponse.Tests
             }
         }
 
-        private static NoResponseClient Client(Scripted http) =>
+        /// <summary>Never answers; the request ends only when its token is cancelled.</summary>
+        private sealed class Hanging : NoResponseHttpClient
+        {
+            public override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken? cancellationToken = null)
+            {
+                await Task.Delay(Timeout.Infinite, cancellationToken ?? CancellationToken.None).ConfigureAwait(false);
+                throw new InvalidOperationException("unreachable");
+            }
+        }
+
+        private static NoResponseClient Client(NoResponseHttpClient http) =>
             NoResponseClient.Builder().WithApiKey("nrk_test_" + new string('k', 20)).WithServerUrl("https://api.example.test").WithClient(http).Build();
 
         [Fact]
@@ -93,6 +103,14 @@ namespace NoResponse.Tests
             Assert.Equal(Status.Partial, result.Status);
             Assert.Equal(new[] { TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1) }, slept);
             Assert.Equal(4, http.Requests.Count);
+        }
+
+        [Fact]
+        public async Task AFirstRequestThatOutlivesTheTimeoutIsATimeout()
+        {
+            // No pending assessment yet, so a plain TimeoutException, as when the deadline passes before any poll.
+            var e = await Assert.ThrowsAsync<TimeoutException>(() => Client(new Hanging()).Assessments.WaitAsync(Id, TimeSpan.FromMilliseconds(200)));
+            Assert.Contains(Id, e.Message);
         }
     }
 }

@@ -70,10 +70,17 @@ namespace NoResponse
                 {
                     response = await assessments.GetAsync(assessmentId, cancellationToken: requestCancellation.Token).ConfigureAwait(false);
                 }
-                catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested
-                    && requestCancellation.IsCancellationRequested && last is not null)
+                // The request outlived the timeout. The client's retry loop can hand the cancellation back
+                // wrapped (RetryableException over TaskCanceledException), so look through inner exceptions.
+                // With no assessment yet this is the same TimeoutException as a deadline passed before any poll.
+                catch (Exception e) when (!cancellationToken.IsCancellationRequested
+                    && requestCancellation.IsCancellationRequested && IsCancellation(e))
                 {
-                    return TimedOut(assessmentId, last);
+                    if (last is not null)
+                    {
+                        return TimedOut(assessmentId, last);
+                    }
+                    throw new TimeoutException($"Timed out waiting for assessment {assessmentId}", e);
                 }
                 if (Status.Complete.Equals(response.Result.Status))
                 {
@@ -97,6 +104,18 @@ namespace NoResponse
                 return last;
             }
             throw new WaitTimeoutException(assessmentId, last);
+        }
+
+        private static bool IsCancellation(Exception? e)
+        {
+            for (; e is not null; e = e.InnerException)
+            {
+                if (e is OperationCanceledException)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private static TimeSpan RetryAfter(Dictionary<string, List<string>> headers)
