@@ -10,7 +10,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v2.0.18 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v2.1.0 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -18,7 +18,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v2.0.18
+git -C third_party/noresponse-dotnet checkout v2.1.0
 git add third_party/noresponse-dotnet
 ```
 
@@ -30,7 +30,7 @@ Use the latest tag from https://github.com/noresponsehq/dotnet/tags.
 using NoResponse;
 using NoResponse.Models.Shared;
 
-var client = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY")!);
+var client = new NoResponseClient(); // reads NORESPONSE_API_KEY
 
 var response = await client.Assessments.CreateAsync(new AssessmentRequest
 {
@@ -60,7 +60,7 @@ var client = new NoResponseClient(
     retryConfig: new RetryConfig(RetryConfig.RetryStrategy.NONE));
 ```
 
-`NoResponseClient.Builder().WithApiKey(key).Build()` does the same. The default `NoResponseHttpClient` uses a shared `HttpClient`; derive from it or implement `INoResponseHttpClient` to set a timeout. Every method also takes a `CancellationToken`.
+With no `apiKey` and no `apiKeySource`, the client reads the key from `NORESPONSE_API_KEY`, and throws `ArgumentException` when that is unset or empty. `NoResponseClient.Builder().WithApiKey(key).Build()` does the same. The default `NoResponseHttpClient` uses a shared `HttpClient`; derive from it or implement `INoResponseHttpClient` to set a timeout. Every method also takes a `CancellationToken`.
 
 ## Assessments
 
@@ -162,6 +162,22 @@ var sha256 = IssuedCredential.Sha256(issuedKey); // NoResponse.IssuedCredential
 
 ## Webhooks
 
+Register an endpoint, store its signing secret, then send it a test event to check your receiver. These calls need a key with the `webhooks` scope.
+
+```csharp
+var created = await client.WebhookEndpoints.CreateAsync(
+    new WebhookEndpointRequest { Url = "https://app.example.com/webhooks/noresponse" });
+var signingSecret = created.Result.SigningSecret; // KeyId and Secret, shown once
+var endpointId = created.Result.Endpoint.EndpointId;
+
+var check = await client.WebhookEndpoints.SendTestEventAsync(
+    endpointId, new WebhookTestRequest { Event = WebhookTestRequestEvent.EndpointVerification }); // check.Result.Verified
+await client.WebhookEndpoints.SendTestEventAsync(
+    endpointId, new WebhookTestRequest { Event = WebhookTestRequestEvent.AssessmentUpdated }); // webhookEvent.Test is true
+```
+
+`ListAsync()`, `RotateSigningKeyAsync(endpointId, body)` (the old key verifies for 7 more days) and `DeleteAsync(endpointId)` manage it afterwards.
+
 Verify the exact bytes you received, then act on the typed event. `secrets` maps each `whk_` key id we give you to its secret; hold both during a rotation.
 
 ```csharp
@@ -179,6 +195,7 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
         {
             return Results.Json(Webhook.VerificationResponse(webhookEvent));
         }
+        if (webhookEvent.Test) { return Results.NoContent(); } // SendTestEventAsync's fixed example assessment: apply nothing
         if (webhookEvent.IsExpired) { /* forget the assessment: GET now answers 404 */ }
         else if (webhookEvent.Data is Assessment assessment) { /* keep the highest AssessmentVersion */ }
         return Results.NoContent();
@@ -190,7 +207,7 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
 });
 ```
 
-`ConstructEvent` refuses a missing or repeated header, a delivery older than 300 seconds (`tolerance:` changes it), an unknown key id or a bad signature, and `WebhookVerificationException.Code` says which. Deliveries are at least once: deduplicate on `webhookEvent.Id`.
+`ConstructEvent` refuses a missing, empty or repeated header, a delivery older than 300 seconds (`tolerance:` changes it), an unknown key id or a bad signature, and `WebhookVerificationException.Code` says which. Deliveries are at least once: deduplicate on `webhookEvent.Id`.
 
 
 ### Late results

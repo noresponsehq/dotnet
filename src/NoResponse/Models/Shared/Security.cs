@@ -6,6 +6,6 @@ namespace NoResponse.Models.Shared
     public class Security
     {
         [NoResponseMetadata("security:scheme=true,type=http,subType=bearer,name=Authorization")]
-        public string ApiKey { get; set; } = default!;
+        public string? ApiKey { get; set; }
     }
 }

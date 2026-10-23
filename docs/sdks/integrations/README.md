@@ -21,8 +21,9 @@ Registers a WorkOS or Auth0 integration and returns its hosted endpoint, url, so
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 IntegrationRequest req = new IntegrationRequest() {
     Platform = IntegrationPlatform.Auth0,
@@ -38,9 +39,10 @@ var res = await sdk.Integrations.CreateAsync(req);
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 using System.Collections.Generic;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 IntegrationRequest req = new IntegrationRequest() {
     Platform = IntegrationPlatform.Workos,
@@ -88,8 +90,9 @@ Every integration, oldest first. Listings carry no secrets. Requires the integra
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.Integrations.ListAsync();
 
@@ -122,8 +125,9 @@ Removes the integration and its secrets; its endpoint answers 404 from then on, 
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.Integrations.DeleteAsync(integrationId: "int_01JA2Z8K6Q4V7W9XBCDEFGHJKM");
 
@@ -162,8 +166,9 @@ For Auth0, send {} and the answer's secret is the new shared secret, shown once.
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.Integrations.RotateAsync(
     integrationId: "int_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
@@ -178,8 +183,9 @@ var res = await sdk.Integrations.RotateAsync(
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.Integrations.RotateAsync(
     integrationId: "int_01JA2Z8K6Q4V7W9XBCDEFGHJKM",

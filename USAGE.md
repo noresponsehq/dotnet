@@ -2,8 +2,9 @@
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
@@ -12,7 +13,7 @@ var res = await sdk.Assessments.CreateAsync(
             Email = "new.user@example.com",
         },
     },
-    idempotencyKey: "<value>"
+    idempotencyKey: "signup-7f3a9c-0001"
 );
 
 // handle response

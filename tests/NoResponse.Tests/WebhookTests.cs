@@ -6,6 +6,8 @@ namespace NoResponse.Tests
     using System.Linq;
     using System.Security.Cryptography;
     using System.Text;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Primitives;
     using Newtonsoft.Json.Linq;
     using NoResponse.Models.Shared;
     using NoResponse.Webhooks;
@@ -76,6 +78,9 @@ namespace NoResponse.Tests
             Refused(WebhookErrorCode.DuplicateHeader, payload, headers.Append(new("nr-webhook-ID", new[] { id })), secrets);
             Refused(WebhookErrorCode.DuplicateHeader, payload, headers.Select(h => h.Key == "NR-Webhook-Id" ? new KeyValuePair<string, IEnumerable<string>>(h.Key, new[] { id, id }) : h), secrets);
             Refused(WebhookErrorCode.MissingHeader, payload, headers.Where(h => h.Key != "NR-Webhook-Signature"), secrets);
+            Refused(WebhookErrorCode.MissingHeader, payload, headers.Select(h => h.Key == "NR-Webhook-Signature" ? new KeyValuePair<string, IEnumerable<string>>(h.Key, new[] { "" }) : h), secrets);
+            Refused(WebhookErrorCode.MissingHeader, payload, headers.Select(h => h.Key == "NR-Webhook-Signature" ? new KeyValuePair<string, IEnumerable<string>>(h.Key, Array.Empty<string>()) : h), secrets);
+            Refused(WebhookErrorCode.DuplicateHeader, payload, headers.Prepend(new KeyValuePair<string, IEnumerable<string>>("nr-webhook-signature", Array.Empty<string>())), secrets);
             Refused(WebhookErrorCode.UnknownKey, payload, headers, new Dictionary<string, string> { ["whk_other0001"] = "x" });
             Refused(WebhookErrorCode.InvalidSignature, payload, headers, new Dictionary<string, string> { [secrets.Keys.Single()] = "other-secret" });
             Refused(WebhookErrorCode.InvalidSignature, payload, headers.Select(h => h.Key == "NR-Webhook-Signature" ? new KeyValuePair<string, IEnumerable<string>>(h.Key, new[] { "v2=abc" }) : h), secrets);
@@ -136,6 +141,44 @@ namespace NoResponse.Tests
             var aspNetStyle = headers.ToDictionary(h => h.Key, h => new HeaderValues(h.Value.ToArray()));
             Assert.Equal(Webhook.ConstructEvent(payload, headers, secrets, now: Now).Id,
                 Webhook.ConstructEvent(payload, aspNetStyle, secrets, now: Now).Id);
+        }
+
+        [Fact]
+        public void AspNetCoreRequestHeadersVerify()
+        {
+            var (payload, headers, secrets) = Vector();
+            var request = new DefaultHttpContext().Request;
+            foreach (var header in headers)
+            {
+                request.Headers[header.Key] = new StringValues(header.Value.ToArray());
+            }
+            Assert.Equal("evt_01JA2ZB4N5P6Q7R8S9T0VWXYZ1", Webhook.ConstructEvent(payload, request.Headers, secrets, now: Now).Id);
+
+            request.Headers["NR-Webhook-Signature"] = StringValues.Empty;
+            var empty = Assert.Throws<WebhookVerificationException>(() => Webhook.ConstructEvent(payload, request.Headers, secrets, now: Now));
+            Assert.Equal(WebhookErrorCode.MissingHeader, empty.Code);
+            request.Headers["NR-Webhook-Signature"] = new StringValues((string?)null);
+            var nullValue = Assert.Throws<WebhookVerificationException>(() => Webhook.ConstructEvent(payload, request.Headers, secrets, now: Now));
+            Assert.Equal(WebhookErrorCode.MissingHeader, nullValue.Code);
+        }
+
+        [Fact]
+        public void ATestEventSaysSoAndARealOneDoesNot()
+        {
+            var secrets = new Dictionary<string, string> { ["whk_sdktest01"] = "secret" };
+            var sample = Fixture("valid/webhook-assessment-updated-test.json");
+            var (raw, headers) = Signed(sample, "secret", (string)sample["id"]!);
+            var ev = Webhook.ConstructEvent(raw, headers, secrets, now: Now);
+            Assert.True(ev.Test);
+            Assert.IsType<Assessment>(ev.Data);
+
+            var real = Fixture("valid/webhook-assessment-updated.json");
+            (raw, headers) = Signed(real, "secret", (string)real["id"]!);
+            Assert.False(Webhook.ConstructEvent(raw, headers, secrets, now: Now).Test);
+
+            var ping = Fixture("valid/webhook-endpoint-verification.json");
+            (raw, headers) = Signed(ping, "secret", (string)ping["id"]!);
+            Assert.False(Webhook.ConstructEvent(raw, headers, secrets, now: Now).Test);
         }
 
         // The API adds fields without a new version, so keys this SDK does not

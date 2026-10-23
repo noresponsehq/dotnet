@@ -58,6 +58,12 @@ namespace NoResponse.Webhooks
     {
         /// <summary>True for the terminal expiry event: delete what you hold and fetch nothing.</summary>
         public bool IsExpired => Data is AssessmentExpired;
+
+        /// <summary>
+        /// True on an event sent by the send-test-event call: data is a fixed example assessment, not
+        /// one of yours. Acknowledge it and apply nothing.
+        /// </summary>
+        public bool Test { get; init; }
     }
 
     /// <summary>
@@ -98,7 +104,7 @@ namespace NoResponse.Webhooks
             IReadOnlyDictionary<string, string> secrets,
             TimeSpan? tolerance = null,
             DateTimeOffset? now = null)
-            where TValues : IEnumerable<string>
+            where TValues : IEnumerable<string?>
         {
             var found = Collect(headers);
             var timestamp = found["nr-webhook-timestamp"];
@@ -142,9 +148,9 @@ namespace NoResponse.Webhooks
         }
 
         private static Dictionary<string, string> Collect<TValues>(IEnumerable<KeyValuePair<string, TValues>> headers)
-            where TValues : IEnumerable<string>
+            where TValues : IEnumerable<string?>
         {
-            var found = new Dictionary<string, string>();
+            var received = new Dictionary<string, List<string?>>();
             foreach (var header in headers)
             {
                 var key = header.Key.ToLowerInvariant();
@@ -152,19 +158,25 @@ namespace NoResponse.Webhooks
                 {
                     continue;
                 }
-                var values = header.Value.ToList();
-                if (values.Count != 1 || found.ContainsKey(key))
+                if (received.ContainsKey(key))
                 {
                     throw new WebhookVerificationException(WebhookErrorCode.DuplicateHeader, $"Webhook header {key} is repeated");
                 }
-                found[key] = values[0];
+                received[key] = new List<string?>(header.Value);
             }
+            var found = new Dictionary<string, string>();
             foreach (var key in Required)
             {
-                if (!found.TryGetValue(key, out var value) || string.IsNullOrEmpty(value))
+                if (received.TryGetValue(key, out var values) && values.Count > 1)
+                {
+                    throw new WebhookVerificationException(WebhookErrorCode.DuplicateHeader, $"Webhook header {key} is repeated");
+                }
+                var value = values?.FirstOrDefault();
+                if (string.IsNullOrEmpty(value))
                 {
                     throw new WebhookVerificationException(WebhookErrorCode.MissingHeader, $"Webhook header {key} is missing");
                 }
+                found[key] = value;
             }
             return found;
         }
@@ -197,7 +209,10 @@ namespace NoResponse.Webhooks
                 throw new WebhookVerificationException(WebhookErrorCode.InvalidPayload, "Webhook event envelope is malformed");
             }
             var eventType = (string)type!;
-            return new WebhookEvent(headerId, eventType, (string)createdAt!, Data(eventType, data));
+            return new WebhookEvent(headerId, eventType, (string)createdAt!, Data(eventType, data))
+            {
+                Test = body["test"] is JValue { Type: JTokenType.Boolean } test && (bool)test && eventType == "assessment.updated",
+            };
         }
 
         private static object Data(string type, JObject data)

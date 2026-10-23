@@ -21,13 +21,14 @@ Returns within the deadline (500 ms at most) with a complete, partial or pending
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 using System.Collections.Generic;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
-        AccountId = "<id>",
+        AccountId = "acct_7f3a9c",
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new.user",
@@ -82,7 +83,7 @@ var res = await sdk.Assessments.CreateAsync(
             Sha256 = "2bdbf5c72f2a36df0ef40fb92203612274d4546f56dba946070a6a79c2401a1b",
         },
     },
-    idempotencyKey: "<value>"
+    idempotencyKey: "signup-7f3a9c-0001"
 );
 
 // handle response
@@ -93,13 +94,14 @@ var res = await sdk.Assessments.CreateAsync(
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 using System.Collections.Generic;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
-        AccountId = "<id>",
+        AccountId = "acct_7f3a9c",
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new.user",
@@ -154,7 +156,7 @@ var res = await sdk.Assessments.CreateAsync(
             Sha256 = "2bdbf5c72f2a36df0ef40fb92203612274d4546f56dba946070a6a79c2401a1b",
         },
     },
-    idempotencyKey: "<value>"
+    idempotencyKey: "signup-7f3a9c-0001"
 );
 
 // handle response
@@ -165,8 +167,9 @@ var res = await sdk.Assessments.CreateAsync(
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
@@ -183,7 +186,7 @@ var res = await sdk.Assessments.CreateAsync(
         RequestId = "req-2026-10-14-0001",
         DeadlineMs = 300,
     },
-    idempotencyKey: "<value>"
+    idempotencyKey: "signup-7f3a9c-0001"
 );
 
 // handle response
@@ -194,8 +197,9 @@ var res = await sdk.Assessments.CreateAsync(
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
@@ -204,7 +208,7 @@ var res = await sdk.Assessments.CreateAsync(
             Email = "new.user@example.com",
         },
     },
-    idempotencyKey: "<value>"
+    idempotencyKey: "signup-7f3a9c-0001"
 );
 
 // handle response
@@ -215,8 +219,9 @@ var res = await sdk.Assessments.CreateAsync(
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
@@ -236,7 +241,7 @@ var res = await sdk.Assessments.CreateAsync(
         DeadlineMs = 500,
         ResponseMode = ResponseMode.Standard,
     },
-    idempotencyKey: "<value>"
+    idempotencyKey: "signup-7f3a9c-0001"
 );
 
 // handle response
@@ -247,13 +252,14 @@ var res = await sdk.Assessments.CreateAsync(
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 using System.Collections.Generic;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
-        AccountId = "<id>",
+        AccountId = "acct_7f3a9c",
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new.user",
@@ -308,7 +314,7 @@ var res = await sdk.Assessments.CreateAsync(
             Sha256 = "2bdbf5c72f2a36df0ef40fb92203612274d4546f56dba946070a6a79c2401a1b",
         },
     },
-    idempotencyKey: "<value>"
+    idempotencyKey: "signup-7f3a9c-0001"
 );
 
 // handle response
@@ -319,13 +325,14 @@ var res = await sdk.Assessments.CreateAsync(
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 using System.Collections.Generic;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
-        AccountId = "<id>",
+        AccountId = "acct_7f3a9c",
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new.user",
@@ -380,7 +387,7 @@ var res = await sdk.Assessments.CreateAsync(
             Sha256 = "2bdbf5c72f2a36df0ef40fb92203612274d4546f56dba946070a6a79c2401a1b",
         },
     },
-    idempotencyKey: "<value>"
+    idempotencyKey: "signup-7f3a9c-0001"
 );
 
 // handle response
@@ -419,10 +426,11 @@ Returns the highest assessment_version. Requires the assess or history scope. Wh
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
-var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
+var res = await sdk.Assessments.GetAsync(assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM");
 
 // handle response
 ```
@@ -432,10 +440,11 @@ var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
-var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
+var res = await sdk.Assessments.GetAsync(assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM");
 
 // handle response
 ```
@@ -445,10 +454,11 @@ var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
-var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
+var res = await sdk.Assessments.GetAsync(assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM");
 
 // handle response
 ```
@@ -458,10 +468,11 @@ var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
-var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
+var res = await sdk.Assessments.GetAsync(assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM");
 
 // handle response
 ```
@@ -471,10 +482,11 @@ var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
-var res = await sdk.Assessments.GetAsync(assessmentId: "<id>");
+var res = await sdk.Assessments.GetAsync(assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM");
 
 // handle response
 ```
@@ -512,18 +524,19 @@ Records what you later learned about an assessed account: confirmed_abuse, accou
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.Assessments.RecordOutcomeAsync(
-    assessmentId: "<id>",
+    assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
     body: new AssessmentOutcomeRequest() {
         Outcome = Outcome.ConfirmedAbuse,
         ObservedAt = "2026-10-20T05:00:00Z",
         ExternalRef = "case-123",
         Notes = "Card testing from this account; closed by trust and safety.",
     },
-    idempotencyKey: "<value>"
+    idempotencyKey: "signup-7f3a9c-0001"
 );
 
 // handle response
@@ -534,18 +547,19 @@ var res = await sdk.Assessments.RecordOutcomeAsync(
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.Assessments.RecordOutcomeAsync(
-    assessmentId: "<id>",
+    assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
     body: new AssessmentOutcomeRequest() {
         Outcome = Outcome.Legitimate,
         ObservedAt = "2026-10-14T09:04:30.000Z",
         ExternalRef = "case-48213",
         Notes = "Chargeback filed two days after signup.",
     },
-    idempotencyKey: "<value>"
+    idempotencyKey: "signup-7f3a9c-0001"
 );
 
 // handle response
@@ -556,15 +570,16 @@ var res = await sdk.Assessments.RecordOutcomeAsync(
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.Assessments.RecordOutcomeAsync(
-    assessmentId: "<id>",
+    assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
     body: new AssessmentOutcomeRequest() {
         Outcome = Outcome.FalsePositive,
     },
-    idempotencyKey: "<value>"
+    idempotencyKey: "signup-7f3a9c-0001"
 );
 
 // handle response
@@ -605,8 +620,9 @@ History is a POST with account_id in the body so an account identifier stays out
 using NoResponse;
 using NoResponse.Models.Operations;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 AssessmentQuery req = new AssessmentQuery() {
     AccountId = "acct_7f3a9c",
@@ -628,11 +644,12 @@ while(res != null)
 using NoResponse;
 using NoResponse.Models.Operations;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 AssessmentQuery req = new AssessmentQuery() {
-    AccountId = "<id>",
+    AccountId = "acct_7f3a9c",
     Cursor = "eyJvIjoyMH0",
 };
 

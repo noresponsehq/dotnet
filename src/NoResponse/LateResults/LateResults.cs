@@ -84,7 +84,8 @@ namespace NoResponse.LateResults
     /// An assessment can be revised after the signup was allowed: a slow source settles and the
     /// recommendation rises. NoResponse sends the new version as a signed assessment.updated webhook.
     /// HandleAsync verifies that delivery with Webhook.ConstructEvent, picks an action from your policy
-    /// and acts through the auth provider's admin API. It never acts on an unverified event.
+    /// and acts through the auth provider's admin API. It never acts on an unverified event or a test event.
+    /// Every provider call treats a 404 (user or session already gone) as done, so a repeated delivery is safe.
     /// </summary>
     public static class LateResults
     {
@@ -114,12 +115,15 @@ namespace NoResponse.LateResults
             _ => throw new ArgumentException($"unknown late result action {value}", nameof(value)),
         };
 
-        /// <summary>The action your policy names for a verified event. Only a served assessment with a recommendation can act.</summary>
+        /// <summary>
+        /// The action your policy names for a verified event. Only a served assessment with a recommendation can act;
+        /// a test event from the send-test-event call never does.
+        /// </summary>
         /// <exception cref="ArgumentException">The policy holds an unknown action.</exception>
         public static LateResultAction Action(WebhookEvent webhookEvent, IReadOnlyDictionary<string, LateResultAction>? policy = null)
         {
             policy ??= DefaultPolicy;
-            if (webhookEvent.Type != "assessment.updated" || webhookEvent.Data is not Assessment assessment)
+            if (webhookEvent.Type != "assessment.updated" || webhookEvent.Test || webhookEvent.Data is not Assessment assessment)
             {
                 return LateResultAction.None;
             }
@@ -149,7 +153,7 @@ namespace NoResponse.LateResults
             ILateResultProvider provider,
             LateResultOptions? options = null,
             CancellationToken cancellationToken = default)
-            where TValues : IEnumerable<string>
+            where TValues : IEnumerable<string?>
         {
             options ??= new LateResultOptions();
             var webhookEvent = Webhook.ConstructEvent(payload, headers, secrets, options.Tolerance, options.Now);
@@ -177,6 +181,7 @@ namespace NoResponse.LateResults
         /// <summary>
         /// Clerk Backend API. Revoking lists the user's active sessions (GET /sessions?user_id&amp;status=active) and
         /// revokes each (POST /sessions/{id}/revoke). Ban is POST /users/{id}/ban, which revokes every session and blocks sign-in.
+        /// A 404 on any call (user or session already gone) counts as done, so a repeated delivery is safe.
         /// </summary>
         public static ILateResultProvider Clerk(string secretKey, string? baseUrl = null, HttpClient? httpClient = null)
         {
@@ -188,6 +193,7 @@ namespace NoResponse.LateResults
         /// WorkOS User Management. Revoking pages through GET /user_management/users/{id}/sessions and revokes each
         /// active one with POST /user_management/sessions/revoke. WorkOS has no block or ban, so Ban revokes the
         /// sessions and then deletes the user (DELETE /user_management/users/{id}); deletion is permanent.
+        /// A 404 on any call (user or session already gone) counts as done, so a repeated delivery is safe.
         /// </summary>
         public static ILateResultProvider WorkOS(string apiKey, string? baseUrl = null, HttpClient? httpClient = null)
         {
@@ -199,6 +205,7 @@ namespace NoResponse.LateResults
         /// Auth0 Management API at https://{domain}/api/v2 (or <paramref name="baseUrl"/>). Revoking deletes every session
         /// (DELETE /users/{id}/sessions) and refresh token (DELETE /users/{id}/refresh-tokens). Ban first sets
         /// blocked: true (PATCH /users/{id}), then does the same. The token needs update:users, delete:sessions and delete:refresh_tokens.
+        /// A 404 on any call (user already gone) counts as done, so a repeated delivery is safe.
         /// </summary>
         public static ILateResultProvider Auth0(string token, string? domain = null, string? baseUrl = null, HttpClient? httpClient = null)
         {
@@ -312,19 +319,19 @@ namespace NoResponse.LateResults
                         new KeyValuePair<string, string>("limit", Page.ToString(CultureInfo.InvariantCulture)),
                         new KeyValuePair<string, string>("offset", offset.ToString(CultureInfo.InvariantCulture)),
                     };
-                    var page = Sessions(await call.SendAsync(HttpMethod.Get, "/sessions", query, null, false, cancellationToken).ConfigureAwait(false));
+                    var page = Sessions(await call.SendAsync(HttpMethod.Get, "/sessions", query, null, true, cancellationToken).ConfigureAwait(false));
                     CollectActive(page, active);
                     if (page.Count < Page) break;
                 }
                 foreach (var id in active)
                 {
-                    await call.SendAsync(HttpMethod.Post, $"/sessions/{Uri.EscapeDataString(id)}/revoke", null, null, false, cancellationToken).ConfigureAwait(false);
+                    await call.SendAsync(HttpMethod.Post, $"/sessions/{Uri.EscapeDataString(id)}/revoke", null, null, true, cancellationToken).ConfigureAwait(false);
                 }
             }
 
             public async Task BanAsync(string userId, CancellationToken cancellationToken = default)
             {
-                await call.SendAsync(HttpMethod.Post, $"/users/{Segment(userId)}/ban", null, null, false, cancellationToken).ConfigureAwait(false);
+                await call.SendAsync(HttpMethod.Post, $"/users/{Segment(userId)}/ban", null, null, true, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -345,7 +352,7 @@ namespace NoResponse.LateResults
                 {
                     var query = new List<KeyValuePair<string, string>> { new("limit", "100") };
                     if (!string.IsNullOrEmpty(after)) query.Add(new("after", after));
-                    var body = await call.SendAsync(HttpMethod.Get, $"/user_management/users/{user}/sessions", query, null, false, cancellationToken).ConfigureAwait(false);
+                    var body = await call.SendAsync(HttpMethod.Get, $"/user_management/users/{user}/sessions", query, null, true, cancellationToken).ConfigureAwait(false);
                     CollectActive(Sessions(body), active);
                     var next = body?["list_metadata"]?["after"];
                     if (next is not JValue { Type: JTokenType.String } || string.IsNullOrEmpty((string?)next)) break;
@@ -353,7 +360,7 @@ namespace NoResponse.LateResults
                 }
                 foreach (var id in active)
                 {
-                    await call.SendAsync(HttpMethod.Post, "/user_management/sessions/revoke", null, new JObject { ["session_id"] = id }, false, cancellationToken).ConfigureAwait(false);
+                    await call.SendAsync(HttpMethod.Post, "/user_management/sessions/revoke", null, new JObject { ["session_id"] = id }, true, cancellationToken).ConfigureAwait(false);
                 }
             }
 
@@ -375,13 +382,13 @@ namespace NoResponse.LateResults
             public async Task RevokeSessionsAsync(string userId, CancellationToken cancellationToken = default)
             {
                 var user = Segment(userId);
-                await call.SendAsync(HttpMethod.Delete, $"/users/{user}/sessions", null, null, false, cancellationToken).ConfigureAwait(false);
-                await call.SendAsync(HttpMethod.Delete, $"/users/{user}/refresh-tokens", null, null, false, cancellationToken).ConfigureAwait(false);
+                await call.SendAsync(HttpMethod.Delete, $"/users/{user}/sessions", null, null, true, cancellationToken).ConfigureAwait(false);
+                await call.SendAsync(HttpMethod.Delete, $"/users/{user}/refresh-tokens", null, null, true, cancellationToken).ConfigureAwait(false);
             }
 
             public async Task BanAsync(string userId, CancellationToken cancellationToken = default)
             {
-                await call.SendAsync(HttpMethod.Patch, $"/users/{Segment(userId)}", null, new JObject { ["blocked"] = true }, false, cancellationToken).ConfigureAwait(false);
+                await call.SendAsync(HttpMethod.Patch, $"/users/{Segment(userId)}", null, new JObject { ["blocked"] = true }, true, cancellationToken).ConfigureAwait(false);
                 await RevokeSessionsAsync(userId, cancellationToken).ConfigureAwait(false);
             }
         }

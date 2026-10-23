@@ -31,11 +31,12 @@ namespace NoResponse.Tests
         private static LateResultOptions Options(IReadOnlyDictionary<string, LateResultAction>? policy = null, Func<string, WebhookEvent, string?>? userId = null, DateTimeOffset? now = null) =>
             new() { Now = now ?? Now, Policy = policy, UserId = userId };
 
-        private static (byte[] Raw, List<KeyValuePair<string, IEnumerable<string>>> Headers) Delivery(JObject data, string? accountId = null)
+        private static (byte[] Raw, List<KeyValuePair<string, IEnumerable<string>>> Headers) Delivery(JObject data, string? accountId = null, bool test = false)
         {
             var copy = (JObject)data.DeepClone();
             if (accountId is not null) copy["account_id"] = accountId;
             var body = new JObject { ["id"] = "evt_01JA2ZB4N5P6Q7R8S9T0VWXYZ2", ["type"] = "assessment.updated", ["created_at"] = "2026-10-18T11:00:04Z", ["data"] = copy };
+            if (test) body["test"] = true;
             var raw = Encoding.UTF8.GetBytes(body.ToString(Newtonsoft.Json.Formatting.None));
             using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(Secret));
             var digest = Convert.ToHexString(hmac.ComputeHash(Encoding.ASCII.GetBytes(NowSeconds + ".").Concat(raw).ToArray())).ToLowerInvariant();
@@ -280,6 +281,70 @@ namespace NoResponse.Tests
             Assert.DoesNotContain("insufficient_scope", refused.Message);
             Assert.DoesNotContain("mgmt_token", refused.Message);
             Assert.Single(mock.Snapshot());
+        }
+
+        [Fact]
+        public async Task ATestEventIsFlaggedAndMakesNoProviderCallEvenUnderABanPolicyWithAResolver()
+        {
+            var sample = (JObject)WebhookTests.Fixture("valid/webhook-assessment-updated-test.json")["data"]!;
+            using var mock = new MockProvider(_ => (200, "[]"));
+            var clerk = LateResults.Clerk("sk_test_mock", mock.Url + "/v1");
+            var banAll = new Dictionary<string, LateResultAction> { ["allow"] = LateResultAction.Ban, ["step_up"] = LateResultAction.Ban, ["review"] = LateResultAction.Ban };
+            var (raw, headers) = Delivery(sample, test: true);
+            var result = await LateResults.HandleAsync(raw, headers, Secrets, clerk, Options(banAll, (_, _) => "user_2EXAMPLE"));
+            Assert.Equal(LateResultAction.None, result.Action);
+            Assert.True(result.Event.Test);
+            Assert.Null(result.UserId);
+            Assert.Empty(mock.Snapshot());
+
+            // The same body without the flag would ban, and an ordinary delivery is not a test.
+            var real = Delivery(sample);
+            Assert.False(Webhook.ConstructEvent(real.Raw, real.Headers, Secrets, now: Now).Test);
+            Assert.Equal(LateResultAction.Ban, (await LateResults.HandleAsync(real.Raw, real.Headers, Secrets, clerk, Options(banAll, (_, _) => "user_2EXAMPLE"))).Action);
+        }
+
+        [Fact]
+        public async Task ARepeatedBanAfterTheUserIsGoneCompletesAndA500StillThrows()
+        {
+            var ban = new Dictionary<string, LateResultAction> { ["review"] = LateResultAction.Ban };
+            using (var gone = new MockProvider(_ => (404, "{\"message\":\"not found\"}")))
+            {
+                // Every user-scoped endpoint answers 404: the first delivery already removed the user.
+                var providers = new[]
+                {
+                    LateResults.WorkOS("sk_test_workos", gone.Url),
+                    LateResults.Clerk("sk_test_mock", gone.Url + "/v1"),
+                    LateResults.Auth0("mgmt_token", baseUrl: gone.Url + "/api/v2"),
+                };
+                var (raw, headers) = Delivery(Review, "user_GONE");
+                for (var i = 0; i < 2; i++)
+                {
+                    foreach (var provider in providers)
+                    {
+                        Assert.Equal(LateResultAction.Ban, (await LateResults.HandleAsync(raw, headers, Secrets, provider, Options(ban))).Action);
+                        Assert.Equal(LateResultAction.RevokeSessions, (await LateResults.HandleAsync(raw, headers, Secrets, provider, Options())).Action);
+                    }
+                }
+                var lines = gone.Snapshot().Select(c => $"{c.Method} {c.Path}").ToList();
+                Assert.Contains("GET /user_management/users/user_GONE/sessions", lines);
+                Assert.Contains("DELETE /user_management/users/user_GONE", lines);
+                Assert.Contains("GET /v1/sessions", lines);
+                Assert.Contains("POST /v1/users/user_GONE/ban", lines);
+                Assert.Contains("PATCH /api/v2/users/user_GONE", lines);
+                Assert.Contains("DELETE /api/v2/users/user_GONE/refresh-tokens", lines);
+            }
+            using (var vanished = new MockProvider(c => c.Method == "GET" ? (200, "[{\"id\":\"sess_1\",\"status\":\"active\"}]") : (404, null)))
+            {
+                // A session that ends between the list and its revoke also counts as done.
+                await LateResults.Clerk("sk_test_mock", vanished.Url + "/v1").RevokeSessionsAsync("user_2EXAMPLE");
+                Assert.Equal(new[] { "GET /v1/sessions", "POST /v1/sessions/sess_1/revoke" }, vanished.Snapshot().Select(c => $"{c.Method} {c.Path}"));
+            }
+            using var broken = new MockProvider(_ => (500, "{\"error\":\"boom\"}"));
+            foreach (var provider in new[] { LateResults.WorkOS("k", broken.Url), LateResults.Clerk("k", broken.Url + "/v1"), LateResults.Auth0("t", baseUrl: broken.Url + "/api/v2") })
+            {
+                var failed = await Assert.ThrowsAsync<ProviderActionException>(() => provider.BanAsync("user_X"));
+                Assert.Equal(500, failed.Status);
+            }
         }
 
         [Fact]

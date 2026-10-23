@@ -91,7 +91,7 @@ namespace NoResponse
         /// <summary>
         /// Initializes a new instance of the SDK with optional configuration parameters.
         /// </summary>
-        /// <param name="apiKey">The security configuration to use for API requests. If provided, this will be used as a static security configuration.</param>
+        /// <param name="apiKey">The security configuration to use for API requests. If provided, this will be used as a static security configuration. When neither this nor the source is provided, the NORESPONSE_API_KEY environment variable is used.</param>
         /// <param name="apiKeySource">A function that returns the security configuration dynamically. This takes precedence over the static security parameter if both are provided.</param>
         /// <param name="serverIndex">The index of the server to use from the predefined server list. Must be between 0 and the length of the server list. Defaults to 0 if not specified.</param>
         /// <param name="serverUrl">A custom server URL to use instead of the predefined server list. If provided with urlParams, the URL will be templated with the provided parameters.</param>
@@ -99,7 +99,7 @@ namespace NoResponse
         /// <param name="client">A custom HTTP client implementation to use for making API requests. If not provided, the default NoResponseHttpClient will be used.</param>
         /// <param name="retryConfig">Configuration for retry behavior when API requests fail. Defines retry strategies, backoff policies, and maximum retry attempts.</param>
         /// <exception cref="ArgumentOutOfRangeException">Invalid value provided for <paramref name="serverIndex"/>: must be between 0 (inclusive) and 1 (exclusive).</exception>
-        /// <exception cref="ArgumentException">None of <paramref name="apiKey"/> and <paramref name="apiKeySource"/> were provided.</exception>
+        /// <exception cref="ArgumentException">None of <paramref name="apiKey"/> and <paramref name="apiKeySource"/> were provided and NORESPONSE_API_KEY is not set.</exception>
         public NoResponseClient(
             string? apiKey = null,
             Func<string>? apiKeySource = null,
@@ -135,9 +135,14 @@ namespace NoResponse
             {
                 _securitySource = () => new NoResponse.Models.Shared.Security() { ApiKey = apiKey };
             }
+            else if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("NORESPONSE_API_KEY")))
+            {
+                var _envSecurity = Environment.GetEnvironmentVariable("NORESPONSE_API_KEY")!;
+                _securitySource = () => new NoResponse.Models.Shared.Security() { ApiKey = _envSecurity };
+            }
             else
             {
-                throw new ArgumentException("apiKey and apiKeySource cannot both be null");
+                throw new ArgumentException("apiKey and apiKeySource cannot both be null when NORESPONSE_API_KEY is not set");
             }
 
             SDKConfiguration = new SDKConfig(client) {
@@ -241,9 +246,14 @@ namespace NoResponse
             /// </summary>
             public NoResponseClient Build()
             {
+                if (_sdkConfig.SecuritySource == null && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("NORESPONSE_API_KEY")))
+                {
+                    var _envSecurity = Environment.GetEnvironmentVariable("NORESPONSE_API_KEY")!;
+                    _sdkConfig.SecuritySource = () => new NoResponse.Models.Shared.Security() { ApiKey = _envSecurity };
+                }
                 if (_sdkConfig.SecuritySource == null)
                 {
-                    throw new ArgumentException("securitySource cannot be null. One of `ApiKey` or `apiKeySource` needs to be defined.");
+                    throw new ArgumentException("securitySource cannot be null. One of `ApiKey` or `apiKeySource` needs to be defined, or NORESPONSE_API_KEY set.");
                 }
                 return new NoResponseClient(_sdkConfig);
             }

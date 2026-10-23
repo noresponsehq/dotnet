@@ -4,47 +4,68 @@ namespace NoResponse.Models.Shared
     using Newtonsoft.Json;
     using NoResponse.Utils;
     using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
-    /// Where this context was derived. Backend is the trusted integration path; browser values are treated as weak hints. provider_hook is a hosted provider hook (an Auth0 or WorkOS Action) calling at hook_point; it needs hook_point and verified false, and its authentication facts are not scored.
+    /// Where the context was derived: backend (also when the request named no transport), browser, or provider_hook for a hosted provider hook.
     /// </summary>
-    public enum Transport
+    [JsonConverter(typeof(OpenEnumConverter))]
+    public class Transport : IEquatable<Transport>, IOpenEnum<string>
     {
-        [JsonProperty("backend")] Backend,
-        [JsonProperty("browser")] Browser,
-        [JsonProperty("provider_hook")] ProviderHook,
-    }
+        public static readonly Transport Backend = new Transport("backend");
+        public static readonly Transport Browser = new Transport("browser");
+        public static readonly Transport ProviderHook = new Transport("provider_hook");
 
-    public static class TransportExtension
-    {
-        public static string Value(this Transport value)
+        private static readonly Dictionary<string, Transport> _knownValues =
+            new Dictionary<string, Transport>() {
+                ["backend"] = Backend,
+                ["browser"] = Browser,
+                ["provider_hook"] = ProviderHook
+            };
+
+        private static readonly ConcurrentDictionary<string, Transport> _values =
+            new ConcurrentDictionary<string, Transport>(_knownValues);
+
+        private Transport(string value)
         {
-            return ((JsonPropertyAttribute)value.GetType().GetMember(value.ToString()) [0].GetCustomAttributes(typeof(JsonPropertyAttribute), false)[0]).PropertyName ?? value.ToString();
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            Value = value;
         }
 
-        public static Transport ToEnum(this string value)
+        public string Value { get; }
+
+        public static Transport Of(string value)
         {
-            foreach (var field in typeof(Transport).GetFields())
-            {
-                var attributes = field.GetCustomAttributes(typeof(JsonPropertyAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    continue;
-                }
-
-                var attribute = attributes[0] as JsonPropertyAttribute;
-                if (attribute != null && attribute.PropertyName == value)
-                {
-                    var enumVal = field.GetValue(null);
-
-                    if (enumVal is Transport)
-                    {
-                        return (Transport)enumVal;
-                    }
-                }
-            }
-
-            throw new Exception($"Unknown value {value} for enum Transport");
+            return _values.GetOrAdd(value,
+                                    _ => new Transport(value));
         }
+
+        public static implicit operator Transport(string value) => Of(value);
+        public static implicit operator string(Transport transport) => transport.Value;
+
+        public static Transport[] Values()
+        {
+            return _values.Values.ToArray();
+        }
+
+        public override string ToString() => Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        public bool IsKnown()
+        {
+            return _knownValues.ContainsKey(Value);
+        }
+
+        public override bool Equals(object? obj) => Equals(obj as Transport);
+
+        public bool Equals(Transport? other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other is null) return false;
+            return string.Equals(Value, other.Value);
+        }
+
+        public override int GetHashCode() => Value.GetHashCode();
     }
 }

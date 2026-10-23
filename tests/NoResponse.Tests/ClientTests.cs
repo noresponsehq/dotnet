@@ -80,6 +80,45 @@ namespace NoResponse.Tests
             Assert.Equal(http.Keys[0], http.Keys[1]);
         }
 
+        private sealed class Authorizations : NoResponseHttpClient
+        {
+            public List<string?> Seen { get; } = new();
+
+            public override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken? cancellationToken = null)
+            {
+                Seen.Add(request.Headers.Authorization?.ToString());
+                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(Fixture("assessment-complete.json"), Encoding.UTF8, "application/json"), RequestMessage = request });
+            }
+        }
+
+        // NORESPONSE_API_KEY is process-wide: only this test sets it, and it puts the old value back.
+        [Fact]
+        public async Task TheKeyFallsBackToTheEnvironment()
+        {
+            var saved = Environment.GetEnvironmentVariable("NORESPONSE_API_KEY");
+            var envKey = "nrk_test_" + new string('e', 20);
+            try
+            {
+                Environment.SetEnvironmentVariable("NORESPONSE_API_KEY", envKey);
+                var http = new Authorizations();
+                await new NoResponseClient(serverUrl: "https://api.example.test", client: http).Assessments.GetAsync("asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM");
+                await NoResponseClient.Builder().WithServerUrl("https://api.example.test").WithClient(http).Build().Assessments.GetAsync("asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM");
+                var passed = "nrk_test_" + new string('p', 20);
+                await new NoResponseClient(apiKey: passed, serverUrl: "https://api.example.test", client: http).Assessments.GetAsync("asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM");
+                Assert.Equal(new[] { "Bearer " + envKey, "Bearer " + envKey, "Bearer " + passed }, http.Seen);
+
+                Environment.SetEnvironmentVariable("NORESPONSE_API_KEY", null);
+                Assert.Throws<ArgumentException>(() => new NoResponseClient(serverUrl: "https://api.example.test", client: http));
+                Assert.Throws<ArgumentException>(() => NoResponseClient.Builder().WithClient(http).Build());
+                Environment.SetEnvironmentVariable("NORESPONSE_API_KEY", "");
+                Assert.Throws<ArgumentException>(() => new NoResponseClient(serverUrl: "https://api.example.test", client: http));
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("NORESPONSE_API_KEY", saved);
+            }
+        }
+
         [Fact]
         public async Task EveryApiErrorIsANoResponseException()
         {

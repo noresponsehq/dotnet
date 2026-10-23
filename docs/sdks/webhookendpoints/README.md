@@ -22,8 +22,9 @@ Lists your webhook endpoints in every state, ordered by endpoint_id, with the id
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.WebhookEndpoints.ListAsync();
 
@@ -56,8 +57,9 @@ Registers a webhook endpoint and returns it with its first signing secret, shown
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 WebhookEndpointRequest req = new WebhookEndpointRequest() {
     Url = "https://hooks.example.com/noresponse",
@@ -73,8 +75,9 @@ var res = await sdk.WebhookEndpoints.CreateAsync(req);
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 WebhookEndpointRequest req = new WebhookEndpointRequest() {
     Url = "https://hooks.example.com:8443/noresponse/detailed",
@@ -91,8 +94,9 @@ var res = await sdk.WebhookEndpoints.CreateAsync(req);
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 WebhookEndpointRequest req = new WebhookEndpointRequest() {
     Url = "https://hooks.example.com/noresponse",
@@ -135,8 +139,9 @@ Deletes the endpoint and its signing keys. Deliveries still queued for it are dr
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.WebhookEndpoints.DeleteAsync(endpointId: "whe_01JA2ZD0E1F2G3H4J5K6M7N8P9");
 
@@ -175,8 +180,9 @@ Issues a new signing key for the endpoint and returns its secret once. Every del
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.WebhookEndpoints.RotateSigningKeyAsync(
     endpointId: "whe_01JA2ZD0E1F2G3H4J5K6M7N8P9",
@@ -191,8 +197,9 @@ var res = await sdk.WebhookEndpoints.RotateSigningKeyAsync(
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.WebhookEndpoints.RotateSigningKeyAsync(
     endpointId: "whe_01JA2ZD0E1F2G3H4J5K6M7N8P9",
@@ -235,8 +242,9 @@ endpoint.verification sends a signed challenge now and answers whether the endpo
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.WebhookEndpoints.SendTestEventAsync(
     endpointId: "whe_01JA2ZD0E1F2G3H4J5K6M7N8P9",
@@ -253,8 +261,9 @@ var res = await sdk.WebhookEndpoints.SendTestEventAsync(
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.WebhookEndpoints.SendTestEventAsync(
     endpointId: "whe_01JA2ZD0E1F2G3H4J5K6M7N8P9",

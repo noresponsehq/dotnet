@@ -18,8 +18,9 @@ Mints a new key with the same scopes as the key that signs the request and retur
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 KeyRotationRequest req = new KeyRotationRequest() {};
 
@@ -33,8 +34,9 @@ var res = await sdk.Keys.RotateAsync(req);
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 KeyRotationRequest req = new KeyRotationRequest() {
     OverlapSeconds = 3600,
@@ -50,8 +52,9 @@ var res = await sdk.Keys.RotateAsync(req);
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
+using System;
 
-var sdk = new NoResponseClient(apiKey: "<YOUR_BEARER_TOKEN_HERE>");
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 KeyRotationRequest req = new KeyRotationRequest() {};
 

@@ -4,7 +4,10 @@ namespace NoResponse.Models.Shared
     using Newtonsoft.Json;
     using NoResponse.Models.Shared;
     using NoResponse.Utils;
+    using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Normalised claims from a session your backend has already verified with WorkOS, Clerk, Auth0 or any OIDC provider. Pass the output of the SDK's auth adapters, not a raw token.
@@ -120,13 +123,13 @@ namespace NoResponse.Models.Shared
         public bool? Impersonated { get; set; }
 
         /// <summary>
-        /// Where this context was derived. Backend is the trusted integration path; browser values are treated as weak hints. provider_hook is a hosted provider hook (an Auth0 or WorkOS Action) calling at hook_point; it needs hook_point and verified false, and its authentication facts are not scored.
+        /// Where the context was derived: backend (also when the request named no transport), browser, or provider_hook for a hosted provider hook.
         /// </summary>
         [JsonProperty("transport", Required = Newtonsoft.Json.Required.DisallowNull)]
         public Transport? Transport { get; set; }
 
         /// <summary>
-        /// The provider event a provider_hook context was sent for. pre_registration runs before the user exists, so subject and the request's account_id may be absent there. Sent only with transport provider_hook.
+        /// The provider event a provider_hook context was sent for; absent for any other transport.
         /// </summary>
         [JsonProperty("hook_point", Required = Newtonsoft.Json.Required.DisallowNull)]
         public HookPoint? HookPoint { get; set; }
