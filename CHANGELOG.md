@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.8
+
+No changes detected.
+
 ## 2.1.7
 
 No changes detected.

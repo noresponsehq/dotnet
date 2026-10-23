@@ -215,6 +215,14 @@ namespace NoResponse.LateResults
             return new Auth0Provider(new Caller("auth0", root, token, httpClient));
         }
 
+        /// <summary>
+        /// A provider for an app with its own login, or for trying the handler before you wire up a real one.
+        /// Revoking and banning each log one line saying what they would do and call nothing: no request leaves
+        /// your process. <paramref name="log"/> receives the line; by default it goes to standard output.
+        /// Replace it with your own ILateResultProvider once you know what revoking and banning mean in your app.
+        /// </summary>
+        public static ILateResultProvider LogOnly(Action<string>? log = null) => new LogOnlyProvider(log ?? Console.WriteLine);
+
         private static readonly HttpClient SharedClient = new HttpClient();
 
         private static string Segment(string id)
@@ -294,6 +302,29 @@ namespace NoResponse.LateResults
                 {
                     return null;
                 }
+            }
+        }
+
+        private sealed class LogOnlyProvider : ILateResultProvider
+        {
+            private readonly Action<string> log;
+
+            public LogOnlyProvider(Action<string> log) { this.log = log; }
+
+            public string Name => "log_only";
+
+            public Task RevokeSessionsAsync(string userId, CancellationToken cancellationToken = default)
+            {
+                Segment(userId);
+                log($"NoResponse late result (log only): would revoke every session of user {userId}");
+                return Task.CompletedTask;
+            }
+
+            public Task BanAsync(string userId, CancellationToken cancellationToken = default)
+            {
+                Segment(userId);
+                log($"NoResponse late result (log only): would ban user {userId} and end their sessions");
+                return Task.CompletedTask;
             }
         }
 

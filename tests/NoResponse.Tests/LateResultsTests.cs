@@ -194,6 +194,29 @@ namespace NoResponse.Tests
         }
 
         [Fact]
+        public async Task LogOnlyLogsWhatItWouldRevokeOrBanAndCallsNothing()
+        {
+            var lines = new List<string>();
+            var logOnly = LateResults.LogOnly(lines.Add);
+            Assert.Equal("log_only", logOnly.Name);
+            var (raw, headers) = Delivery(Review, "usr_8f2k1");
+            var revoked = await LateResults.HandleAsync(raw, headers, Secrets, logOnly, Options());
+            Assert.Equal(LateResultAction.RevokeSessions, revoked.Action);
+            Assert.Equal("usr_8f2k1", revoked.UserId);
+            var banned = await LateResults.HandleAsync(raw, headers, Secrets, logOnly, Options(new Dictionary<string, LateResultAction> { ["review"] = LateResultAction.Ban }));
+            Assert.Equal(LateResultAction.Ban, banned.Action);
+            Assert.Equal(new[]
+            {
+                "NoResponse late result (log only): would revoke every session of user usr_8f2k1",
+                "NoResponse late result (log only): would ban user usr_8f2k1 and end their sessions",
+            }, lines);
+            var (testRaw, testHeaders) = Delivery(Review, "usr_8f2k1", test: true);
+            Assert.Equal(LateResultAction.None, (await LateResults.HandleAsync(testRaw, testHeaders, Secrets, logOnly, Options())).Action);
+            Assert.Equal(2, lines.Count);
+            await Assert.ThrowsAsync<ArgumentException>(() => logOnly.BanAsync(""));
+        }
+
+        [Fact]
         public async Task WorkOSRevokePagesThroughTheSessionsAndBanRevokesThenDeletesTheUser()
         {
             using var mock = new MockProvider(c =>

@@ -10,7 +10,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v2.1.6 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v2.1.7 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -18,7 +18,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v2.1.6
+git -C third_party/noresponse-dotnet checkout v2.1.7
 git add third_party/noresponse-dotnet
 ```
 
@@ -221,6 +221,8 @@ var provider = LateResults.Clerk(Environment.GetEnvironmentVariable("CLERK_SECRE
 var result = await LateResults.HandleAsync(buffer.ToArray(), request.Headers, secrets, provider);
 // result.Action is None, RevokeSessions or Ban; result.UserId is set when it acted.
 ```
+
+If your app has its own login, `LateResults.LogOnly()` logs what it would revoke or ban (to standard output, or pass an `Action<string>`) and calls nothing. Use it to try the handler, then implement `ILateResultProvider` yourself: `Name`, `RevokeSessionsAsync(userId)` and `BanAsync(userId)`.
 
 ## Changes since 2.0.0
 
