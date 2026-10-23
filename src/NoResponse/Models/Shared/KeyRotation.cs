@@ -10,12 +10,12 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// The 201 answer of POST /v1/keys/rotate: the new key, shown once, and when the key that was presented stops working. The new key has the scopes of the presented key.
+    /// The 201 answer of POST /v1/keys/rotate: the new key, shown once, and when the key that was presented stops working. The new key has the scopes and the environment of the presented key.
     /// </summary>
     public class KeyRotation
     {
         /// <summary>
-        /// The new credential, nrk_&lt;key id&gt;_&lt;secret&gt;. It is shown only in this answer; store it now.
+        /// The new credential, nrk_&lt;mode&gt;_&lt;key id&gt;_&lt;secret&gt;, in the environment of the presented key: nrk_live_ or nrk_test_. It is shown only in this answer; store it now.
         /// </summary>
         [JsonProperty("key", Required = Newtonsoft.Json.Required.Always)]
         public string Key { get; set; } = default!;
