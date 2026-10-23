@@ -458,7 +458,7 @@ namespace NoResponse
                 var _httpRequest = await SDKConfiguration.Client.CloneAsync(httpRequest);
                 return await SDKConfiguration.Client.SendAsync(_httpRequest, cancellationToken);
             };
-            var retries = new NoResponse.Utils.Retries.Retries(retrySend, retryConfig, statusCodes);
+            var retries = new NoResponse.Utils.Retries.Retries(retrySend, retryConfig, statusCodes, cancellationToken);
 
             HttpResponseMessage httpResponse;
             try
@@ -734,7 +734,7 @@ namespace NoResponse
                 var _httpRequest = await SDKConfiguration.Client.CloneAsync(httpRequest);
                 return await SDKConfiguration.Client.SendAsync(_httpRequest, cancellationToken);
             };
-            var retries = new NoResponse.Utils.Retries.Retries(retrySend, retryConfig, statusCodes);
+            var retries = new NoResponse.Utils.Retries.Retries(retrySend, retryConfig, statusCodes, cancellationToken);
 
             HttpResponseMessage httpResponse;
             try

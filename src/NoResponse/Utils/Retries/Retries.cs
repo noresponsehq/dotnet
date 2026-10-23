@@ -4,6 +4,7 @@ namespace NoResponse.Utils.Retries
     using System;
     using System.Net.Http;
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
     using Models.Errors;
 
@@ -15,6 +16,7 @@ namespace NoResponse.Utils.Retries
         private Func<Task<HttpResponseMessage>> action;
         private RetryConfig retryConfig;
         private List<string> statusCodes;
+        private CancellationToken cancellationToken;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Retries"/> class.
@@ -22,12 +24,14 @@ namespace NoResponse.Utils.Retries
         /// <param name="action">The HTTP action to execute and potentially retry.</param>
         /// <param name="retryConfig">The retry configuration specifying strategy and backoff parameters.</param>
         /// <param name="statusCodes">The list of HTTP status codes that should trigger retries.</param>
+        /// <param name="cancellationToken">The caller's token. Once it is cancelled, no further attempt or backoff delay runs.</param>
         /// <exception cref="ArgumentException">Thrown when the statusCodes list is empty.</exception>
-        public Retries(Func<Task<HttpResponseMessage>> action, RetryConfig retryConfig, List<string> statusCodes)
+        public Retries(Func<Task<HttpResponseMessage>> action, RetryConfig retryConfig, List<string> statusCodes, CancellationToken? cancellationToken = null)
         {
             this.action = action;
             this.retryConfig = retryConfig;
             this.statusCodes = statusCodes;
+            this.cancellationToken = cancellationToken ?? CancellationToken.None;
 
             if (statusCodes.Count == 0)
             {
@@ -75,6 +79,7 @@ namespace NoResponse.Utils.Retries
                     return await retryWithBackoff(retryConfig.RetryConnectionErrors);
 
                 case RetryConfig.RetryStrategy.NONE:
+                    cancellationToken.ThrowIfCancellationRequested();
                     return await action();
 
                 default:
@@ -86,6 +91,7 @@ namespace NoResponse.Utils.Retries
         {
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 var response = await action();
 
                 foreach (var statusCode in statusCodes)
@@ -117,6 +123,10 @@ namespace NoResponse.Utils.Retries
             }
             catch (Exception ex)
             {
+                if (ex is OperationCanceledException && cancellationToken.IsCancellationRequested)
+                {
+                    throw new PermanentException(ex);
+                }
                 if ((ex is HttpRequestException || ex is TaskCanceledException) && retryConfig.RetryConnectionErrors)
                 {
                     throw new RetryableException(ex);
@@ -199,7 +209,7 @@ namespace NoResponse.Utils.Retries
                         intervalMs = (long)computed;
                     }
 
-                    await Task.Delay((int)intervalMs);
+                    await Task.Delay((int)intervalMs, cancellationToken);
                     numAttempts += 1;
                 }
                 catch (Exception)

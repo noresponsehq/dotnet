@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.6
+
+No changes detected.
+
 ## 2.1.5
 
 * `Sdk.Assessments.Create()`:  `response.risk.Reasons[].Code.Enum(testScenario)` **Added**

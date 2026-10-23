@@ -2,6 +2,7 @@ namespace NoResponse.Tests
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Net;
@@ -40,7 +41,7 @@ namespace NoResponse.Tests
         private static string Fixture(string name) =>
             File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "fixtures", "valid", name));
 
-        private static NoResponseClient Client(Scripted http) =>
+        private static NoResponseClient Client(NoResponseHttpClient http) =>
             new NoResponseClient(apiKey: "nrk_test_" + new string('k', 20), serverUrl: "https://api.example.test", client: http);
 
         private static AssessmentRequest Request() => new AssessmentRequest()
@@ -128,6 +129,43 @@ namespace NoResponse.Tests
             Assert.IsAssignableFrom<NoResponseException>(error);
             Assert.Equal(404, error.StatusCode);
             Assert.Equal(new string('a', 32), error.Payload.RequestId);
+        }
+
+        private sealed class Hanging : NoResponseHttpClient
+        {
+            public int Attempts;
+
+            public override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken? cancellationToken = null)
+            {
+                Interlocked.Increment(ref Attempts);
+                await Task.Delay(Timeout.Infinite, cancellationToken ?? CancellationToken.None);
+                throw new InvalidOperationException("unreachable");
+            }
+        }
+
+        [Fact]
+        public async Task ATimedOutRequestFailsWithinItsTimeout()
+        {
+            var http = new Hanging();
+            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(1));
+            var clock = Stopwatch.StartNew();
+            var request = Client(http).Assessments.CreateAsync(Request(), cancellationToken: timeout.Token);
+            Assert.Same(request, await Task.WhenAny(request, Task.Delay(TimeSpan.FromSeconds(10))));
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => request);
+            Assert.InRange(clock.Elapsed, TimeSpan.FromSeconds(0.9), TimeSpan.FromSeconds(3));
+            Assert.Equal(1, http.Attempts);
+        }
+
+        [Fact]
+        public async Task ATimeoutStopsTheBackoffBetweenRetries()
+        {
+            var http = new Scripted(_ => (HttpStatusCode.ServiceUnavailable, "{}", "application/problem+json"));
+            var retry = new RetryConfig(RetryConfig.RetryStrategy.BACKOFF, new BackoffStrategy(5000L, 5000L, 20000L, 1.0), false);
+            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(1));
+            var clock = Stopwatch.StartNew();
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => Client(http).Assessments.CreateAsync(Request(), retryConfig: retry, cancellationToken: timeout.Token));
+            Assert.InRange(clock.Elapsed, TimeSpan.FromSeconds(0.9), TimeSpan.FromSeconds(3));
+            Assert.Single(http.Keys);
         }
     }
 }
