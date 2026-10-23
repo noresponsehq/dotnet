@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 70bd5ecd-d923-41ca-9a42-6e3360b4ce2f
 management:
-  docChecksum: b6fcc3cd0746d9af48ec60e57c2118e8
+  docChecksum: 90decbe5d7018903c384fcc076a9a5b6
   docVersion: "1"
   speakeasyVersion: internal
   generationVersion: internal
-  releaseVersion: 3.0.5
-  configChecksum: bcc41eda433eb53dfec913b327dc7610
+  releaseVersion: 3.0.6
+  configChecksum: fe85df9f4d88add809772bac50b223ed
 features:
   csharp:
     additionalDependencies: 0.1.0
@@ -379,13 +379,13 @@ trackedFiles:
   src/NoResponse/Accounts.cs:
     last_write_checksum: sha1:c0f8d75fb57ae8b21172b960a0ffd910d195bbcb
   src/NoResponse/Assessments.cs:
-    last_write_checksum: sha1:e84d5dba2877edff00b5d34e911895621d2f7cef
+    last_write_checksum: sha1:7a98636dc8f72e3d43f37c5dd34f224cbea63143
   src/NoResponse/Hooks/HookTypes.cs:
     last_write_checksum: sha1:c90e0ccfed8e1cc4fa7a0e507130d2fc364a9f26
   src/NoResponse/Hooks/SDKHooks.cs:
     last_write_checksum: sha1:60335179e16620ac61aa149a1a3d4042c33cdb83
   src/NoResponse/Integrations.cs:
-    last_write_checksum: sha1:2f088191ff28ca21a0b94931db608c09d38d0e88
+    last_write_checksum: sha1:f33b6202028b85e4c886430b51669a8c64937a95
   src/NoResponse/KeyUsage.cs:
     last_write_checksum: sha1:150b115a49dd28ff4708a3e4003ab551b893674e
   src/NoResponse/Keys.cs:
@@ -725,17 +725,17 @@ trackedFiles:
   src/NoResponse/Models/Shared/WebsiteUnion.cs:
     last_write_checksum: sha1:53bf6746b6b3c7af983c7a485eded1378eb80ed7
   src/NoResponse/NoResponse.csproj:
-    last_write_checksum: sha1:b0c14f5f073003c692cc4c8461efae127227337a
+    last_write_checksum: sha1:7d1a305d1e0ca297ae3b3ebbb2e423e329020abd
   src/NoResponse/NoResponseClient.cs:
     last_write_checksum: sha1:1f61182e11615c09b0c6dc14a3f1696cc732263e
   src/NoResponse/SDKConfig.cs:
-    last_write_checksum: sha1:12ff52286473a3a79b866017f31ea5e6b1c516ce
+    last_write_checksum: sha1:c939ad79643cc14c27bdb9f9625579211a4a62ce
   src/NoResponse/Utils/AnyDeserializer.cs:
     last_write_checksum: sha1:2fc4560840c33ca0a329e2c1a4122510eecf6aec
   src/NoResponse/Utils/BigIntStrConverter.cs:
     last_write_checksum: sha1:8803aa46f7bca5595c22751ede125e3c4e993856
   src/NoResponse/Utils/Constants.cs:
-    last_write_checksum: sha1:b5057ac3ccc2e131f9860b279c58a9b8bab74d5c
+    last_write_checksum: sha1:60e51c69f58caa0abb1fe31f0b24ab463ffbe373
   src/NoResponse/Utils/DecimalStrConverter.cs:
     last_write_checksum: sha1:1fa9c1159f476245dfff02718e434accbba46136
   src/NoResponse/Utils/EnumConverter.cs:
