@@ -30,7 +30,7 @@ namespace NoResponse.Models.Shared
         public SignalOutcome Outcome { get; set; } = default!;
 
         /// <summary>
-        /// Opaque, tenant-scoped projection of the source that produced a signal. It stays stable for your tenant while the projection key is unchanged and reveals no upstream provider, feed, breach table or source record.
+        /// Opaque, workspace-scoped projection of the source that produced a signal. It stays stable for your workspace while the projection key is unchanged and reveals no upstream provider, feed, breach table or source record.
         /// </summary>
         [JsonProperty("source_id", Required = Newtonsoft.Json.Required.Always)]
         public string SourceId { get; set; } = default!;

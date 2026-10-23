@@ -35,10 +35,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match the request schema (an unknown member, or overlap_seconds outside 60 to 604800). invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling workspace, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
         /// <exception cref="ConflictException">The presented key was already rotated and is still in its overlap window. Rotate with the new key; the new key's own rotation is not affected. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<RotateApiKeyResponse> RotateAsync(
             KeyRotationRequest request,
@@ -77,10 +77,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match the request schema (an unknown member, or overlap_seconds outside 60 to 604800). invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling workspace, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
         /// <exception cref="ConflictException">The presented key was already rotated and is still in its overlap window. Rotate with the new key; the new key's own rotation is not affected. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<RotateApiKeyResponse> RotateAsync(
             KeyRotationRequest request,

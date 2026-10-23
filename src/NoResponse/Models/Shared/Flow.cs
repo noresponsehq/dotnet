@@ -9,18 +9,18 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// The customer event an assessment is made for: signup (a new account), login (a returning sign-in) or purchase (a payment or credit grant). The account's risk is reported with the decision for this flow.
+    /// The event an assessment is made for: account_creation (a user creates an account), login (a user returns to an existing account) or purchase (a payment or a credit grant). The account's risk is reported with the decision for this flow.
     /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class Flow : IEquatable<Flow>, IOpenEnum<string>
     {
-        public static readonly Flow Signup = new Flow("signup");
+        public static readonly Flow AccountCreation = new Flow("account_creation");
         public static readonly Flow Login = new Flow("login");
         public static readonly Flow Purchase = new Flow("purchase");
 
         private static readonly Dictionary<string, Flow> _knownValues =
             new Dictionary<string, Flow>() {
-                ["signup"] = Signup,
+                ["account_creation"] = AccountCreation,
                 ["login"] = Login,
                 ["purchase"] = Purchase
             };

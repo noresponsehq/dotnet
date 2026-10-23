@@ -14,11 +14,11 @@ namespace NoResponse.Models.Shared
     [JsonConverter(typeof(OpenEnumConverter))]
     public class PermissionDeniedErrorCode : IEquatable<PermissionDeniedErrorCode>, IOpenEnum<string>
     {
-        public static readonly PermissionDeniedErrorCode TenantForbidden = new PermissionDeniedErrorCode("tenant_forbidden");
+        public static readonly PermissionDeniedErrorCode WorkspaceForbidden = new PermissionDeniedErrorCode("workspace_forbidden");
 
         private static readonly Dictionary<string, PermissionDeniedErrorCode> _knownValues =
             new Dictionary<string, PermissionDeniedErrorCode>() {
-                ["tenant_forbidden"] = TenantForbidden
+                ["workspace_forbidden"] = WorkspaceForbidden
             };
 
         private static readonly ConcurrentDictionary<string, PermissionDeniedErrorCode> _values =

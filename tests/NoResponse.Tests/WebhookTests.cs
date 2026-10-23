@@ -153,7 +153,7 @@ namespace NoResponse.Tests
             }
         }
 
-        private const string TenantDeletedBody = "{\"id\":\"evt_01JA2ZD3K4M5N6P7Q8R9S0T1V2\",\"type\":\"tenant.deleted\",\"created_at\":\"2026-10-23T10:00:00.000Z\","
+        private const string WorkspaceDeletedBody = "{\"id\":\"evt_01JA2ZD3K4M5N6P7Q8R9S0T1V2\",\"type\":\"workspace.deleted\",\"created_at\":\"2026-10-23T10:00:00.000Z\","
             + "\"data\":{\"workspace_id\":\"tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM\",\"environment\":\"live\",\"deleted_at\":\"2026-10-23T10:00:00.000Z\"}}";
 
         private const string EndpointDisabledBody = "{\"id\":\"evt_01JA2ZD3K4M5N6P7Q8R9S0T1V3\",\"type\":\"webhook_endpoint.disabled\",\"created_at\":\"2026-10-23T10:00:00.000Z\","
@@ -179,19 +179,19 @@ namespace NoResponse.Tests
         }
 
         [Fact]
-        public void TenantDeletedEvent()
+        public void WorkspaceDeletedEvent()
         {
             var secrets = new Dictionary<string, string> { ["whk_sdktest01"] = "secret" };
-            var (raw, headers) = Signed(Literal(TenantDeletedBody), "secret", "evt_01JA2ZD3K4M5N6P7Q8R9S0T1V2");
+            var (raw, headers) = Signed(Literal(WorkspaceDeletedBody), "secret", "evt_01JA2ZD3K4M5N6P7Q8R9S0T1V2");
             var ev = Webhook.ConstructEvent(raw, headers, secrets, now: Now);
-            Assert.Equal("tenant.deleted", ev.Type);
+            Assert.Equal("workspace.deleted", ev.Type);
             Assert.Equal("evt_01JA2ZD3K4M5N6P7Q8R9S0T1V2", ev.Id);
             Assert.Equal("2026-10-23T10:00:00.000Z", ev.CreatedAt);
             Assert.False(ev.IsExpired);
             Assert.False(ev.Test);
-            Assert.Equal(new TenantDeleted("tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM", "live", "2026-10-23T10:00:00.000Z"), Assert.IsType<TenantDeleted>(ev.Data));
+            Assert.Equal(new WorkspaceDeleted("tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM", "live", "2026-10-23T10:00:00.000Z"), Assert.IsType<WorkspaceDeleted>(ev.Data));
             Assert.Throws<WebhookVerificationException>(() => Webhook.VerificationResponse(ev));
-            RefusesChangedData(TenantDeletedBody, new Action<JObject>[]
+            RefusesChangedData(WorkspaceDeletedBody, new Action<JObject>[]
             {
                 data => data.Remove("workspace_id"),
                 data => data["workspace_id"] = "-tnt",
@@ -251,10 +251,10 @@ namespace NoResponse.Tests
             Assert.Equal("asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM", account.AssessmentId);
             Assert.Equal("2026-10-23T09:00:04.812Z", account.UpdatedAt);
             Assert.Equal(new[] { "review", "review", "review" },
-                new[] { account.DecisionsByFlow.Signup.Value, account.DecisionsByFlow.Login.Value, account.DecisionsByFlow.Purchase.Value });
+                new[] { account.DecisionsByFlow.AccountCreation.Value, account.DecisionsByFlow.Login.Value, account.DecisionsByFlow.Purchase.Value });
             var previous = data.PreviousDecisionsByFlow;
             Assert.Equal(new[] { "allow", "allow", "allow" },
-                new[] { previous.Signup.Value, previous.Login.Value, previous.Purchase.Value });
+                new[] { previous.AccountCreation.Value, previous.Login.Value, previous.Purchase.Value });
             Assert.Throws<WebhookVerificationException>(() => Webhook.VerificationResponse(ev));
             foreach (var mutate in new Action<JObject>[]
             {

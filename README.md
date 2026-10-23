@@ -2,7 +2,7 @@
 
 # NoResponse for .NET
 
-The NoResponse client for .NET 8 and later. It assesses a signup or gateway event, polls a pending assessment, pages through an account's history, records what you later learned, rotates your API key and verifies webhooks. The client is generated from the NoResponse OpenAPI document; webhook verification and the wait helper are hand-written.
+The NoResponse client for .NET 8 and later. It assesses an account creation, login or purchase, polls a pending assessment, pages through an account's history, records what you later learned, rotates your API key and verifies webhooks. The client is generated from the NoResponse OpenAPI document; webhook verification and the wait helper are hand-written.
 
 Keep the API key on your server.
 
@@ -12,7 +12,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v4.0.1 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v5.0.0 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -20,7 +20,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v4.0.1
+git -C third_party/noresponse-dotnet checkout v5.0.0
 git add third_party/noresponse-dotnet
 ```
 
@@ -37,7 +37,7 @@ var client = new NoResponseClient(); // reads NORESPONSE_API_KEY
 var response = await client.Assessments.CreateAsync(new AssessmentRequest
 {
     AccountId = "usr_8f2k1",
-    Flow = Flow.Signup,
+    Flow = Flow.AccountCreation,
     Identifiers = new AssessmentRequestIdentifiers { Email = "jordan.lee@example.com" },
 });
 
@@ -73,11 +73,11 @@ var created = await client.Assessments.CreateAsync(
     new AssessmentRequest
     {
         AccountId = "usr_8f2k1",
-        Flow = Flow.Signup,
+        Flow = Flow.AccountCreation,
         Identifiers = new AssessmentRequestIdentifiers { Email = "jordan.lee@example.com" },
         ResponseMode = ResponseMode.Detailed, // detailed needs the detailed scope
     },
-    idempotencyKey: "signup-usr_8f2k1-0001");
+    idempotencyKey: "account-usr_8f2k1-0001");
 
 var latest = await client.Assessments.GetAsync(created.Result.Id);
 var settled = await client.Assessments.WaitAsync(created.Result.Id, timeout: TimeSpan.FromSeconds(30));
@@ -161,7 +161,7 @@ await client.Assessments.CreateAsync(request, retryConfig: new RetryConfig(Retry
 
 ## Issued keys
 
-When your signup gate issues an API key to the new account, send only its hash, as `issued_credential.sha256`; the key itself never leaves your backend.
+When your platform issues an API key to the new account, send only its hash, as `issued_credential.sha256`; the key itself never leaves your backend.
 
 ```csharp
 var sha256 = IssuedCredential.Sha256(issuedKey); // NoResponse.IssuedCredential
@@ -204,7 +204,7 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
         }
         if (webhookEvent.Test) { return Results.NoContent(); } // SendTestEventAsync's fixed example assessment: apply nothing
         if (webhookEvent.Data is AccountDeleted erased) { /* account.deleted: you erased erased.AccountId with Accounts.DeleteAsync */ }
-        else if (webhookEvent.Data is TenantDeleted gone) { /* tenant.deleted: the workspace is deleted; the last event for gone.Environment */ }
+        else if (webhookEvent.Data is WorkspaceDeleted gone) { /* workspace.deleted: the workspace is deleted; the last event for gone.Environment */ }
         else if (webhookEvent.Data is EndpointDisabled disabled) { /* disabled.EndpointId failed for 72 hours: fix it, verify it again */ }
         else if (webhookEvent.Data is AccountRiskChanged changed) { /* account.risk_changed: changed.Account is the Account Accounts.GetAsync returns; changed.PreviousDecisionsByFlow holds the decisions it replaced */ }
         else if (webhookEvent.IsExpired) { /* forget the assessment: GET now answers 404 */ }
@@ -223,7 +223,7 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
 
 ### Late results
 
-An account's decision can rise to `review` or `block` after the signup was allowed. `LateResults.HandleAsync` verifies the delivery with `ConstructEvent` first, applies your policy to `account.risk.decision` (`LateResults.DefaultPolicy` revokes sessions on `review` and `block` and does nothing otherwise) and acts through Clerk, WorkOS or Auth0. WorkOS has no block, so its ban deletes the user permanently. An `account.risk_changed` event acts on nothing: the handler acts on the `assessment.updated` that changed the decision.
+An account's decision can rise to `review` or `block` after the account creation was allowed. `LateResults.HandleAsync` verifies the delivery with `ConstructEvent` first, applies your policy to `account.risk.decision` (`LateResults.DefaultPolicy` revokes sessions on `review` and `block` and does nothing otherwise) and acts through Clerk, WorkOS or Auth0. WorkOS has no block, so its ban deletes the user permanently. An `account.risk_changed` event acts on nothing: the handler acts on the `assessment.updated` that changed the decision.
 
 ```csharp
 using NoResponse.LateResults;

@@ -58,7 +58,7 @@ namespace NoResponse.Webhooks
     /// The workspace was deleted. Sent once per environment ("live" or "test") before its
     /// endpoints are torn down: the last event this endpoint receives.
     /// </summary>
-    public sealed record TenantDeleted(string WorkspaceId, string Environment, string DeletedAt);
+    public sealed record WorkspaceDeleted(string WorkspaceId, string Environment, string DeletedAt);
 
     /// <summary>
     /// Another endpoint of this environment was disabled after failing continuously for 72 hours,
@@ -78,8 +78,8 @@ namespace NoResponse.Webhooks
     /// A verified delivery. Data is an <see cref="Assessment"/> (exactly as Assessments.GetAsync
     /// returns it) or an <see cref="AssessmentExpired"/> for type "assessment.updated", an
     /// <see cref="EndpointVerification"/> for "endpoint.verification", an
-    /// <see cref="AccountDeleted"/> for "account.deleted", a <see cref="TenantDeleted"/> for
-    /// "tenant.deleted", an <see cref="EndpointDisabled"/> for "webhook_endpoint.disabled"
+    /// <see cref="AccountDeleted"/> for "account.deleted", a <see cref="WorkspaceDeleted"/> for
+    /// "workspace.deleted", an <see cref="EndpointDisabled"/> for "webhook_endpoint.disabled"
     /// and an <see cref="AccountRiskChanged"/> for "account.risk_changed".
     /// Deliveries are at least
     /// once and unordered: deduplicate on Id and keep the highest Detail.AssessmentVersion.
@@ -274,7 +274,7 @@ namespace NoResponse.Webhooks
                 }
                 return new AccountDeleted((string)accountId!, (long)deleted, (string)deletedAt!);
             }
-            if (type == "tenant.deleted")
+            if (type == "workspace.deleted")
             {
                 if (data["workspace_id"] is not JValue { Type: JTokenType.String } workspaceId
                     || !WorkspaceId.IsMatch((string)workspaceId!)
@@ -283,9 +283,9 @@ namespace NoResponse.Webhooks
                     || data["deleted_at"] is not JValue { Type: JTokenType.String } deletedAt
                     || !ValidDateTime((string)deletedAt!))
                 {
-                    throw new WebhookVerificationException(WebhookErrorCode.InvalidPayload, "Tenant deleted event is malformed");
+                    throw new WebhookVerificationException(WebhookErrorCode.InvalidPayload, "Workspace deleted event is malformed");
                 }
-                return new TenantDeleted((string)workspaceId!, (string)environment!, (string)deletedAt!);
+                return new WorkspaceDeleted((string)workspaceId!, (string)environment!, (string)deletedAt!);
             }
             if (type == "webhook_endpoint.disabled")
             {

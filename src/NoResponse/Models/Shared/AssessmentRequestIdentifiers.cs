@@ -34,7 +34,7 @@ namespace NoResponse.Models.Shared
         public string? Name { get; set; }
 
         /// <summary>
-        /// The signup's client IP address: an IPv4 dotted quad without leading zeros, or an IPv6 address in its RFC 5952 text form (lower case, no leading zeros, the longest zero run compressed). Send an IPv4 client as a dotted quad, not IPv4-mapped. No zone, port or prefix. The server refuses a non-canonical IPv6 spelling, and every private, loopback, link-local, multicast, documentation or otherwise reserved address (the IANA special-purpose registries), with 400: only a public address says anything about a signup.
+        /// The account_creation's client IP address: an IPv4 dotted quad without leading zeros, or an IPv6 address in its RFC 5952 text form (lower case, no leading zeros, the longest zero run compressed). Send an IPv4 client as a dotted quad, not IPv4-mapped. No zone, port or prefix. The server refuses a non-canonical IPv6 spelling, and every private, loopback, link-local, multicast, documentation or otherwise reserved address (the IANA special-purpose registries), with 400: only a public address says anything about a signup.
         /// </summary>
         [JsonProperty("ip", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? Ip { get; set; }

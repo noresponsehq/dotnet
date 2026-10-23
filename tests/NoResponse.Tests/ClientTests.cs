@@ -47,7 +47,7 @@ namespace NoResponse.Tests
         private static AssessmentRequest Request() => new AssessmentRequest()
         {
             AccountId = "acct_7f3a9c",
-            Flow = Flow.Signup,
+            Flow = Flow.AccountCreation,
             Identifiers = new AssessmentRequestIdentifiers() { Email = "new.user@example.com" },
         };
 
@@ -66,8 +66,8 @@ namespace NoResponse.Tests
         public async Task CreateKeepsTheCallersIdempotencyKey()
         {
             var http = new Scripted(_ => (HttpStatusCode.OK, Fixture("assessment-view-complete.json"), "application/json"));
-            await Client(http).Assessments.CreateAsync(Request(), idempotencyKey: "signup-usr_8f2k1-0001");
-            Assert.Equal("signup-usr_8f2k1-0001", http.Keys.Single());
+            await Client(http).Assessments.CreateAsync(Request(), idempotencyKey: "account-usr_8f2k1-0001");
+            Assert.Equal("account-usr_8f2k1-0001", http.Keys.Single());
         }
 
         [Fact]

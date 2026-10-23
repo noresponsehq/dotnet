@@ -15,7 +15,7 @@ namespace NoResponse.Models.Shared
     public class Integration
     {
         /// <summary>
-        /// Opaque, server-assigned integration id: int_ and a 26-character Crockford base32 ULID. Another tenant's integration id answers 404.
+        /// Opaque, server-assigned integration id: int_ and a 26-character Crockford base32 ULID. Another workspace's integration id answers 404.
         /// </summary>
         [JsonProperty("integration_id", Required = Newtonsoft.Json.Required.Always)]
         public string IntegrationId { get; set; } = default!;

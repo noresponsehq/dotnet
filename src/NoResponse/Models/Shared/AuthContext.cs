@@ -57,7 +57,7 @@ namespace NoResponse.Models.Shared
         public string? OrganizationId { get; set; }
 
         /// <summary>
-        /// The provider tenant identifier, when distinct from organization_id.
+        /// The provider workspace identifier, when distinct from organization_id.
         /// </summary>
         [JsonProperty("tenant_id", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? TenantId { get; set; }

@@ -9,12 +9,12 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
-        Flow = Flow.Signup,
+        Flow = Flow.AccountCreation,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
         },
     },
-    idempotencyKey: "signup-acct_7f3a9c"
+    idempotencyKey: "account-acct_7f3a9c"
 );
 
 // handle response

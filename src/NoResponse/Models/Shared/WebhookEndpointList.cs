@@ -7,7 +7,7 @@ namespace NoResponse.Models.Shared
     using System.Collections.Generic;
 
     /// <summary>
-    /// GET /v1/webhooks answer: every endpoint of the calling tenant, in every state, ordered by endpoint_id. A tenant holds at most 5, so there is no page.
+    /// GET /v1/webhooks answer: every endpoint of the calling workspace, in every state, ordered by endpoint_id. A workspace holds at most 5, so there is no page.
     /// </summary>
     public class WebhookEndpointList
     {

@@ -10,7 +10,7 @@ namespace NoResponse.Models.Shared
     public class AssessmentRequestPolicyContext
     {
         /// <summary>
-        /// ISO 3166-1 alpha-2 region of the signup, as the provider determines it.
+        /// ISO 3166-1 alpha-2 region of the user, as the provider determines it.
         /// </summary>
         [JsonProperty("region", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? Region { get; set; }

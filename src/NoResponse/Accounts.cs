@@ -29,7 +29,7 @@ namespace NoResponse
         /// <remarks>
         /// An account is the account_id you send with your assessments. Its current risk is the risk of its latest assessment with a decision (status complete or partial), scored as GET /v1/assessments/{assessment_id} scores that assessment, with a decision for each flow; risk.decision is the decision for the flow of that assessment. Every assessment answers with this same account. Every assessment updates its account: once an assessment completes, the account carries its risk. Requires the history scope. Read-only and safe to retry. An account with no unexpired assessment that has a decision answers 404 not_found, and a malformed account_id answers 400 invalid_request.
         /// </remarks>
-        /// <param name="accountId">The account_id the tenant sends with its assessments, as one path segment (percent-encode '|' and ':' if the client requires it). A value that does not match the account_id shape answers 400 invalid_request.</param>
+        /// <param name="accountId">The account_id the workspace sends with its assessments, as one path segment (percent-encode '|' and ':' if the client requires it). A value that does not match the account_id shape answers 400 invalid_request.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="GetAccountResponse"/> object when completed.</returns>
@@ -37,12 +37,12 @@ namespace NoResponse
         /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
         /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
-        /// <exception cref="BadRequestException">account_id does not match its shape, a query parameter is unknown, repeated or out of range, or the cursor is invalid, belongs to another tenant or account, or has expired. invalid_params names the offending parameters, not their values. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="BadRequestException">account_id does not match its shape, a query parameter is unknown, repeated or out of range, or the cursor is invalid, belongs to another workspace or account, or has expired. invalid_params names the offending parameters, not their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">The calling tenant has no unexpired assessment with a decision for this account_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">The calling workspace has no unexpired assessment with a decision for this account_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<GetAccountResponse> GetAsync(
             string accountId,
@@ -56,7 +56,7 @@ namespace NoResponse
         /// <remarks>
         /// Erases the account in the environment of your key, for an erasure request from your user: every assessment of it, with its revisions, evidence and outcomes, and the identity-graph marks its outcomes set. An assessment of the account begun before the call is refused or stopped. Afterwards the account and each erased assessment answer 404 and the history is empty. When the call deleted at least one assessment, an account.deleted event goes to your verified webhook endpoints. Requires the history scope. Idempotent and safe to retry: a repeat, or an account with nothing to erase, answers 200 with assessments_deleted 0 and sends no event. The account_id can be assessed again later, as a new account.
         /// </remarks>
-        /// <param name="accountId">The account_id the tenant sends with its assessments, as one path segment (percent-encode '|' and ':' if the client requires it). A value that does not match the account_id shape answers 400 invalid_request.</param>
+        /// <param name="accountId">The account_id the workspace sends with its assessments, as one path segment (percent-encode '|' and ':' if the client requires it). A value that does not match the account_id shape answers 400 invalid_request.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="DeleteAccountResponse"/> object when completed.</returns>
@@ -64,12 +64,12 @@ namespace NoResponse
         /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
         /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
-        /// <exception cref="BadRequestException">account_id does not match its shape, a query parameter is unknown, repeated or out of range, or the cursor is invalid, belongs to another tenant or account, or has expired. invalid_params names the offending parameters, not their values. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="BadRequestException">account_id does not match its shape, a query parameter is unknown, repeated or out of range, or the cursor is invalid, belongs to another workspace or account, or has expired. invalid_params names the offending parameters, not their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling workspace, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<DeleteAccountResponse> DeleteAsync(
             string accountId,
@@ -81,9 +81,9 @@ namespace NoResponse
         /// Page through one account's unexpired assessments.
         /// </summary>
         /// <remarks>
-        /// The account's history: the same page as POST /v1/assessments/query for this account_id, newest first, each at its latest assessment_version. Requires the history scope. Read-only and safe to retry. An account with no assessments answers 200 with empty items. The cursor is opaque and bound to your tenant and the account; a tampered or expired cursor answers 400 invalid_cursor. response_mode=detailed needs the detailed scope. The account_id travels in the URL; use POST /v1/assessments/query to keep it out of access logs.
+        /// The account's history: the same page as POST /v1/assessments/query for this account_id, newest first, each at its latest assessment_version. Requires the history scope. Read-only and safe to retry. An account with no assessments answers 200 with empty items. The cursor is opaque and bound to your workspace and the account; a tampered or expired cursor answers 400 invalid_cursor. response_mode=detailed needs the detailed scope. The account_id travels in the URL; use POST /v1/assessments/query to keep it out of access logs.
         /// </remarks>
-        /// <param name="accountId">The account_id the tenant sends with its assessments, as one path segment (percent-encode '|' and ':' if the client requires it). A value that does not match the account_id shape answers 400 invalid_request.</param>
+        /// <param name="accountId">The account_id the workspace sends with its assessments, as one path segment (percent-encode '|' and ':' if the client requires it). A value that does not match the account_id shape answers 400 invalid_request.</param>
         /// <param name="limit">Items per page.</param>
         /// <param name="cursor">next_cursor from the previous page, unchanged.</param>
         /// <param name="responseMode">Optional standard or separately authorised detailed customer view; raw is rejected.</param>
@@ -94,12 +94,12 @@ namespace NoResponse
         /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
         /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
-        /// <exception cref="BadRequestException">account_id does not match its shape, a query parameter is unknown, repeated or out of range, or the cursor is invalid, belongs to another tenant or account, or has expired. invalid_params names the offending parameters, not their values. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="BadRequestException">account_id does not match its shape, a query parameter is unknown, repeated or out of range, or the cursor is invalid, belongs to another workspace or account, or has expired. invalid_params names the offending parameters, not their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling workspace, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<ListAccountAssessmentsResponse> ListAssessmentsAsync(
             string accountId,
@@ -133,7 +133,7 @@ namespace NoResponse
         /// <remarks>
         /// An account is the account_id you send with your assessments. Its current risk is the risk of its latest assessment with a decision (status complete or partial), scored as GET /v1/assessments/{assessment_id} scores that assessment, with a decision for each flow; risk.decision is the decision for the flow of that assessment. Every assessment answers with this same account. Every assessment updates its account: once an assessment completes, the account carries its risk. Requires the history scope. Read-only and safe to retry. An account with no unexpired assessment that has a decision answers 404 not_found, and a malformed account_id answers 400 invalid_request.
         /// </remarks>
-        /// <param name="accountId">The account_id the tenant sends with its assessments, as one path segment (percent-encode '|' and ':' if the client requires it). A value that does not match the account_id shape answers 400 invalid_request.</param>
+        /// <param name="accountId">The account_id the workspace sends with its assessments, as one path segment (percent-encode '|' and ':' if the client requires it). A value that does not match the account_id shape answers 400 invalid_request.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="GetAccountResponse"/> object when completed.</returns>
@@ -141,12 +141,12 @@ namespace NoResponse
         /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
         /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
-        /// <exception cref="BadRequestException">account_id does not match its shape, a query parameter is unknown, repeated or out of range, or the cursor is invalid, belongs to another tenant or account, or has expired. invalid_params names the offending parameters, not their values. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="BadRequestException">account_id does not match its shape, a query parameter is unknown, repeated or out of range, or the cursor is invalid, belongs to another workspace or account, or has expired. invalid_params names the offending parameters, not their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">The calling tenant has no unexpired assessment with a decision for this account_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">The calling workspace has no unexpired assessment with a decision for this account_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<GetAccountResponse> GetAsync(
             string accountId,
@@ -409,7 +409,7 @@ namespace NoResponse
         /// <remarks>
         /// Erases the account in the environment of your key, for an erasure request from your user: every assessment of it, with its revisions, evidence and outcomes, and the identity-graph marks its outcomes set. An assessment of the account begun before the call is refused or stopped. Afterwards the account and each erased assessment answer 404 and the history is empty. When the call deleted at least one assessment, an account.deleted event goes to your verified webhook endpoints. Requires the history scope. Idempotent and safe to retry: a repeat, or an account with nothing to erase, answers 200 with assessments_deleted 0 and sends no event. The account_id can be assessed again later, as a new account.
         /// </remarks>
-        /// <param name="accountId">The account_id the tenant sends with its assessments, as one path segment (percent-encode '|' and ':' if the client requires it). A value that does not match the account_id shape answers 400 invalid_request.</param>
+        /// <param name="accountId">The account_id the workspace sends with its assessments, as one path segment (percent-encode '|' and ':' if the client requires it). A value that does not match the account_id shape answers 400 invalid_request.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="DeleteAccountResponse"/> object when completed.</returns>
@@ -417,12 +417,12 @@ namespace NoResponse
         /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
         /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
-        /// <exception cref="BadRequestException">account_id does not match its shape, a query parameter is unknown, repeated or out of range, or the cursor is invalid, belongs to another tenant or account, or has expired. invalid_params names the offending parameters, not their values. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="BadRequestException">account_id does not match its shape, a query parameter is unknown, repeated or out of range, or the cursor is invalid, belongs to another workspace or account, or has expired. invalid_params names the offending parameters, not their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling workspace, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<DeleteAccountResponse> DeleteAsync(
             string accountId,
@@ -683,9 +683,9 @@ namespace NoResponse
         /// Page through one account's unexpired assessments.
         /// </summary>
         /// <remarks>
-        /// The account's history: the same page as POST /v1/assessments/query for this account_id, newest first, each at its latest assessment_version. Requires the history scope. Read-only and safe to retry. An account with no assessments answers 200 with empty items. The cursor is opaque and bound to your tenant and the account; a tampered or expired cursor answers 400 invalid_cursor. response_mode=detailed needs the detailed scope. The account_id travels in the URL; use POST /v1/assessments/query to keep it out of access logs.
+        /// The account's history: the same page as POST /v1/assessments/query for this account_id, newest first, each at its latest assessment_version. Requires the history scope. Read-only and safe to retry. An account with no assessments answers 200 with empty items. The cursor is opaque and bound to your workspace and the account; a tampered or expired cursor answers 400 invalid_cursor. response_mode=detailed needs the detailed scope. The account_id travels in the URL; use POST /v1/assessments/query to keep it out of access logs.
         /// </remarks>
-        /// <param name="accountId">The account_id the tenant sends with its assessments, as one path segment (percent-encode '|' and ':' if the client requires it). A value that does not match the account_id shape answers 400 invalid_request.</param>
+        /// <param name="accountId">The account_id the workspace sends with its assessments, as one path segment (percent-encode '|' and ':' if the client requires it). A value that does not match the account_id shape answers 400 invalid_request.</param>
         /// <param name="limit">Items per page.</param>
         /// <param name="cursor">next_cursor from the previous page, unchanged.</param>
         /// <param name="responseMode">Optional standard or separately authorised detailed customer view; raw is rejected.</param>
@@ -696,12 +696,12 @@ namespace NoResponse
         /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
         /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
-        /// <exception cref="BadRequestException">account_id does not match its shape, a query parameter is unknown, repeated or out of range, or the cursor is invalid, belongs to another tenant or account, or has expired. invalid_params names the offending parameters, not their values. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="BadRequestException">account_id does not match its shape, a query parameter is unknown, repeated or out of range, or the cursor is invalid, belongs to another workspace or account, or has expired. invalid_params names the offending parameters, not their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling workspace, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<ListAccountAssessmentsResponse> ListAssessmentsAsync(
             string accountId,

@@ -10,15 +10,15 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// The decision for each flow: the account's score under that flow's thresholds. A flow the workspace has not set uses its signup thresholds, so the flows differ only where it set them.
+    /// The decision for each flow: the account's score under that flow's thresholds. A flow the workspace has not set uses its account_creation thresholds, so the flows differ only where it set them.
     /// </summary>
     public class AccountDecisionsByFlow
     {
         /// <summary>
         /// block when the score reached your block threshold (risk.block of the assessment), otherwise the assessment's recommendation. Your application applies it.
         /// </summary>
-        [JsonProperty("signup", Required = Newtonsoft.Json.Required.Always)]
-        public AccountDecision Signup { get; set; } = default!;
+        [JsonProperty("account_creation", Required = Newtonsoft.Json.Required.Always)]
+        public AccountDecision AccountCreation { get; set; } = default!;
 
         /// <summary>
         /// block when the score reached your block threshold (risk.block of the assessment), otherwise the assessment's recommendation. Your application applies it.

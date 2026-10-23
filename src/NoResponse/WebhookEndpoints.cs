@@ -23,7 +23,7 @@ namespace NoResponse
     public interface IWebhookEndpoints
     {
         /// <summary>
-        /// List the tenant's webhook endpoints.
+        /// List the workspace's webhook endpoints.
         /// </summary>
         /// <remarks>
         /// Lists your webhook endpoints in every state, ordered by endpoint_id, with the ids of their signing keys and without secrets. Requires the webhooks scope.
@@ -36,10 +36,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match the request schema (an unknown member, no identifier, a malformed or oversized identifier, deadline_ms above 3000), or Idempotency-Key is missing or malformed. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling workspace, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<ListWebhookEndpointsResponse> ListAsync(
             RetryConfig? retryConfig = null,
@@ -61,10 +61,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match the request schema (invalid_request), or the URL is not a permitted webhook destination (webhook_url_refused): not https, a port other than 443 or 8443, userinfo or a fragment, an IP literal, a host that does not resolve, or an address that is not public. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The tenant already holds 5 webhook endpoints. Delete one first. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling workspace, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The workspace already holds 5 webhook endpoints. Delete one first. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<CreateWebhookEndpointResponse> CreateAsync(
             WebhookEndpointRequest request,
@@ -77,7 +77,7 @@ namespace NoResponse
         /// <remarks>
         /// Deletes the endpoint and its signing keys. Deliveries still queued for it are dropped. Requires the webhooks scope. An endpoint that is already gone answers 404.
         /// </remarks>
-        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another tenant's answers 404.</param>
+        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another workspace's answers 404.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="DeleteWebhookEndpointResponse"/> object when completed.</returns>
@@ -87,10 +87,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match the request schema (an unknown member, no identifier, a malformed or oversized identifier, deadline_ms above 3000), or Idempotency-Key is missing or malformed. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No endpoint with this id for the calling tenant, including a malformed id and another tenant's endpoint. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No endpoint with this id for the calling workspace, including a malformed id and another workspace's endpoint. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<DeleteWebhookEndpointResponse> DeleteAsync(
             string endpointId,
@@ -104,7 +104,7 @@ namespace NoResponse
         /// <remarks>
         /// Issues a new signing key for the endpoint and returns its secret once. Every delivery from now on is signed with it; the key it replaces keeps verifying for 7 days, so your receiver can hold both while it switches. Requires the webhooks scope. Rotation is not idempotent: a retry after a lost answer issues another key, which replaces the first.
         /// </remarks>
-        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another tenant's answers 404.</param>
+        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another workspace's answers 404.</param>
         /// <param name="body">A <see cref="WebhookKeyRotationRequest"/> parameter.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="RotateWebhookSigningKeyResponse"/> object when completed.</returns>
@@ -114,10 +114,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match the request schema. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No endpoint with this id for the calling tenant, including a malformed id and another tenant's endpoint. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No endpoint with this id for the calling workspace, including a malformed id and another workspace's endpoint. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<RotateWebhookSigningKeyResponse> RotateSigningKeyAsync(
             string endpointId,
@@ -131,7 +131,7 @@ namespace NoResponse
         /// <remarks>
         /// endpoint.verification sends a signed challenge now and answers whether the endpoint echoed it within 5 seconds; an echo verifies the endpoint, including a disabled one. assessment.updated queues one signed event with test: true and a fixed example assessment in the endpoint's response mode, delivered and retried like any other event; the endpoint must be verified. Both use the endpoint's current signing key. Requires the webhooks scope.
         /// </remarks>
-        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another tenant's answers 404.</param>
+        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another workspace's answers 404.</param>
         /// <param name="body">A <see cref="WebhookTestRequest"/> parameter.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="SendWebhookTestEventResponse"/> object when completed.</returns>
@@ -141,10 +141,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match the request schema. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No endpoint with this id for the calling tenant, including a malformed id and another tenant's endpoint. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No endpoint with this id for the calling workspace, including a malformed id and another workspace's endpoint. Thrown when the API returns a 404 response.</exception>
         /// <exception cref="ConflictException">assessment.updated or a replay was asked for an endpoint that is not verified. Send endpoint.verification first; a disabled endpoint is verified again the same way. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<SendWebhookTestEventResponse> SendTestEventAsync(
             string endpointId,
@@ -156,9 +156,9 @@ namespace NoResponse
         /// List an endpoint's delivery attempts.
         /// </summary>
         /// <remarks>
-        /// Every POST the endpoint received, newest first: the event id and type, which attempt it was, whether it was a replay, delivered or failed, the response code, why it failed and how long it took. Attempts are kept for 30 days, or your retention_days when that is shorter, and are deleted with the assessment they carried. Requires the webhooks scope. Read-only and safe to retry. The cursor is opaque and bound to your tenant and the endpoint; a tampered or expired cursor answers 400 invalid_cursor.
+        /// Every POST the endpoint received, newest first: the event id and type, which attempt it was, whether it was a replay, delivered or failed, the response code, why it failed and how long it took. Attempts are kept for 30 days, or your retention_days when that is shorter, and are deleted with the assessment they carried. Requires the webhooks scope. Read-only and safe to retry. The cursor is opaque and bound to your workspace and the endpoint; a tampered or expired cursor answers 400 invalid_cursor.
         /// </remarks>
-        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another tenant's answers 404.</param>
+        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another workspace's answers 404.</param>
         /// <param name="limit">Attempts per page.</param>
         /// <param name="cursor">next_cursor from the previous page, unchanged.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
@@ -168,12 +168,12 @@ namespace NoResponse
         /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
         /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
-        /// <exception cref="BadRequestException">A query parameter is unknown, repeated or out of range (invalid_request), or the cursor is empty, fails its MAC, belongs to another tenant or endpoint, or has expired (invalid_cursor). invalid_params names the offending parameters without their values. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="BadRequestException">A query parameter is unknown, repeated or out of range (invalid_request), or the cursor is empty, fails its MAC, belongs to another workspace or endpoint, or has expired (invalid_cursor). invalid_params names the offending parameters without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No endpoint with this id for the calling tenant, including a malformed id and another tenant's endpoint. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No endpoint with this id for the calling workspace, including a malformed id and another workspace's endpoint. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<ListWebhookDeliveriesResponse> ListDeliveriesAsync(
             string endpointId,
@@ -189,8 +189,8 @@ namespace NoResponse
         /// <remarks>
         /// Queues the event for the endpoint again: the same event id and body it received, with a new NR-Webhook-Timestamp and a signature from the endpoint's current signing key, retried like any other delivery and listed with replay: true. Your receiver deduplicates on the event id. The endpoint must be verified. Requires the webhooks scope. Not idempotent: each call, a retry included, sends the event again.
         /// </remarks>
-        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another tenant's answers 404.</param>
-        /// <param name="eventId">The evt_ id of a delivery the endpoint's log holds, as GET /v1/webhooks/{endpoint_id}/deliveries lists it. An id that is malformed, not sent to this endpoint, past the log's retention or another tenant's answers 404.</param>
+        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another workspace's answers 404.</param>
+        /// <param name="eventId">The evt_ id of a delivery the endpoint's log holds, as GET /v1/webhooks/{endpoint_id}/deliveries lists it. An id that is malformed, not sent to this endpoint, past the log's retention or another workspace's answers 404.</param>
         /// <param name="body">A <see cref="WebhookReplayRequest"/> parameter.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="ReplayWebhookDeliveryResponse"/> object when completed.</returns>
@@ -200,10 +200,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match the request schema. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No endpoint with this id for the calling tenant, or no delivery of this event in the endpoint's log: not sent to it, past the log's retention, deleted with its assessment, or another tenant's. A malformed id answers the same. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No endpoint with this id for the calling workspace, or no delivery of this event in the endpoint's log: not sent to it, past the log's retention, deleted with its assessment, or another workspace's. A malformed id answers the same. Thrown when the API returns a 404 response.</exception>
         /// <exception cref="ConflictException">assessment.updated or a replay was asked for an endpoint that is not verified. Send endpoint.verification first; a disabled endpoint is verified again the same way. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<ReplayWebhookDeliveryResponse> ReplayDeliveryAsync(
             string endpointId,
@@ -230,7 +230,7 @@ namespace NoResponse
         }
 
         /// <summary>
-        /// List the tenant's webhook endpoints.
+        /// List the workspace's webhook endpoints.
         /// </summary>
         /// <remarks>
         /// Lists your webhook endpoints in every state, ordered by endpoint_id, with the ids of their signing keys and without secrets. Requires the webhooks scope.
@@ -243,10 +243,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match the request schema (an unknown member, no identifier, a malformed or oversized identifier, deadline_ms above 3000), or Idempotency-Key is missing or malformed. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling workspace, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<ListWebhookEndpointsResponse> ListAsync(
             RetryConfig? retryConfig = null,
@@ -511,10 +511,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match the request schema (invalid_request), or the URL is not a permitted webhook destination (webhook_url_refused): not https, a port other than 443 or 8443, userinfo or a fragment, an IP literal, a host that does not resolve, or an address that is not public. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The tenant already holds 5 webhook endpoints. Delete one first. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling workspace, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The workspace already holds 5 webhook endpoints. Delete one first. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<CreateWebhookEndpointResponse> CreateAsync(
             WebhookEndpointRequest request,
@@ -744,7 +744,7 @@ namespace NoResponse
         /// <remarks>
         /// Deletes the endpoint and its signing keys. Deliveries still queued for it are dropped. Requires the webhooks scope. An endpoint that is already gone answers 404.
         /// </remarks>
-        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another tenant's answers 404.</param>
+        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another workspace's answers 404.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="DeleteWebhookEndpointResponse"/> object when completed.</returns>
@@ -754,10 +754,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match the request schema (an unknown member, no identifier, a malformed or oversized identifier, deadline_ms above 3000), or Idempotency-Key is missing or malformed. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No endpoint with this id for the calling tenant, including a malformed id and another tenant's endpoint. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No endpoint with this id for the calling workspace, including a malformed id and another workspace's endpoint. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<DeleteWebhookEndpointResponse> DeleteAsync(
             string endpointId,
@@ -1001,7 +1001,7 @@ namespace NoResponse
         /// <remarks>
         /// Issues a new signing key for the endpoint and returns its secret once. Every delivery from now on is signed with it; the key it replaces keeps verifying for 7 days, so your receiver can hold both while it switches. Requires the webhooks scope. Rotation is not idempotent: a retry after a lost answer issues another key, which replaces the first.
         /// </remarks>
-        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another tenant's answers 404.</param>
+        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another workspace's answers 404.</param>
         /// <param name="body">A <see cref="WebhookKeyRotationRequest"/> parameter.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="RotateWebhookSigningKeyResponse"/> object when completed.</returns>
@@ -1011,10 +1011,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match the request schema. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No endpoint with this id for the calling tenant, including a malformed id and another tenant's endpoint. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No endpoint with this id for the calling workspace, including a malformed id and another workspace's endpoint. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<RotateWebhookSigningKeyResponse> RotateSigningKeyAsync(
             string endpointId,
@@ -1251,7 +1251,7 @@ namespace NoResponse
         /// <remarks>
         /// endpoint.verification sends a signed challenge now and answers whether the endpoint echoed it within 5 seconds; an echo verifies the endpoint, including a disabled one. assessment.updated queues one signed event with test: true and a fixed example assessment in the endpoint's response mode, delivered and retried like any other event; the endpoint must be verified. Both use the endpoint's current signing key. Requires the webhooks scope.
         /// </remarks>
-        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another tenant's answers 404.</param>
+        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another workspace's answers 404.</param>
         /// <param name="body">A <see cref="WebhookTestRequest"/> parameter.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="SendWebhookTestEventResponse"/> object when completed.</returns>
@@ -1261,10 +1261,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match the request schema. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No endpoint with this id for the calling tenant, including a malformed id and another tenant's endpoint. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No endpoint with this id for the calling workspace, including a malformed id and another workspace's endpoint. Thrown when the API returns a 404 response.</exception>
         /// <exception cref="ConflictException">assessment.updated or a replay was asked for an endpoint that is not verified. Send endpoint.verification first; a disabled endpoint is verified again the same way. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<SendWebhookTestEventResponse> SendTestEventAsync(
             string endpointId,
@@ -1499,9 +1499,9 @@ namespace NoResponse
         /// List an endpoint's delivery attempts.
         /// </summary>
         /// <remarks>
-        /// Every POST the endpoint received, newest first: the event id and type, which attempt it was, whether it was a replay, delivered or failed, the response code, why it failed and how long it took. Attempts are kept for 30 days, or your retention_days when that is shorter, and are deleted with the assessment they carried. Requires the webhooks scope. Read-only and safe to retry. The cursor is opaque and bound to your tenant and the endpoint; a tampered or expired cursor answers 400 invalid_cursor.
+        /// Every POST the endpoint received, newest first: the event id and type, which attempt it was, whether it was a replay, delivered or failed, the response code, why it failed and how long it took. Attempts are kept for 30 days, or your retention_days when that is shorter, and are deleted with the assessment they carried. Requires the webhooks scope. Read-only and safe to retry. The cursor is opaque and bound to your workspace and the endpoint; a tampered or expired cursor answers 400 invalid_cursor.
         /// </remarks>
-        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another tenant's answers 404.</param>
+        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another workspace's answers 404.</param>
         /// <param name="limit">Attempts per page.</param>
         /// <param name="cursor">next_cursor from the previous page, unchanged.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
@@ -1511,12 +1511,12 @@ namespace NoResponse
         /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
         /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
-        /// <exception cref="BadRequestException">A query parameter is unknown, repeated or out of range (invalid_request), or the cursor is empty, fails its MAC, belongs to another tenant or endpoint, or has expired (invalid_cursor). invalid_params names the offending parameters without their values. Thrown when the API returns a 400 response.</exception>
+        /// <exception cref="BadRequestException">A query parameter is unknown, repeated or out of range (invalid_request), or the cursor is empty, fails its MAC, belongs to another workspace or endpoint, or has expired (invalid_cursor). invalid_params names the offending parameters without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No endpoint with this id for the calling tenant, including a malformed id and another tenant's endpoint. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No endpoint with this id for the calling workspace, including a malformed id and another workspace's endpoint. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<ListWebhookDeliveriesResponse> ListDeliveriesAsync(
             string endpointId,
@@ -1808,8 +1808,8 @@ namespace NoResponse
         /// <remarks>
         /// Queues the event for the endpoint again: the same event id and body it received, with a new NR-Webhook-Timestamp and a signature from the endpoint's current signing key, retried like any other delivery and listed with replay: true. Your receiver deduplicates on the event id. The endpoint must be verified. Requires the webhooks scope. Not idempotent: each call, a retry included, sends the event again.
         /// </remarks>
-        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another tenant's answers 404.</param>
-        /// <param name="eventId">The evt_ id of a delivery the endpoint's log holds, as GET /v1/webhooks/{endpoint_id}/deliveries lists it. An id that is malformed, not sent to this endpoint, past the log's retention or another tenant's answers 404.</param>
+        /// <param name="endpointId">The endpoint's whe_ id. An id that is unknown, malformed or another workspace's answers 404.</param>
+        /// <param name="eventId">The evt_ id of a delivery the endpoint's log holds, as GET /v1/webhooks/{endpoint_id}/deliveries lists it. An id that is malformed, not sent to this endpoint, past the log's retention or another workspace's answers 404.</param>
         /// <param name="body">A <see cref="WebhookReplayRequest"/> parameter.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="ReplayWebhookDeliveryResponse"/> object when completed.</returns>
@@ -1819,10 +1819,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match the request schema. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No endpoint with this id for the calling tenant, or no delivery of this event in the endpoint's log: not sent to it, past the log's retention, deleted with its assessment, or another tenant's. A malformed id answers the same. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No endpoint with this id for the calling workspace, or no delivery of this event in the endpoint's log: not sent to it, past the log's retention, deleted with its assessment, or another workspace's. A malformed id answers the same. Thrown when the API returns a 404 response.</exception>
         /// <exception cref="ConflictException">assessment.updated or a replay was asked for an endpoint that is not verified. Send endpoint.verification first; a disabled endpoint is verified again the same way. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<ReplayWebhookDeliveryResponse> ReplayDeliveryAsync(
             string endpointId,

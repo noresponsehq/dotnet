@@ -38,7 +38,7 @@ namespace NoResponse.Tests
                 body: new AssessmentRequest()
                 {
                     AccountId = "acct_7f3a9c",
-                    Flow = Flow.Signup,
+                    Flow = Flow.AccountCreation,
                     Identifiers = new AssessmentRequestIdentifiers() { Email = "new.user@example.com" },
                 });
             Assert.StartsWith("asm_", res.Result.Id);

@@ -30,13 +30,13 @@ namespace NoResponse.Models.Shared
         public Recommendation Recommendation { get; set; } = default!;
 
         /// <summary>
-        /// true when the tenant's block threshold is set and score reached it. A provider hook can deny the signup on it; the provider decides and enforces. It does not change recommendation. It is false while blocking is off, the default, and a body from before the flag existed omits it: read absent as false.
+        /// true when the workspace's block threshold is set and score reached it. A provider hook can deny the account creation on it; the provider decides and enforces. It does not change recommendation. It is false while blocking is off, the default, and a body from before the flag existed omits it: read absent as false.
         /// </summary>
         [JsonProperty("block", Required = Newtonsoft.Json.Required.DisallowNull)]
         public bool? Block { get; set; }
 
         /// <summary>
-        /// The block threshold this answer used: block is true exactly when score is at least this value. Absent while blocking is off. NoResponse sets it per tenant on request, at or above the review threshold.
+        /// The block threshold this answer used: block is true exactly when score is at least this value. Absent while blocking is off. NoResponse sets it per workspace on request, at or above the review threshold.
         /// </summary>
         [JsonProperty("block_threshold", Required = Newtonsoft.Json.Required.DisallowNull)]
         public long? BlockThreshold { get; set; }
@@ -48,7 +48,7 @@ namespace NoResponse.Models.Shared
         public RiskConfidence Confidence { get; set; } = default!;
 
         /// <summary>
-        /// Version of the hand-authored heuristic weights that produced the recommendation, for example 'risk-2026-10.7'. A tenant threshold override adds a +t&lt;N&gt; suffix, e.g. 'risk-2026-10.7+t3'.
+        /// Version of the hand-authored heuristic weights that produced the recommendation, for example 'risk-2026-10.7'. A workspace threshold override adds a +t&lt;N&gt; suffix, e.g. 'risk-2026-10.7+t3'.
         /// </summary>
         [JsonProperty("policy_version", Required = Newtonsoft.Json.Required.Always)]
         public string PolicyVersion { get; set; } = default!;

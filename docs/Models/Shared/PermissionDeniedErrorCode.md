@@ -7,7 +7,7 @@ Machine codes an HTTP 403 answer can carry.
 ```csharp
 using NoResponse.Models.Shared;
 
-var value = PermissionDeniedErrorCode.TenantForbidden;
+var value = PermissionDeniedErrorCode.WorkspaceForbidden;
 
 // Open enum: use .Of() to create instances from custom string values
 var custom = PermissionDeniedErrorCode.Of("custom_value");
@@ -16,6 +16,6 @@ var custom = PermissionDeniedErrorCode.Of("custom_value");
 
 ## Values
 
-| Name              | Value             |
-| ----------------- | ----------------- |
-| `TenantForbidden` | tenant_forbidden  |
+| Name                 | Value                |
+| -------------------- | -------------------- |
+| `WorkspaceForbidden` | workspace_forbidden  |

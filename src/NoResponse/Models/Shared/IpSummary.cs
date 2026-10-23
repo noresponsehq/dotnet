@@ -10,7 +10,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// Facts about the submitted IP from the offline database and this tenant's own recent assessments. Every member is optional; absent makes no claim.
+    /// Facts about the submitted IP from the offline database and this workspace's own recent assessments. Every member is optional; absent makes no claim.
     /// </summary>
     public class IpSummary
     {
@@ -27,9 +27,9 @@ namespace NoResponse.Models.Shared
         public IpSummaryType? Type { get; set; }
 
         /// <summary>
-        /// Assessments in this tenant with the same IP in the last 24 hours, this one included. A count only.
+        /// Assessments in this workspace with the same IP in the last 24 hours, this one included. A count only.
         /// </summary>
-        [JsonProperty("seen_in_tenant", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public long? SeenInTenant { get; set; }
+        [JsonProperty("seen_in_workspace", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? SeenInWorkspace { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace NoResponse.Models.Shared
         public static readonly ReasonCode ProxyIp = new ReasonCode("proxy_ip");
         public static readonly ReasonCode SeenBefore = new ReasonCode("seen_before");
         public static readonly ReasonCode SharedIp = new ReasonCode("shared_ip");
-        public static readonly ReasonCode ManyRecentSignups = new ReasonCode("many_recent_signups");
+        public static readonly ReasonCode ManyRecentAccounts = new ReasonCode("many_recent_accounts");
         public static readonly ReasonCode EstablishedAccounts = new ReasonCode("established_accounts");
         public static readonly ReasonCode AgedIdentity = new ReasonCode("aged_identity");
         public static readonly ReasonCode BreachNameMatch = new ReasonCode("breach_name_match");
@@ -65,7 +65,7 @@ namespace NoResponse.Models.Shared
                 ["proxy_ip"] = ProxyIp,
                 ["seen_before"] = SeenBefore,
                 ["shared_ip"] = SharedIp,
-                ["many_recent_signups"] = ManyRecentSignups,
+                ["many_recent_accounts"] = ManyRecentAccounts,
                 ["established_accounts"] = EstablishedAccounts,
                 ["aged_identity"] = AgedIdentity,
                 ["breach_name_match"] = BreachNameMatch,

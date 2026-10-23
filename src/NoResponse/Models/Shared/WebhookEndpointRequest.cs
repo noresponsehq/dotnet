@@ -10,7 +10,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// POST /v1/webhooks body. The tenant is the API key that signs the request, so it is not a body member. The URL must be https on port 443 or 8443 with a DNS name, not an IP literal, and every address the name resolves to must be public.
+    /// POST /v1/webhooks body. The workspace is the API key that signs the request, so it is not a body member. The URL must be https on port 443 or 8443 with a DNS name, not an IP literal, and every address the name resolves to must be public.
     /// </summary>
     public class WebhookEndpointRequest
     {

@@ -20,7 +20,7 @@ namespace NoResponse.Models.Shared
         public RiskSummaryUsername? Username { get; set; }
 
         /// <summary>
-        /// Facts about the submitted IP from the offline database and this tenant's own recent assessments. Every member is optional; absent makes no claim.
+        /// Facts about the submitted IP from the offline database and this workspace's own recent assessments. Every member is optional; absent makes no claim.
         /// </summary>
         [JsonProperty("ip", Required = Newtonsoft.Json.Required.DisallowNull)]
         public IpSummary? Ip { get; set; }

@@ -15,7 +15,7 @@ namespace NoResponse.Models.Shared
     public class AssessmentQuery
     {
         /// <summary>
-        /// Your own opaque identifier for the account being checked, scoped to your tenant. Use an id you mint, with no direct identifier (email, phone, name or national id) in it. '|' is accepted so an Auth0 user id such as 'auth0|64abc' passes unchanged; '@', '+', '$' and whitespace are refused by the pattern, as is an exact-shape JWT; a hex digest such as a SHA-256 is allowed, because hashing an internal id is a common pseudonymous scheme. A value such as '07700900123' or 'jane.doe.gmail.com' cannot be told apart from an opaque id. It travels in bodies, and in a URL only as the path segment of GET /v1/accounts/{account_id} and its /assessments. An assessment requested by a provider hook at pre_registration, which has no account yet, carries the server-issued account_id pre: followed by its assessment_id.
+        /// Your own opaque identifier for the account being checked, scoped to your workspace. Use an id you mint, with no direct identifier (email, phone, name or national id) in it. '|' is accepted so an Auth0 user id such as 'auth0|64abc' passes unchanged; '@', '+', '$' and whitespace are refused by the pattern, as is an exact-shape JWT; a hex digest such as a SHA-256 is allowed, because hashing an internal id is a common pseudonymous scheme. A value such as '07700900123' or 'jane.doe.gmail.com' cannot be told apart from an opaque id. It travels in bodies, and in a URL only as the path segment of GET /v1/accounts/{account_id} and its /assessments. An assessment requested by a provider hook at pre_registration, which has no account yet, carries the server-issued account_id pre: followed by its assessment_id.
         /// </summary>
         [JsonProperty("account_id", Required = Newtonsoft.Json.Required.Always)]
         public string AccountId { get; set; } = default!;
@@ -24,7 +24,7 @@ namespace NoResponse.Models.Shared
         public long? Limit { get; set; } = 20;
 
         /// <summary>
-        /// next_cursor from the previous page, unchanged. Opaque, MAC'd and bound to the tenant and account_id.
+        /// next_cursor from the previous page, unchanged. Opaque, MAC'd and bound to the workspace and account_id.
         /// </summary>
         [JsonProperty("cursor", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? Cursor { get; set; }

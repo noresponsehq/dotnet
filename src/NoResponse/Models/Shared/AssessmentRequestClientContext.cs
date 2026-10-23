@@ -6,7 +6,7 @@ namespace NoResponse.Models.Shared
     using NoResponse.Utils;
 
     /// <summary>
-    /// Optional context observed by your signup client. The server parses these hints into coarse features, leaves raw user_agent and opaque ids out of every answer, and weighs a mismatch with the other evidence.
+    /// Optional context observed by the client of the user. The server parses these hints into coarse features, leaves raw user_agent and opaque ids out of every answer, and weighs a mismatch with the other evidence.
     /// </summary>
     public class AssessmentRequestClientContext
     {
@@ -35,19 +35,19 @@ namespace NoResponse.Models.Shared
         public string? AppVersion { get; set; }
 
         /// <summary>
-        /// The raw User-Agent header of the signup request, at most 512 characters. It is parsed into coarse features and left out of every answer.
+        /// The raw User-Agent header of the request that the user sent, at most 512 characters. It is parsed into coarse features and left out of every answer.
         /// </summary>
         [JsonProperty("user_agent", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? UserAgent { get; set; }
 
         /// <summary>
-        /// Tenant-scoped opaque identifier your application mints and rotates when the account or device changes. Send an id of your own, not a hardware fingerprint.
+        /// Workspace-scoped opaque identifier your application mints and rotates when the account or device changes. Send an id of your own, not a hardware fingerprint.
         /// </summary>
         [JsonProperty("device_id", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? DeviceId { get; set; }
 
         /// <summary>
-        /// Opaque signup session identifier. It is used for tenant-scoped velocity and replay checks only.
+        /// Opaque signup session identifier. It is used for workspace-scoped velocity and replay checks only.
         /// </summary>
         [JsonProperty("session_id", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? SessionId { get; set; }

@@ -5,7 +5,7 @@ namespace NoResponse
     using System.Security.Cryptography;
     using System.Text;
 
-    /// <summary>Hash an API key your signup gate issued. Hand-written beside the generated client.</summary>
+    /// <summary>Hash an API key your platform issued. Hand-written beside the generated client.</summary>
     public static class IssuedCredential
     {
         /// <summary>

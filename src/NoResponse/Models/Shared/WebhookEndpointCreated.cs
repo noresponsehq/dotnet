@@ -11,7 +11,7 @@ namespace NoResponse.Models.Shared
     public class WebhookEndpointCreated
     {
         /// <summary>
-        /// One of the tenant's registered webhook endpoints. Signing secrets are not part of it: a secret is shown once, when it is issued (POST /v1/webhooks and POST /v1/webhooks/{endpoint_id}/rotate).
+        /// One of the workspace's registered webhook endpoints. Signing secrets are not part of it: a secret is shown once, when it is issued (POST /v1/webhooks and POST /v1/webhooks/{endpoint_id}/rotate).
         /// </summary>
         [JsonProperty("endpoint", Required = Newtonsoft.Json.Required.Always)]
         public WebhookEndpoint Endpoint { get; set; } = new();

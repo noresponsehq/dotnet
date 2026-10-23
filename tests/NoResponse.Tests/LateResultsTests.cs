@@ -159,7 +159,7 @@ namespace NoResponse.Tests
             Assert.Equal(LateResultAction.None, LateResults.Action(Event((JObject)Expired["data"]!)));
             Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "endpoint.verification", "x", new EndpointVerification("whe_x", "c"))));
             Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "account.deleted", "x", new AccountDeleted("acct_1", 1, "x"))));
-            Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "tenant.deleted", "x", new TenantDeleted("tnt_1", "live", "x"))));
+            Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "workspace.deleted", "x", new WorkspaceDeleted("tnt_1", "live", "x"))));
             Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "webhook_endpoint.disabled", "x", new EndpointDisabled("whe_1", "x", "x"))));
             var blocked = new Account { Id = "acct_1", Risk = new AccountRisk { Score = 90, Decision = AccountDecision.Block } };
             Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "account.risk_changed", "x", new AccountRiskChanged(blocked, new AccountDecisionsByFlow()))));

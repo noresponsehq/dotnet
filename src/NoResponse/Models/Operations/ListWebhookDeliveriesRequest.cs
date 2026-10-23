@@ -6,7 +6,7 @@ namespace NoResponse.Models.Operations
     public class ListWebhookDeliveriesRequest
     {
         /// <summary>
-        /// The endpoint's whe_ id. An id that is unknown, malformed or another tenant's answers 404.
+        /// The endpoint's whe_ id. An id that is unknown, malformed or another workspace's answers 404.
         /// </summary>
         [NoResponseMetadata("pathParam:style=simple,explode=false,name=endpoint_id")]
         public string EndpointId { get; set; } = default!;

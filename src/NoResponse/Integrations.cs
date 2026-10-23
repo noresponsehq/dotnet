@@ -35,10 +35,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match its schema (an unknown member such as tenant_id, an unknown platform or hook point, a hook point listed twice, a WorkOS integration without signing_secret or an Auth0 integration with one, or a rotation whose signing_secret does not fit the integration's platform). invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The tenant already holds 10 integrations. Delete one first. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling workspace, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The workspace already holds 10 integrations. Delete one first. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<CreateIntegrationResponse> CreateAsync(
             IntegrationRequest request,
@@ -46,7 +46,7 @@ namespace NoResponse
         );
 
         /// <summary>
-        /// List the tenant's integrations.
+        /// List the workspace's integrations.
         /// </summary>
         /// <remarks>
         /// Every integration, oldest first. Listings carry no secrets. Requires the integrations scope.
@@ -59,10 +59,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">A query parameter is unknown, repeated or outside its documented values, or the route takes no query parameters and one was sent. For a refused value invalid_params names the parameter; for an unknown or repeated parameter, or any parameter on a route that takes none, its field is query. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling workspace, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<ListIntegrationsResponse> ListAsync(
             RetryConfig? retryConfig = null,
@@ -75,7 +75,7 @@ namespace NoResponse
         /// <remarks>
         /// Removes the integration and its secrets; its endpoint answers 404 from then on, so remove the Action from the provider first. Requires the integrations scope. An unknown or already deleted integration answers 404.
         /// </remarks>
-        /// <param name="integrationId">Path segment, matched case-sensitively. A value that does not match the integration_id shape, or another tenant's id, answers 404.</param>
+        /// <param name="integrationId">Path segment, matched case-sensitively. A value that does not match the integration_id shape, or another workspace's id, answers 404.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="DeleteIntegrationResponse"/> object when completed.</returns>
@@ -85,10 +85,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match the request schema (an unknown member, no identifier, a malformed or oversized identifier, deadline_ms above 3000), or Idempotency-Key is missing or malformed. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No integration with this id for the calling tenant, or a malformed integration_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No integration with this id for the calling workspace, or a malformed integration_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<DeleteIntegrationResponse> DeleteAsync(
             string integrationId,
@@ -102,7 +102,7 @@ namespace NoResponse
         /// <remarks>
         /// For Auth0, send {} and the answer's secret is the new shared secret, shown once. For WorkOS, regenerate the Actions secret in the WorkOS dashboard and send it as signing_secret. The replaced secret is still accepted for 24 hours (previous_secret_expires_at). Requires the integrations scope. Not idempotent: a retry after a lost answer rotates again.
         /// </remarks>
-        /// <param name="integrationId">Path segment, matched case-sensitively. A value that does not match the integration_id shape, or another tenant's id, answers 404.</param>
+        /// <param name="integrationId">Path segment, matched case-sensitively. A value that does not match the integration_id shape, or another workspace's id, answers 404.</param>
         /// <param name="body">A <see cref="IntegrationRotationRequest"/> parameter.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="RotateIntegrationSecretResponse"/> object when completed.</returns>
@@ -112,10 +112,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match its schema (an unknown member such as tenant_id, an unknown platform or hook point, a hook point listed twice, a WorkOS integration without signing_secret or an Auth0 integration with one, or a rotation whose signing_secret does not fit the integration's platform). invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No integration with this id for the calling tenant, or a malformed integration_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No integration with this id for the calling workspace, or a malformed integration_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<RotateIntegrationSecretResponse> RotateAsync(
             string integrationId,
@@ -155,10 +155,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match its schema (an unknown member such as tenant_id, an unknown platform or hook point, a hook point listed twice, a WorkOS integration without signing_secret or an Auth0 integration with one, or a rotation whose signing_secret does not fit the integration's platform). invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The tenant already holds 10 integrations. Delete one first. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling workspace, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The workspace already holds 10 integrations. Delete one first. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<CreateIntegrationResponse> CreateAsync(
             IntegrationRequest request,
@@ -383,7 +383,7 @@ namespace NoResponse
         }
 
         /// <summary>
-        /// List the tenant's integrations.
+        /// List the workspace's integrations.
         /// </summary>
         /// <remarks>
         /// Every integration, oldest first. Listings carry no secrets. Requires the integrations scope.
@@ -396,10 +396,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">A query parameter is unknown, repeated or outside its documented values, or the route takes no query parameters and one was sent. For a refused value invalid_params names the parameter; for an unknown or repeated parameter, or any parameter on a route that takes none, its field is query. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling tenant, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No unexpired assessment with this id for the calling workspace, or a malformed assessment_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<ListIntegrationsResponse> ListAsync(
             RetryConfig? retryConfig = null,
@@ -655,7 +655,7 @@ namespace NoResponse
         /// <remarks>
         /// Removes the integration and its secrets; its endpoint answers 404 from then on, so remove the Action from the provider first. Requires the integrations scope. An unknown or already deleted integration answers 404.
         /// </remarks>
-        /// <param name="integrationId">Path segment, matched case-sensitively. A value that does not match the integration_id shape, or another tenant's id, answers 404.</param>
+        /// <param name="integrationId">Path segment, matched case-sensitively. A value that does not match the integration_id shape, or another workspace's id, answers 404.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="DeleteIntegrationResponse"/> object when completed.</returns>
@@ -665,10 +665,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match the request schema (an unknown member, no identifier, a malformed or oversized identifier, deadline_ms above 3000), or Idempotency-Key is missing or malformed. invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No integration with this id for the calling tenant, or a malformed integration_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No integration with this id for the calling workspace, or a malformed integration_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<DeleteIntegrationResponse> DeleteAsync(
             string integrationId,
@@ -912,7 +912,7 @@ namespace NoResponse
         /// <remarks>
         /// For Auth0, send {} and the answer's secret is the new shared secret, shown once. For WorkOS, regenerate the Actions secret in the WorkOS dashboard and send it as signing_secret. The replaced secret is still accepted for 24 hours (previous_secret_expires_at). Requires the integrations scope. Not idempotent: a retry after a lost answer rotates again.
         /// </remarks>
-        /// <param name="integrationId">Path segment, matched case-sensitively. A value that does not match the integration_id shape, or another tenant's id, answers 404.</param>
+        /// <param name="integrationId">Path segment, matched case-sensitively. A value that does not match the integration_id shape, or another workspace's id, answers 404.</param>
         /// <param name="body">A <see cref="IntegrationRotationRequest"/> parameter.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="RotateIntegrationSecretResponse"/> object when completed.</returns>
@@ -922,10 +922,10 @@ namespace NoResponse
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
         /// <exception cref="BadRequestException">The body is not JSON or does not match its schema (an unknown member such as tenant_id, an unknown platform or hook point, a hook point listed twice, a WorkOS integration without signing_secret or an Auth0 integration with one, or a rotation whose signing_secret does not fit the integration's platform). invalid_params names the offending fields without their values. Thrown when the API returns a 400 response.</exception>
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
-        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its tenant is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
-        /// <exception cref="NotFoundException">No integration with this id for the calling tenant, or a malformed integration_id. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The Idempotency-Key was already used by this tenant, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
-        /// <exception cref="RateLimitException">The tenant's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
+        /// <exception cref="PermissionDeniedException">The API key is valid but may not use this operation: it lacks the operation's scope, or its workspace is not entitled or is suspended. Thrown when the API returns a 403 response.</exception>
+        /// <exception cref="NotFoundException">No integration with this id for the calling workspace, or a malformed integration_id. Thrown when the API returns a 404 response.</exception>
+        /// <exception cref="ConflictException">The Idempotency-Key was already used by this workspace, within 24 hours, with a different body. A reuse with the same body is not a conflict, even while the first request is in flight: it replays the latest assessment. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<RotateIntegrationSecretResponse> RotateAsync(
             string integrationId,
