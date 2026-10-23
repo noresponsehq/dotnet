@@ -49,9 +49,16 @@ namespace NoResponse.Webhooks
     public sealed record EndpointVerification(string EndpointId, string Challenge);
 
     /// <summary>
+    /// An account you erased with Accounts.DeleteAsync: delete what you hold for it.
+    /// AssessmentsDeleted is at least 1, and DeletedAt equals deleted_at in the delete answer.
+    /// </summary>
+    public sealed record AccountDeleted(string AccountId, long AssessmentsDeleted, string DeletedAt);
+
+    /// <summary>
     /// A verified delivery. Data is an <see cref="Assessment"/> (exactly as Assessments.GetAsync
-    /// returns it) or an <see cref="AssessmentExpired"/> for type "assessment.updated", and an
-    /// <see cref="EndpointVerification"/> for "endpoint.verification". Deliveries are at least
+    /// returns it) or an <see cref="AssessmentExpired"/> for type "assessment.updated", an
+    /// <see cref="EndpointVerification"/> for "endpoint.verification" and an
+    /// <see cref="AccountDeleted"/> for "account.deleted". Deliveries are at least
     /// once and unordered: deduplicate on Id and keep the highest AssessmentVersion.
     /// </summary>
     public sealed record WebhookEvent(string Id, string Type, string CreatedAt, object Data)
@@ -227,6 +234,21 @@ namespace NoResponse.Webhooks
                     throw new WebhookVerificationException(WebhookErrorCode.InvalidPayload, "Endpoint verification event is malformed");
                 }
                 return new EndpointVerification((string)endpointId!, (string)challenge!);
+            }
+            if (type == "account.deleted")
+            {
+                if (data["account_id"] is not JValue { Type: JTokenType.String } accountId
+                    || !AccountId.IsMatch((string)accountId!)
+                    || data["assessments_deleted"] is not JValue { Type: JTokenType.Integer } deleted
+                    || (long)deleted < 1
+                    || data["deleted_at"] is not JValue { Type: JTokenType.String } deletedAt
+                    || !DateTime.IsMatch((string)deletedAt!)
+                    || !DateTimeOffset.TryParse((string)deletedAt!, System.Globalization.CultureInfo.InvariantCulture,
+                        System.Globalization.DateTimeStyles.RoundtripKind, out _))
+                {
+                    throw new WebhookVerificationException(WebhookErrorCode.InvalidPayload, "Account deleted event is malformed");
+                }
+                return new AccountDeleted((string)accountId!, (long)deleted, (string)deletedAt!);
             }
             if (type != "assessment.updated")
             {

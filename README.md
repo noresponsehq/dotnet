@@ -10,7 +10,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v2.1.11 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v2.1.12 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -18,7 +18,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v2.1.11
+git -C third_party/noresponse-dotnet checkout v2.1.12
 git add third_party/noresponse-dotnet
 ```
 
@@ -196,7 +196,8 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
             return Results.Json(Webhook.VerificationResponse(webhookEvent));
         }
         if (webhookEvent.Test) { return Results.NoContent(); } // SendTestEventAsync's fixed example assessment: apply nothing
-        if (webhookEvent.IsExpired) { /* forget the assessment: GET now answers 404 */ }
+        if (webhookEvent.Data is AccountDeleted erased) { /* account.deleted: you erased erased.AccountId with Accounts.DeleteAsync */ }
+        else if (webhookEvent.IsExpired) { /* forget the assessment: GET now answers 404 */ }
         else if (webhookEvent.Data is Assessment assessment) { /* keep the highest AssessmentVersion */ }
         return Results.NoContent();
     }

@@ -121,6 +121,36 @@ namespace NoResponse.Tests
             Assert.Equal((string)ping["data"]!["challenge"]!, Webhook.VerificationResponse(verification)["challenge"]);
         }
 
+        [Fact]
+        public void AccountDeletedEvent()
+        {
+            var secrets = new Dictionary<string, string> { ["whk_sdktest01"] = "secret" };
+            var erased = Fixture("valid/webhook-account-deleted.json");
+            var (raw, headers) = Signed(erased, "secret", (string)erased["id"]!);
+            var ev = Webhook.ConstructEvent(raw, headers, secrets, now: Now);
+            Assert.Equal("account.deleted", ev.Type);
+            Assert.False(ev.IsExpired);
+            Assert.False(ev.Test);
+            var deleted = Assert.IsType<AccountDeleted>(ev.Data);
+            Assert.Equal("acct_7f3a9c", deleted.AccountId);
+            Assert.Equal(3, deleted.AssessmentsDeleted);
+            Assert.Equal(DateTimeOffset.Parse("2026-10-23T09:00:00Z", System.Globalization.CultureInfo.InvariantCulture), DateTimeOffset.Parse(deleted.DeletedAt, System.Globalization.CultureInfo.InvariantCulture));
+            Assert.Throws<WebhookVerificationException>(() => Webhook.VerificationResponse(ev));
+            foreach (var mutate in new Action<JObject>[]
+            {
+                data => data["assessments_deleted"] = 0,
+                data => data["assessments_deleted"] = 1.5,
+                data => data["account_id"] = "jane@example.com",
+                data => data["deleted_at"] = "tomorrow",
+            })
+            {
+                var bad = Fixture("valid/webhook-account-deleted.json");
+                mutate((JObject)bad["data"]!);
+                var (payload, badHeaders) = Signed(bad, "secret", (string)bad["id"]!);
+                Refused(WebhookErrorCode.InvalidPayload, payload, badHeaders, secrets);
+            }
+        }
+
         // ASP.NET Core's Request.Headers enumerates KeyValuePair<string, StringValues>,
         // a struct value type; this stands in for StringValues.
         private readonly struct HeaderValues : IEnumerable<string>
@@ -192,6 +222,7 @@ namespace NoResponse.Tests
                 "invalid/webhook-tenant-id.json",
                 "invalid/webhook-identifier-leak.json",
                 "invalid/webhook-expired-with-assessment-url.json",
+                "invalid/webhook-account-deleted-assessment-id.json",
             })
             {
                 var body = Fixture(name);
@@ -211,6 +242,7 @@ namespace NoResponse.Tests
                 "invalid/webhook-update-pointer-only.json",
                 "invalid/webhook-update-with-expired-status.json",
                 "invalid/webhook-verification-without-challenge.json",
+                "invalid/webhook-account-deleted-none.json",
             })
             {
                 var body = Fixture(name);

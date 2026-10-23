@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 70bd5ecd-d923-41ca-9a42-6e3360b4ce2f
 management:
-  docChecksum: 3978f71eb9ce9a966a5e50f997b6e9ff
+  docChecksum: 875925f0b2aa0381cfca365241a27e11
   docVersion: "1"
   speakeasyVersion: internal
   generationVersion: internal
-  releaseVersion: 2.1.11
-  configChecksum: c09270a071f3b746cabe6facf8cf814f
+  releaseVersion: 2.1.12
+  configChecksum: bc77e891d846a4e9887645fcad17b2ac
 features:
   csharp:
     additionalDependencies: 0.1.0
@@ -54,6 +54,10 @@ trackedFiles:
     last_write_checksum: sha1:bfd93f6acbaaeae6be88c6659fbc031500548dcc
   docs/Models/Operations/CreateWebhookEndpointResponse.md:
     last_write_checksum: sha1:469aafd54035ac220c0e293151709f0dfbdc9109
+  docs/Models/Operations/DeleteAccountRequest.md:
+    last_write_checksum: sha1:90dd8ecb013f102c63bf358d3a8fc71ef8075e2c
+  docs/Models/Operations/DeleteAccountResponse.md:
+    last_write_checksum: sha1:f06d2df70f5ce2a37dae054acbda30d573aa2e17
   docs/Models/Operations/DeleteIntegrationRequest.md:
     last_write_checksum: sha1:7b65fbbd56237971a59f8de71c37ee6f99043be1
   docs/Models/Operations/DeleteIntegrationResponse.md:
@@ -112,6 +116,8 @@ trackedFiles:
     last_write_checksum: sha1:760474eac0b6456b3c24d6608812ae8ee63267d1
   docs/Models/Shared/AccountDecisionsByFlow.md:
     last_write_checksum: sha1:90aa73fb5a5bc9396e21dccfec69da73e71e8995
+  docs/Models/Shared/AccountDeletion.md:
+    last_write_checksum: sha1:246b5a6e5d6560f7c36e31b09c12188ea08d01c3
   docs/Models/Shared/AccountRisk.md:
     last_write_checksum: sha1:2978c10612b649230b99ca63791c23ddb26d8282
   docs/Models/Shared/AccountRiskReason.md:
@@ -339,7 +345,7 @@ trackedFiles:
   docs/Models/Shared/WebsiteUnion.md:
     last_write_checksum: sha1:6f8b37e8fa7422f800db063239ac694fab9f1db4
   docs/sdks/accounts/README.md:
-    last_write_checksum: sha1:b99b410878d5965d61dd5b0b1a0f44bad82c3850
+    last_write_checksum: sha1:f0f33498096aeb93cf49ec8207e339549137ee8b
   docs/sdks/assessments/README.md:
     last_write_checksum: sha1:64c2baef94b535671799cdb2fd11be650fe4fca2
   docs/sdks/integrations/README.md:
@@ -351,7 +357,7 @@ trackedFiles:
   global.json:
     last_write_checksum: sha1:3161b880f51cd74e7d1dea069b541d8bf4736dc9
   src/NoResponse/Accounts.cs:
-    last_write_checksum: sha1:647a5d5ed09a93ab297a5a9bcbd1a608d95d7ed2
+    last_write_checksum: sha1:2219a76cd8f6cdaa70284f2173bc75836eee0522
   src/NoResponse/Assessments.cs:
     last_write_checksum: sha1:7045cb70911ad68d2942343dcb434f4c6ab39267
   src/NoResponse/Hooks/HookTypes.cs:
@@ -388,6 +394,10 @@ trackedFiles:
     last_write_checksum: sha1:9eab8c15a87dd04124cb0421329dbb2ad9e087d3
   src/NoResponse/Models/Operations/CreateWebhookEndpointResponse.cs:
     last_write_checksum: sha1:efcf2d54e8e17ed68bc5a27ccebbcc5978215b9a
+  src/NoResponse/Models/Operations/DeleteAccountRequest.cs:
+    last_write_checksum: sha1:5233bbd7c4da5c00b4a5154a90dad0e5b89805a4
+  src/NoResponse/Models/Operations/DeleteAccountResponse.cs:
+    last_write_checksum: sha1:c6ab8582f105306c8f362db50235b9b6d70a7e1e
   src/NoResponse/Models/Operations/DeleteIntegrationRequest.cs:
     last_write_checksum: sha1:d4e24aabc717e1eae90719f591f28e403883c068
   src/NoResponse/Models/Operations/DeleteIntegrationResponse.cs:
@@ -446,6 +456,8 @@ trackedFiles:
     last_write_checksum: sha1:2157bd2cd1809013f2dd47646982265f9fce26d1
   src/NoResponse/Models/Shared/AccountDecisionsByFlow.cs:
     last_write_checksum: sha1:d5d83d930221883c8e39aaf680a09539df60b544
+  src/NoResponse/Models/Shared/AccountDeletion.cs:
+    last_write_checksum: sha1:3a85e62a1b0468de59cba57ae4075f16a8c8bbf5
   src/NoResponse/Models/Shared/AccountRisk.cs:
     last_write_checksum: sha1:57a401731a54e9dd47c91355756cbcd50e08d1a2
   src/NoResponse/Models/Shared/AccountRiskReason.cs:
@@ -673,17 +685,17 @@ trackedFiles:
   src/NoResponse/Models/Shared/WebsiteUnion.cs:
     last_write_checksum: sha1:53bf6746b6b3c7af983c7a485eded1378eb80ed7
   src/NoResponse/NoResponse.csproj:
-    last_write_checksum: sha1:2b9ab54d61d7dd1d221731b1c09f8e109a292048
+    last_write_checksum: sha1:9af46e989fa7d71c92fd25609d43ae6b15acfe5d
   src/NoResponse/NoResponseClient.cs:
     last_write_checksum: sha1:ebf1f77a31614654e1973464c907b03fa0384ecc
   src/NoResponse/SDKConfig.cs:
-    last_write_checksum: sha1:271be8422aa1a9a8bbb30993e35c22b35b8d7163
+    last_write_checksum: sha1:01ebbc7c2396439c1985d1577a24154b69e5ba5f
   src/NoResponse/Utils/AnyDeserializer.cs:
     last_write_checksum: sha1:2fc4560840c33ca0a329e2c1a4122510eecf6aec
   src/NoResponse/Utils/BigIntStrConverter.cs:
     last_write_checksum: sha1:8803aa46f7bca5595c22751ede125e3c4e993856
   src/NoResponse/Utils/Constants.cs:
-    last_write_checksum: sha1:0c3e433a59cfa6df22f6a66f972b8c3a00f8eb7f
+    last_write_checksum: sha1:2e51f7d8728070c8c8395b9650461b56b6d71098
   src/NoResponse/Utils/DecimalStrConverter.cs:
     last_write_checksum: sha1:1fa9c1159f476245dfff02718e434accbba46136
   src/NoResponse/Utils/EnumConverter.cs:
@@ -963,6 +975,21 @@ examples:
       responses:
         "200":
           application/json: {"schema_version": "1", "id": "acct_7f3a9c", "risk": {"score": 90, "decision": "block", "reasons": [{"code": "disposable_email", "weight": 40, "identifier": "email"}, {"code": "proxy_ip", "weight": 30, "identifier": "ip"}, {"code": "many_recent_signups", "weight": 20}]}, "decisions_by_flow": {"signup": "block", "login": "block", "purchase": "block"}, "assessment_id": "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM", "updated_at": "2026-10-14T09:00:00.412Z"}
+  deleteAccount:
+    erased:
+      parameters:
+        path:
+          account_id: "acct_7f3a9c"
+      responses:
+        "200":
+          application/json: {"schema_version": "1", "id": "acct_7f3a9c", "deleted": true, "assessments_deleted": 3, "deleted_at": "2026-10-23T09:00:00.000Z"}
+    repeat:
+      parameters:
+        path:
+          account_id: "acct_7f3a9c"
+      responses:
+        "200":
+          application/json: {"schema_version": "1", "id": "acct_7f3a9c", "deleted": true, "assessments_deleted": 0, "deleted_at": "2026-10-23T09:00:05.000Z"}
   listAccountAssessments:
     page:
       parameters:
