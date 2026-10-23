@@ -36,7 +36,7 @@ namespace NoResponse.Models.Shared
         public string? RequestId { get; set; }
 
         /// <summary>
-        /// Optional tighter budget, 50 to 500 ms, measured from the moment the request reaches NoResponse. Absent means the 500 ms ceiling; a value above it is refused with 400 rather than clamped.
+        /// Optional tighter budget, 50 to 3000 ms, measured from the moment the request reaches NoResponse. Absent means the 3000 ms ceiling; a value above it is refused with 400 rather than clamped.
         /// </summary>
         [JsonProperty("deadline_ms", Required = Newtonsoft.Json.Required.DisallowNull)]
         public long? DeadlineMs { get; set; }
