@@ -8,6 +8,7 @@ Signup and gateway assessments.
 
 * [Create](#create) - Assess identifiers for a signup or gateway decision.
 * [Get](#get) - Poll the authoritative assessment of one assessment.
+* [Delete](#delete) - Delete one assessment.
 * [RecordOutcome](#recordoutcome) - Report what was later learned about an assessed account.
 * [Query](#query) - Page through one account's unexpired assessments.
 
@@ -502,6 +503,61 @@ var res = await sdk.Assessments.GetAsync(assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDE
 ### Response
 
 **[GetAssessmentResponse](../../Models/Operations/GetAssessmentResponse.md)**
+
+### Errors
+
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
+
+## Delete
+
+Deletes one assessment in the environment of your key, with its versions, evidence and outcomes and the identity-graph marks its outcomes set, and scores its account again from what remains. Afterwards the assessment answers 404 and leaves the account's history. The answer names the account and the assessment its current risk now comes from; current_assessment_id is absent when the account has no assessment with a decision left. Requires the history scope. An unknown, expired or already deleted assessment answers 404, so a repeat answers 404; to erase a whole account idempotently, use accounts.delete.
+
+### Example Usage: last
+
+<!-- UsageSnippet language="csharp" operationID="deleteAssessment" method="delete" path="/v1/assessments/{assessment_id}" example="last" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+var res = await sdk.Assessments.DeleteAsync(assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM");
+
+// handle response
+```
+### Example Usage: next
+
+<!-- UsageSnippet language="csharp" operationID="deleteAssessment" method="delete" path="/v1/assessments/{assessment_id}" example="next" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+var res = await sdk.Assessments.DeleteAsync(assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM");
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                                                                         | Type                                                                                                              | Required                                                                                                          | Description                                                                                                       | Example                                                                                                           |
+| ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `AssessmentId`                                                                                                    | *string*                                                                                                          | :heavy_check_mark:                                                                                                | Path segment, matched case-sensitively. A value that does not match the assessment_id shape answers 404, not 400. | asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                                                                    |
+
+### Response
+
+**[DeleteAssessmentResponse](../../Models/Operations/DeleteAssessmentResponse.md)**
 
 ### Errors
 

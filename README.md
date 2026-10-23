@@ -10,7 +10,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v2.1.14 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v2.1.16 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -18,7 +18,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v2.1.14
+git -C third_party/noresponse-dotnet checkout v2.1.16
 git add third_party/noresponse-dotnet
 ```
 
@@ -102,6 +102,8 @@ await client.Assessments.RecordOutcomeAsync(
 ### Idempotency
 
 `CreateAsync` and `RecordOutcomeAsync` send a fresh UUID as the `Idempotency-Key` when you pass none, and the same key on every retry of that call, so a retried request is recorded once. Pass your own key to make a retry from your side replay the same assessment: the API answers the latest version with `Idempotent-Replayed: true`. The same key with a different body answers 409 (`ConflictException`).
+
+`Assessments.DeleteAsync(assessmentId)` deletes one assessment (`history` scope); the answer's `Account.CurrentAssessmentId` names the assessment the account's risk now comes from, null when none is left, and a repeat answers 404.
 
 ## Keys
 
