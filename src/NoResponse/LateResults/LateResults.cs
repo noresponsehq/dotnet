@@ -41,18 +41,35 @@ namespace NoResponse.LateResults
         Task BanAsync(string userId, CancellationToken cancellationToken = default);
     }
 
+    /// <summary>
+    /// A provider that reports the action that ran. HandleAsync calls ActAsync when the provider implements it,
+    /// and BanAsync or RevokeSessionsAsync otherwise. A provider that has to do more than it was asked implements it:
+    /// LateResults.Auth0 returns Ban when the tenant's plan has no sessions API and it blocked the user to end their sessions.
+    /// </summary>
+    public interface ILateResultActor : ILateResultProvider
+    {
+        /// <summary>Take <paramref name="action"/> (RevokeSessions or Ban) and return the action that ran.</summary>
+        Task<LateResultAction> ActAsync(LateResultAction action, string userId, CancellationToken cancellationToken = default);
+    }
+
     /// <summary>Thrown when the provider's admin API refuses a call. Answer the webhook with a 5xx so NoResponse retries it.</summary>
     public sealed class ProviderActionException : Exception
     {
-        public ProviderActionException(string provider, int status, string message) : base(message)
+        public ProviderActionException(string provider, int status, string message) : this(provider, status, message, null) { }
+
+        public ProviderActionException(string provider, int status, string message, string? code) : base(message)
         {
             Provider = provider;
             Status = status;
+            Code = code;
         }
 
         public string Provider { get; }
 
         public int Status { get; }
+
+        /// <summary>The provider's error code from the response body, such as Auth0's errorCode "insufficient_scope", when it sent one.</summary>
+        public string? Code { get; }
     }
 
     public sealed class LateResultOptions
@@ -75,7 +92,11 @@ namespace NoResponse.LateResults
 
     /// <summary>The outcome of HandleAsync.</summary>
     /// <param name="Event">The verified event. Answer an endpoint.verification with Webhook.VerificationResponse.</param>
-    /// <param name="Action">The action taken. None when the policy, the event or the user id called for nothing.</param>
+    /// <param name="Action">
+    /// The action that ran. None when the policy, the event or the user id called for nothing. It can be stronger than the
+    /// policy's action when the provider had to fall back: LateResults.Auth0 reports Ban when it blocked the user because the
+    /// tenant's plan cannot end sessions.
+    /// </param>
     /// <param name="UserId">The provider user id acted on, when an action was taken.</param>
     public sealed record LateResult(WebhookEvent Event, LateResultAction Action, string? UserId = null);
 
@@ -167,7 +188,12 @@ namespace NoResponse.LateResults
             {
                 return new LateResult(webhookEvent, LateResultAction.None);
             }
-            if (action == LateResultAction.Ban)
+            var ran = action;
+            if (provider is ILateResultActor actor)
+            {
+                ran = await actor.ActAsync(action, userId, cancellationToken).ConfigureAwait(false);
+            }
+            else if (action == LateResultAction.Ban)
             {
                 await provider.BanAsync(userId, cancellationToken).ConfigureAwait(false);
             }
@@ -175,7 +201,7 @@ namespace NoResponse.LateResults
             {
                 await provider.RevokeSessionsAsync(userId, cancellationToken).ConfigureAwait(false);
             }
-            return new LateResult(webhookEvent, action, userId);
+            return new LateResult(webhookEvent, ran, userId);
         }
 
         /// <summary>
@@ -204,8 +230,14 @@ namespace NoResponse.LateResults
         /// <summary>
         /// Auth0 Management API at https://{domain}/api/v2 (or <paramref name="baseUrl"/>). Revoking deletes every session
         /// (DELETE /users/{id}/sessions) and refresh token (DELETE /users/{id}/refresh-tokens). Ban first sets
-        /// blocked: true (PATCH /users/{id}), then does the same. The token needs update:users, delete:sessions and delete:refresh_tokens.
+        /// blocked: true (PATCH /users/{id}), then does the same. The token needs update:users, delete:sessions,
+        /// delete:refresh_tokens, read:device_credentials and delete:device_credentials.
         /// A 404 on any call (user already gone) counts as done, so a repeated delivery is safe.
+        /// Auth0 offers the sessions and refresh-token endpoints on Enterprise plans only; on other plans they answer
+        /// 403 feature_not_enabled. Then refresh tokens are deleted one by one through /device-credentials (types
+        /// refresh_token and rotating_refresh_token), which every plan has. A login session cannot be ended, so revoking
+        /// blocks the user before deleting the refresh tokens, and ActAsync reports Ban. Unblock the user in the
+        /// dashboard to undo it. Any other refusal, such as 403 insufficient_scope, throws.
         /// </summary>
         public static ILateResultProvider Auth0(string token, string? domain = null, string? baseUrl = null, HttpClient? httpClient = null)
         {
@@ -249,6 +281,23 @@ namespace NoResponse.LateResults
             }
         }
 
+        /// <summary>The error code in a provider's error body: Auth0's errorCode, or a top-level code.</summary>
+        private static string? ErrorCode(string text)
+        {
+            try
+            {
+                if (JToken.Parse(text) is not JObject body) return null;
+                foreach (var field in new[] { "errorCode", "code" })
+                {
+                    if (body[field] is JValue { Type: JTokenType.String } code && !string.IsNullOrEmpty((string?)code)) return (string?)code;
+                }
+            }
+            catch (Newtonsoft.Json.JsonException)
+            {
+            }
+            return null;
+        }
+
         private sealed class Caller
         {
             private readonly string name;
@@ -288,7 +337,7 @@ namespace NoResponse.LateResults
                 }
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new ProviderActionException(name, (int)response.StatusCode, $"{name} {method.Method} {path} answered {(int)response.StatusCode}");
+                    throw new ProviderActionException(name, (int)response.StatusCode, $"{name} {method.Method} {path} answered {(int)response.StatusCode}", ErrorCode(text));
                 }
                 if (string.IsNullOrWhiteSpace(text))
                 {
@@ -402,8 +451,9 @@ namespace NoResponse.LateResults
             }
         }
 
-        private sealed class Auth0Provider : ILateResultProvider
+        private sealed class Auth0Provider : ILateResultActor
         {
+            private const int Page = 100;
             private readonly Caller call;
 
             public Auth0Provider(Caller call) { this.call = call; }
@@ -412,15 +462,99 @@ namespace NoResponse.LateResults
 
             public async Task RevokeSessionsAsync(string userId, CancellationToken cancellationToken = default)
             {
-                var user = Segment(userId);
-                await call.SendAsync(HttpMethod.Delete, $"/users/{user}/sessions", null, null, true, cancellationToken).ConfigureAwait(false);
-                await call.SendAsync(HttpMethod.Delete, $"/users/{user}/refresh-tokens", null, null, true, cancellationToken).ConfigureAwait(false);
+                await RevokeAsync(userId, cancellationToken).ConfigureAwait(false);
             }
 
             public async Task BanAsync(string userId, CancellationToken cancellationToken = default)
             {
-                await call.SendAsync(HttpMethod.Patch, $"/users/{Segment(userId)}", null, new JObject { ["blocked"] = true }, true, cancellationToken).ConfigureAwait(false);
-                await RevokeSessionsAsync(userId, cancellationToken).ConfigureAwait(false);
+                var user = Segment(userId);
+                await BlockAsync(user, cancellationToken).ConfigureAwait(false);
+                // The block already ends a session the plan cannot delete.
+                await DeleteSessionsAsync(user, cancellationToken).ConfigureAwait(false);
+                await DeleteRefreshTokensAsync(userId, user, cancellationToken).ConfigureAwait(false);
+            }
+
+            public async Task<LateResultAction> ActAsync(LateResultAction action, string userId, CancellationToken cancellationToken = default)
+            {
+                if (action == LateResultAction.Ban)
+                {
+                    await BanAsync(userId, cancellationToken).ConfigureAwait(false);
+                    return LateResultAction.Ban;
+                }
+                return await RevokeAsync(userId, cancellationToken).ConfigureAwait(false);
+            }
+
+            private async Task<LateResultAction> RevokeAsync(string userId, CancellationToken cancellationToken)
+            {
+                var user = Segment(userId);
+                var ended = await DeleteSessionsAsync(user, cancellationToken).ConfigureAwait(false);
+                // Without the sessions API a login session survives; blocking is the only way to end it.
+                if (!ended)
+                {
+                    await BlockAsync(user, cancellationToken).ConfigureAwait(false);
+                }
+                await DeleteRefreshTokensAsync(userId, user, cancellationToken).ConfigureAwait(false);
+                return ended ? LateResultAction.RevokeSessions : LateResultAction.Ban;
+            }
+
+            /// <summary>Auth0 answers 403 feature_not_enabled when the tenant's plan does not include an endpoint.</summary>
+            private static bool NotOnPlan(ProviderActionException e) => e.Status == 403 && e.Code == "feature_not_enabled";
+
+            private Task BlockAsync(string user, CancellationToken cancellationToken) =>
+                call.SendAsync(HttpMethod.Patch, $"/users/{user}", null, new JObject { ["blocked"] = true }, true, cancellationToken);
+
+            /// <summary>End every session; false when the plan has no sessions API.</summary>
+            private async Task<bool> DeleteSessionsAsync(string user, CancellationToken cancellationToken)
+            {
+                try
+                {
+                    await call.SendAsync(HttpMethod.Delete, $"/users/{user}/sessions", null, null, true, cancellationToken).ConfigureAwait(false);
+                    return true;
+                }
+                catch (ProviderActionException e) when (NotOnPlan(e))
+                {
+                    return false;
+                }
+            }
+
+            private async Task DeleteRefreshTokensAsync(string userId, string user, CancellationToken cancellationToken)
+            {
+                try
+                {
+                    await call.SendAsync(HttpMethod.Delete, $"/users/{user}/refresh-tokens", null, null, true, cancellationToken).ConfigureAwait(false);
+                    return;
+                }
+                catch (ProviderActionException e) when (NotOnPlan(e))
+                {
+                }
+                // Collect every id before deleting any, so the pages do not shift underneath.
+                var ids = new List<string>();
+                foreach (var type in new[] { "refresh_token", "rotating_refresh_token" })
+                {
+                    for (var page = 0; page < 10; page++)
+                    {
+                        var query = new[]
+                        {
+                            new KeyValuePair<string, string>("user_id", userId),
+                            new KeyValuePair<string, string>("type", type),
+                            new KeyValuePair<string, string>("page", page.ToString(CultureInfo.InvariantCulture)),
+                            new KeyValuePair<string, string>("per_page", Page.ToString(CultureInfo.InvariantCulture)),
+                        };
+                        var listed = await call.SendAsync(HttpMethod.Get, "/device-credentials", query, null, true, cancellationToken).ConfigureAwait(false) as JArray;
+                        foreach (var credential in listed ?? new JArray())
+                        {
+                            if (credential["id"] is JValue { Type: JTokenType.String } id && !string.IsNullOrEmpty((string?)id))
+                            {
+                                ids.Add((string)id!);
+                            }
+                        }
+                        if ((listed?.Count ?? 0) < Page) break;
+                    }
+                }
+                foreach (var id in ids)
+                {
+                    await call.SendAsync(HttpMethod.Delete, $"/device-credentials/{Uri.EscapeDataString(id)}", null, null, true, cancellationToken).ConfigureAwait(false);
+                }
             }
         }
     }

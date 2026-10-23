@@ -381,5 +381,165 @@ namespace NoResponse.Tests
             await Assert.ThrowsAsync<ArgumentException>(() => workos.BanAsync(""));
             Assert.Throws<ArgumentException>(() => LateResults.Clerk(""));
         }
+
+        private const string FeatureNotEnabled = "{\"statusCode\":403,\"error\":\"Forbidden\",\"message\":\"This feature is not enabled for this tenant.\",\"errorCode\":\"feature_not_enabled\"}";
+
+        /// <summary>
+        /// An Auth0 tenant on a plan without the sessions API, as a Free tenant answers: both bulk endpoints refuse with
+        /// 403 feature_not_enabled, while /device-credentials and PATCH /users/{id} work. It keeps the refresh tokens and
+        /// the blocked flag, so a repeated delivery sees what the first left.
+        /// </summary>
+        private sealed class Auth0WithoutSessionsApi
+        {
+            private readonly string escaped;
+            private readonly bool refreshTokensApi;
+            public volatile bool Blocked;
+            public readonly List<(string Id, string Type)> Credentials = new() { ("dcr_a", "refresh_token"), ("dcr_b", "refresh_token"), ("dcr_r", "rotating_refresh_token") };
+
+            public Auth0WithoutSessionsApi(string escaped, bool refreshTokensApi = false)
+            {
+                this.escaped = escaped;
+                this.refreshTokensApi = refreshTokensApi;
+            }
+
+            public int Left { get { lock (Credentials) return Credentials.Count; } }
+
+            public (int Status, string? Body)? Route(Call c)
+            {
+                lock (Credentials)
+                {
+                    var user = $"/api/v2/users/{escaped}";
+                    if (c.Method == "DELETE" && c.Path == user + "/sessions") return (403, FeatureNotEnabled);
+                    if (c.Method == "DELETE" && c.Path == user + "/refresh-tokens")
+                    {
+                        if (!refreshTokensApi) return (403, FeatureNotEnabled);
+                        Credentials.Clear();
+                        return (202, null);
+                    }
+                    if (c.Method == "PATCH" && c.Path == user)
+                    {
+                        Blocked = (bool?)JObject.Parse(c.Body!)["blocked"] == true;
+                        return (200, "{\"blocked\":" + (Blocked ? "true" : "false") + "}");
+                    }
+                    if (c.Method == "GET" && c.Path == "/api/v2/device-credentials")
+                    {
+                        var listed = new JArray(Credentials.Where(d => d.Type == c.Query["type"]).Select(d => new JObject { ["id"] = d.Id, ["type"] = d.Type }));
+                        return (200, listed.ToString(Newtonsoft.Json.Formatting.None));
+                    }
+                    if (c.Method == "DELETE" && c.Path.StartsWith("/api/v2/device-credentials/", StringComparison.Ordinal))
+                    {
+                        var id = c.Path.Substring("/api/v2/device-credentials/".Length);
+                        return Credentials.RemoveAll(d => d.Id == id) > 0 ? (204, null) : (404, "{\"errorCode\":\"inexistent_device_credential\"}");
+                    }
+                    return null;
+                }
+            }
+        }
+
+        [Fact]
+        public async Task Auth0WithoutTheSessionsApiBlocksDeletesDeviceCredentialsAndReportsBan()
+        {
+            const string id = "auth0|64abc0de1234567890abcdef";
+            const string escaped = "auth0%7C64abc0de1234567890abcdef";
+            var tenant = new Auth0WithoutSessionsApi(escaped);
+            using var mock = new MockProvider(tenant.Route);
+            var auth0 = LateResults.Auth0("mgmt_token", baseUrl: mock.Url + "/api/v2");
+            var (raw, headers) = Delivery(Review, id);
+
+            var result = await LateResults.HandleAsync(raw, headers, Secrets, auth0, Options());
+            Assert.Equal(LateResultAction.Ban, result.Action);
+            Assert.Equal(id, result.UserId);
+            Assert.True(tenant.Blocked);
+            Assert.Equal(0, tenant.Left);
+            var calls = mock.Snapshot();
+            Assert.Equal(
+                new[]
+                {
+                    $"DELETE /api/v2/users/{escaped}/sessions",
+                    $"PATCH /api/v2/users/{escaped}",
+                    $"DELETE /api/v2/users/{escaped}/refresh-tokens",
+                    "GET /api/v2/device-credentials",
+                    "GET /api/v2/device-credentials",
+                    "DELETE /api/v2/device-credentials/dcr_a",
+                    "DELETE /api/v2/device-credentials/dcr_b",
+                    "DELETE /api/v2/device-credentials/dcr_r",
+                },
+                calls.Select(c => $"{c.Method} {c.Path}"));
+            Assert.Equal("refresh_token", calls[3].Query["type"]);
+            Assert.Equal("rotating_refresh_token", calls[4].Query["type"]);
+            Assert.Equal(id, calls[3].Query["user_id"]);
+            Assert.All(calls, c => Assert.Equal("Bearer mgmt_token", c.Auth));
+
+            // The same delivery again: still blocked, nothing left to delete, same report.
+            mock.Clear();
+            Assert.Equal(LateResultAction.Ban, (await LateResults.HandleAsync(raw, headers, Secrets, auth0, Options())).Action);
+            Assert.True(tenant.Blocked);
+            Assert.DoesNotContain(mock.Snapshot(), c => c.Method == "DELETE" && c.Path.StartsWith("/api/v2/device-credentials/", StringComparison.Ordinal));
+
+            // Ban blocks first, and the plan refusing the sessions endpoint is no failure.
+            tenant.Blocked = false;
+            lock (tenant.Credentials) tenant.Credentials.Add(("dcr_c", "refresh_token"));
+            mock.Clear();
+            var banned = await LateResults.HandleAsync(raw, headers, Secrets, auth0, Options(new Dictionary<string, LateResultAction> { ["review"] = LateResultAction.Ban }));
+            Assert.Equal(LateResultAction.Ban, banned.Action);
+            Assert.Equal("PATCH", mock.Snapshot()[0].Method);
+            Assert.True(tenant.Blocked);
+            Assert.Equal(0, tenant.Left);
+
+            // Called directly, RevokeSessionsAsync takes the same fallback.
+            tenant.Blocked = false;
+            await auth0.RevokeSessionsAsync(id);
+            Assert.True(tenant.Blocked);
+        }
+
+        [Fact]
+        public async Task Auth0WithRefreshTokensButNoSessionsApiStillBlocksAndAScopeRefusalNeverFallsBack()
+        {
+            var (raw, headers) = Delivery(Review, "auth0|abc");
+            var tenant = new Auth0WithoutSessionsApi("auth0%7Cabc", refreshTokensApi: true);
+            using (var mock = new MockProvider(tenant.Route))
+            {
+                var result = await LateResults.HandleAsync(raw, headers, Secrets, LateResults.Auth0("t", baseUrl: mock.Url + "/api/v2"), Options());
+                Assert.Equal(LateResultAction.Ban, result.Action);
+                Assert.True(tenant.Blocked);
+                Assert.DoesNotContain(mock.Snapshot(), c => c.Path == "/api/v2/device-credentials");
+            }
+
+            const string scope = "{\"statusCode\":403,\"error\":\"Forbidden\",\"message\":\"Insufficient scope\",\"errorCode\":\"insufficient_scope\"}";
+            using var scoped = new MockProvider(c => c.Method == "DELETE" ? (403, scope) : (200, "{}"));
+            var refused = await Assert.ThrowsAsync<ProviderActionException>(() => LateResults.HandleAsync(raw, headers, Secrets, LateResults.Auth0("t", baseUrl: scoped.Url + "/api/v2"), Options()));
+            Assert.Equal(403, refused.Status);
+            Assert.Equal("insufficient_scope", refused.Code);
+            Assert.Equal(new[] { "DELETE /api/v2/users/auth0%7Cabc/sessions" }, scoped.Snapshot().Select(c => $"{c.Method} {c.Path}"));
+        }
+
+        private sealed class PlainProvider : ILateResultProvider
+        {
+            public List<string> Done { get; } = new();
+
+            public string Name => "plain";
+
+            public Task RevokeSessionsAsync(string userId, System.Threading.CancellationToken cancellationToken = default)
+            {
+                Done.Add("revoke " + userId);
+                return Task.CompletedTask;
+            }
+
+            public Task BanAsync(string userId, System.Threading.CancellationToken cancellationToken = default)
+            {
+                Done.Add("ban " + userId);
+                return Task.CompletedTask;
+            }
+        }
+
+        [Fact]
+        public async Task AProviderWithoutActReportsTheActionAskedFor()
+        {
+            var (raw, headers) = Delivery(Review, "u_1");
+            var plain = new PlainProvider();
+            Assert.Equal(LateResultAction.RevokeSessions, (await LateResults.HandleAsync(raw, headers, Secrets, plain, Options())).Action);
+            Assert.Equal(LateResultAction.Ban, (await LateResults.HandleAsync(raw, headers, Secrets, plain, Options(new Dictionary<string, LateResultAction> { ["review"] = LateResultAction.Ban }))).Action);
+            Assert.Equal(new[] { "revoke u_1", "ban u_1" }, plain.Done);
+        }
     }
 }
