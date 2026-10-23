@@ -83,7 +83,7 @@ var res = await sdk.Assessments.CreateAsync(
             Sha256 = "2bdbf5c72f2a36df0ef40fb92203612274d4546f56dba946070a6a79c2401a1b",
         },
     },
-    idempotencyKey: "signup-7f3a9c-0001"
+    idempotencyKey: "signup-acct_7f3a9c"
 );
 
 // handle response
@@ -156,7 +156,7 @@ var res = await sdk.Assessments.CreateAsync(
             Sha256 = "2bdbf5c72f2a36df0ef40fb92203612274d4546f56dba946070a6a79c2401a1b",
         },
     },
-    idempotencyKey: "signup-7f3a9c-0001"
+    idempotencyKey: "signup-acct_7f3a9c"
 );
 
 // handle response
@@ -186,7 +186,7 @@ var res = await sdk.Assessments.CreateAsync(
         RequestId = "req-2026-10-14-0001",
         DeadlineMs = 300,
     },
-    idempotencyKey: "signup-7f3a9c-0001"
+    idempotencyKey: "signup-acct_7f3a9c"
 );
 
 // handle response
@@ -208,7 +208,7 @@ var res = await sdk.Assessments.CreateAsync(
             Email = "new.user@example.com",
         },
     },
-    idempotencyKey: "signup-7f3a9c-0001"
+    idempotencyKey: "signup-acct_7f3a9c"
 );
 
 // handle response
@@ -241,7 +241,7 @@ var res = await sdk.Assessments.CreateAsync(
         DeadlineMs = 500,
         ResponseMode = ResponseMode.Standard,
     },
-    idempotencyKey: "signup-7f3a9c-0001"
+    idempotencyKey: "signup-acct_7f3a9c"
 );
 
 // handle response
@@ -314,7 +314,7 @@ var res = await sdk.Assessments.CreateAsync(
             Sha256 = "2bdbf5c72f2a36df0ef40fb92203612274d4546f56dba946070a6a79c2401a1b",
         },
     },
-    idempotencyKey: "signup-7f3a9c-0001"
+    idempotencyKey: "signup-acct_7f3a9c"
 );
 
 // handle response
@@ -387,7 +387,7 @@ var res = await sdk.Assessments.CreateAsync(
             Sha256 = "2bdbf5c72f2a36df0ef40fb92203612274d4546f56dba946070a6a79c2401a1b",
         },
     },
-    idempotencyKey: "signup-7f3a9c-0001"
+    idempotencyKey: "signup-acct_7f3a9c"
 );
 
 // handle response
@@ -398,7 +398,7 @@ var res = await sdk.Assessments.CreateAsync(
 | Parameter                                                                                                                                                                                                                                                             | Type                                                                                                                                                                                                                                                                  | Required                                                                                                                                                                                                                                                              | Description                                                                                                                                                                                                                                                           | Example                                                                                                                                                                                                                                                               |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Body`                                                                                                                                                                                                                                                                | [AssessmentRequest](../../Models/Shared/AssessmentRequest.md)                                                                                                                                                                                                         | :heavy_check_mark:                                                                                                                                                                                                                                                    | N/A                                                                                                                                                                                                                                                                   |                                                                                                                                                                                                                                                                       |
-| `IdempotencyKey`                                                                                                                                                                                                                                                      | *string*                                                                                                                                                                                                                                                              | :heavy_minus_sign:                                                                                                                                                                                                                                                    | Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours. Optional: the SDK generates a UUID when you omit it and sends the same key on every retry of the call. | signup-7f3a9c-0001                                                                                                                                                                                                                                                    |
+| `IdempotencyKey`                                                                                                                                                                                                                                                      | *string*                                                                                                                                                                                                                                                              | :heavy_minus_sign:                                                                                                                                                                                                                                                    | Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours. Optional: the SDK generates a UUID when you omit it and sends the same key on every retry of the call. | signup-acct_7f3a9c                                                                                                                                                                                                                                                    |
 
 ### Response
 
@@ -536,7 +536,7 @@ var res = await sdk.Assessments.RecordOutcomeAsync(
         ExternalRef = "case-123",
         Notes = "Card testing from this account; closed by trust and safety.",
     },
-    idempotencyKey: "signup-7f3a9c-0001"
+    idempotencyKey: "signup-acct_7f3a9c"
 );
 
 // handle response
@@ -559,7 +559,7 @@ var res = await sdk.Assessments.RecordOutcomeAsync(
         ExternalRef = "case-48213",
         Notes = "Chargeback filed two days after signup.",
     },
-    idempotencyKey: "signup-7f3a9c-0001"
+    idempotencyKey: "signup-acct_7f3a9c"
 );
 
 // handle response
@@ -579,7 +579,7 @@ var res = await sdk.Assessments.RecordOutcomeAsync(
     body: new AssessmentOutcomeRequest() {
         Outcome = Outcome.FalsePositive,
     },
-    idempotencyKey: "signup-7f3a9c-0001"
+    idempotencyKey: "signup-acct_7f3a9c"
 );
 
 // handle response
@@ -591,7 +591,7 @@ var res = await sdk.Assessments.RecordOutcomeAsync(
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `AssessmentId`                                                                                                                                                                                                                                                        | *string*                                                                                                                                                                                                                                                              | :heavy_check_mark:                                                                                                                                                                                                                                                    | Path segment, matched case-sensitively. A value that does not match the assessment_id shape answers 404, not 400.                                                                                                                                                     | asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                                                                                                                                                                                                                        |
 | `Body`                                                                                                                                                                                                                                                                | [AssessmentOutcomeRequest](../../Models/Shared/AssessmentOutcomeRequest.md)                                                                                                                                                                                           | :heavy_check_mark:                                                                                                                                                                                                                                                    | N/A                                                                                                                                                                                                                                                                   |                                                                                                                                                                                                                                                                       |
-| `IdempotencyKey`                                                                                                                                                                                                                                                      | *string*                                                                                                                                                                                                                                                              | :heavy_minus_sign:                                                                                                                                                                                                                                                    | Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours. Optional: the SDK generates a UUID when you omit it and sends the same key on every retry of the call. | signup-7f3a9c-0001                                                                                                                                                                                                                                                    |
+| `IdempotencyKey`                                                                                                                                                                                                                                                      | *string*                                                                                                                                                                                                                                                              | :heavy_minus_sign:                                                                                                                                                                                                                                                    | Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the tenant principal and bound to the canonical body for 24 hours. Optional: the SDK generates a UUID when you omit it and sends the same key on every retry of the call. | signup-acct_7f3a9c                                                                                                                                                                                                                                                    |
 
 ### Response
 

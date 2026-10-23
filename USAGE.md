@@ -13,7 +13,7 @@ var res = await sdk.Assessments.CreateAsync(
             Email = "new.user@example.com",
         },
     },
-    idempotencyKey: "signup-7f3a9c-0001"
+    idempotencyKey: "signup-acct_7f3a9c"
 );
 
 // handle response
