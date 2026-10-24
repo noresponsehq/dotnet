@@ -12,7 +12,7 @@ namespace NoResponse.Tests
     using Newtonsoft.Json.Linq;
     using NoResponse.LateResults;
     using NoResponse.Models.Shared;
-    using NoResponse.Webhooks;
+    using NoResponse.WebhookVerification;
     using Xunit;
 
     public class LateResultsTests
@@ -23,10 +23,10 @@ namespace NoResponse.Tests
         private static readonly DateTimeOffset Now = DateTimeOffset.FromUnixTimeSeconds(NowSeconds);
         private static readonly Dictionary<string, string> Secrets = new() { [Key] = Secret };
 
-        private static readonly JObject StepUp = (JObject)WebhookTests.Fixture("valid/webhook-assessment-updated.json")["data"]!;
+        private static readonly JObject StepUp = (JObject)WebhookVectorTests.Fixture("valid/webhook-assessment-updated.json")["data"]!;
         private static readonly JObject Review = WithDecision(StepUp, "review");
-        private static readonly JObject Pending = WebhookTests.Fixture("valid/assessment-view-pending.json");
-        private static readonly JObject Expired = WebhookTests.Fixture("valid/webhook-assessment-expired.json");
+        private static readonly JObject Pending = WebhookVectorTests.Fixture("valid/assessment-view-pending.json");
+        private static readonly JObject Expired = WebhookVectorTests.Fixture("valid/webhook-assessment-expired.json");
 
         private static LateResultOptions Options(IReadOnlyDictionary<string, LateResultAction>? policy = null, Func<string, WebhookEvent, string?>? userId = null, DateTimeOffset? now = null) =>
             new() { Now = now ?? Now, Policy = policy, UserId = userId };
@@ -55,6 +55,9 @@ namespace NoResponse.Tests
             var (raw, headers) = Delivery(data);
             return Webhook.ConstructEvent(raw, headers, Secrets, now: Now);
         }
+
+        private static WebhookEvent RiskChanged(Account account, AccountDecisionsByFlow previous) =>
+            WebhookEvent.CreateAccountRiskChanged(new AccountRiskChangedEvent { Id = "evt_x", CreatedAt = "x", Data = new AccountRiskChanged { Account = account, PreviousDecisionsByFlow = previous } });
 
         private static JObject WithDecision(JObject assessment, string decision)
         {
@@ -157,14 +160,14 @@ namespace NoResponse.Tests
             Assert.Equal(LateResultAction.None, LateResults.Action(Served("partial", "allow")));
             Assert.Equal(LateResultAction.None, LateResults.Action(Event(Pending)));
             Assert.Equal(LateResultAction.None, LateResults.Action(Event((JObject)Expired["data"]!)));
-            Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "endpoint.verification", "x", new EndpointVerification("whe_x", "c"))));
-            Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "account.deleted", "x", new AccountDeleted("acct_1", 1, "x"))));
-            Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "workspace.deleted", "x", new WorkspaceDeleted("tnt_1", "live", "x"))));
-            Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "webhook_endpoint.disabled", "x", new EndpointDisabled("whe_1", "x", "x"))));
+            Assert.Equal(LateResultAction.None, LateResults.Action(WebhookEvent.CreateEndpointVerification(new EndpointVerificationEvent { Id = "evt_x", CreatedAt = "x", Data = new EndpointVerification { EndpointId = "whe_x", Challenge = "c" } })));
+            Assert.Equal(LateResultAction.None, LateResults.Action(WebhookEvent.CreateAccountDeleted(new AccountDeletedEvent { Id = "evt_x", CreatedAt = "x", Data = new AccountDeleted { AccountId = "acct_1", AssessmentsDeleted = 1, DeletedAt = "x" } })));
+            Assert.Equal(LateResultAction.None, LateResults.Action(WebhookEvent.CreateWorkspaceDeleted(new WorkspaceDeletedEvent { Id = "evt_x", CreatedAt = "x", Data = new WorkspaceDeleted { WorkspaceId = "tnt_1", Environment = NoResponse.Models.Shared.Environment.Live, DeletedAt = "x" } })));
+            Assert.Equal(LateResultAction.None, LateResults.Action(WebhookEvent.CreateWebhookEndpointDisabled(new WebhookEndpointDisabledEvent { Id = "evt_x", CreatedAt = "x", Data = new WebhookEndpointDisabled { EndpointId = "whe_1", FailingSince = "x", DisabledAt = "x" } })));
             var blocked = new Account { Id = "acct_1", Risk = new AccountRisk { Score = 90, Decision = AccountDecision.Block }, DecisionsByFlow = new AccountDecisionsByFlow { Login = AccountDecision.Block }, RiskVersion = 3 };
-            Assert.Equal(LateResultAction.RevokeSessions, LateResults.Action(new WebhookEvent("evt_x", "account.risk_changed", "x", new AccountRiskChanged(blocked, new AccountDecisionsByFlow { Login = AccountDecision.Allow }))));
+            Assert.Equal(LateResultAction.RevokeSessions, LateResults.Action(RiskChanged(blocked, new AccountDecisionsByFlow { Login = AccountDecision.Allow })));
             // A change to another flow with the login decision as it was acts on nothing.
-            Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "account.risk_changed", "x", new AccountRiskChanged(blocked, new AccountDecisionsByFlow { Login = AccountDecision.Block, Purchase = AccountDecision.Allow }))));
+            Assert.Equal(LateResultAction.None, LateResults.Action(RiskChanged(blocked, new AccountDecisionsByFlow { Login = AccountDecision.Block, Purchase = AccountDecision.Allow })));
             var stepUpBan = new Dictionary<string, LateResultAction> { ["step_up"] = LateResultAction.Ban };
             Assert.Equal(LateResultAction.Ban, LateResults.Action(Served("complete", "step_up"), stepUpBan));
             Assert.Equal(LateResultAction.None, LateResults.Action(Served("complete", "review"), stepUpBan));
@@ -199,7 +202,7 @@ namespace NoResponse.Tests
             var result = await LateResults.HandleAsync(raw, headers, Secrets, clerk, Options());
             Assert.Equal(LateResultAction.RevokeSessions, result.Action);
             Assert.Equal("user_2EXAMPLE", result.UserId);
-            Assert.Equal((string)Review["id"]!, Assert.IsType<Assessment>(result.Event.Data).Id);
+            Assert.Equal((string)Review["id"]!, Assert.IsType<Assessment>(result.Event.AssessmentUpdatedEvent?.Data.Assessment).Id);
             var calls = mock.Snapshot();
             Assert.Equal(new[] { "GET /v1/sessions", "POST /v1/sessions/sess_1/revoke", "POST /v1/sessions/sess_2/revoke" }, calls.Select(c => $"{c.Method} {c.Path}"));
             Assert.Equal(new Dictionary<string, string> { ["user_id"] = "user_2EXAMPLE", ["status"] = "active", ["limit"] = "100", ["offset"] = "0" }, calls[0].Query);
@@ -306,23 +309,23 @@ namespace NoResponse.Tests
             var auth0 = LateResults.Auth0("mgmt_token", baseUrl: mock.Url + "/api/v2");
             var (raw, headers) = Delivery(Review, "auth0|abc");
             var wrong = await Assert.ThrowsAsync<WebhookVerificationException>(() => LateResults.HandleAsync(raw, headers, new Dictionary<string, string> { [Key] = "wrong" }, auth0, Options()));
-            Assert.Equal(WebhookErrorCode.InvalidSignature, wrong.Code);
+            Assert.Equal(WebhookVerificationException.InvalidSignature, wrong.Code);
             await Assert.ThrowsAsync<WebhookVerificationException>(() => LateResults.HandleAsync(raw.Concat(new[] { (byte)' ' }).ToArray(), headers, Secrets, auth0, Options()));
             var late = await Assert.ThrowsAsync<WebhookVerificationException>(() => LateResults.HandleAsync(raw, headers, Secrets, auth0, Options(now: Now.AddSeconds(301))));
-            Assert.Equal(WebhookErrorCode.InvalidTimestamp, late.Code);
+            Assert.Equal(WebhookVerificationException.InvalidTimestamp, late.Code);
             foreach (var data in new[] { StepUp, Pending, (JObject)Expired["data"]! })
             {
                 var d = Delivery(data);
                 Assert.Equal(LateResultAction.None, (await LateResults.HandleAsync(d.Raw, d.Headers, Secrets, auth0, Options())).Action);
             }
             // account.risk_changed carries a separate account decision.
-            var changed = WebhookTests.Fixture("valid/webhook-account-risk-changed.json");
+            var changed = WebhookVectorTests.Fixture("valid/webhook-account-risk-changed.json");
             var c = Delivery((JObject)changed["data"]!, type: "account.risk_changed");
             var ignored = await LateResults.HandleAsync(c.Raw, c.Headers, Secrets, auth0, Options(userId: (_, _) => null));
             Assert.Equal(LateResultAction.RevokeSessions, LateResults.Action(ignored.Event));
             Assert.Equal(LateResultAction.None, ignored.Action);
-            Assert.Equal("account.risk_changed", ignored.Event.Type);
-            Assert.Equal(AccountDecision.Review, Assert.IsType<AccountRiskChanged>(ignored.Event.Data).Account.DecisionsByFlow.Login);
+            Assert.Equal("account.risk_changed", ignored.Event.Type.Value);
+            Assert.Equal(AccountDecision.Review, Assert.IsType<AccountRiskChanged>(ignored.Event.AccountRiskChangedEvent?.Data).Account.DecisionsByFlow.Login);
             Assert.Equal(LateResultAction.None, (await LateResults.HandleAsync(raw, headers, Secrets, auth0, Options(userId: (_, _) => null))).Action);
             Assert.Empty(mock.Snapshot());
             var refused = await Assert.ThrowsAsync<ProviderActionException>(() => LateResults.HandleAsync(raw, headers, Secrets, auth0, Options()));
@@ -336,20 +339,20 @@ namespace NoResponse.Tests
         [Fact]
         public async Task ATestEventIsFlaggedAndMakesNoProviderCallEvenUnderABanPolicyWithAResolver()
         {
-            var sample = (JObject)WebhookTests.Fixture("valid/webhook-assessment-updated-test.json")["data"]!;
+            var sample = (JObject)WebhookVectorTests.Fixture("valid/webhook-assessment-updated-test.json")["data"]!;
             using var mock = new MockProvider(_ => (200, "[]"));
             var clerk = LateResults.Clerk("sk_test_mock", mock.Url + "/v1");
             var banAll = new Dictionary<string, LateResultAction> { ["allow"] = LateResultAction.Ban, ["step_up"] = LateResultAction.Ban, ["review"] = LateResultAction.Ban };
             var (raw, headers) = Delivery(sample, test: true);
             var result = await LateResults.HandleAsync(raw, headers, Secrets, clerk, Options(banAll, (_, _) => "user_2EXAMPLE"));
             Assert.Equal(LateResultAction.None, result.Action);
-            Assert.True(result.Event.Test);
+            Assert.True(result.Event.AssessmentUpdatedEvent?.Test);
             Assert.Null(result.UserId);
             Assert.Empty(mock.Snapshot());
 
             // The same body without the flag would ban, and an ordinary delivery is not a test.
             var real = Delivery(sample);
-            Assert.False(Webhook.ConstructEvent(real.Raw, real.Headers, Secrets, now: Now).Test);
+            Assert.NotEqual(true, Webhook.ConstructEvent(real.Raw, real.Headers, Secrets, now: Now).AssessmentUpdatedEvent?.Test);
             Assert.Equal(LateResultAction.Ban, (await LateResults.HandleAsync(real.Raw, real.Headers, Secrets, clerk, Options(banAll, (_, _) => "user_2EXAMPLE"))).Action);
         }
 

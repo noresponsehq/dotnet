@@ -2,7 +2,7 @@
 
 # NoResponse for .NET
 
-The NoResponse client for .NET 8 and later. It assesses an account creation, login or purchase, polls a pending assessment, pages through an account's history, records what you later learned, rotates your API key and verifies webhooks. The client is generated from the NoResponse OpenAPI document; webhook verification and the wait helper are hand-written.
+The NoResponse client for .NET 8 and later. It assesses an account creation, login or purchase, polls a pending assessment, pages through an account's history, records what you later learned, rotates your API key and verifies webhooks. The client is generated from the NoResponse OpenAPI document; webhook verification is generated too; the wait helper, auth adapters and late results are hand-written.
 
 Keep the API key on your server.
 
@@ -12,7 +12,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v5.1.1 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v6.0.0 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -20,7 +20,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v5.1.1
+git -C third_party/noresponse-dotnet checkout v6.0.0
 git add third_party/noresponse-dotnet
 ```
 
@@ -180,7 +180,7 @@ var endpointId = created.Result.Endpoint.EndpointId;
 var check = await client.WebhookEndpoints.SendTestEventAsync(
     endpointId, new WebhookTestRequest { Event = WebhookTestRequestEvent.EndpointVerification }); // check.Result.Verified
 await client.WebhookEndpoints.SendTestEventAsync(
-    endpointId, new WebhookTestRequest { Event = WebhookTestRequestEvent.AssessmentUpdated }); // webhookEvent.Test is true
+    endpointId, new WebhookTestRequest { Event = WebhookTestRequestEvent.AssessmentUpdated }); // its AssessmentUpdatedEvent.Test is true
 ```
 
 `ListAsync()`, `RotateSigningKeyAsync(endpointId, body)` (the old key verifies for 7 more days) and `DeleteAsync(endpointId)` manage it afterwards.
@@ -188,7 +188,8 @@ await client.WebhookEndpoints.SendTestEventAsync(
 Verify the exact bytes you received, then act on the typed event. `secrets` maps each `whk_` key id we give you to its secret; hold both during a rotation.
 
 ```csharp
-using NoResponse.Webhooks;
+using NoResponse.Models.Shared;
+using NoResponse.WebhookVerification;
 
 app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
 {
@@ -198,17 +199,17 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
     {
         var secrets = new Dictionary<string, string> { [keyId] = secret };
         var webhookEvent = Webhook.ConstructEvent(buffer.ToArray(), request.Headers, secrets);
-        if (webhookEvent.Type == "endpoint.verification")
+        if (webhookEvent.EndpointVerificationEvent is { } verification)
         {
-            return Results.Json(Webhook.VerificationResponse(webhookEvent));
+            return Results.Json(new { challenge = verification.Data.Challenge });
         }
-        if (webhookEvent.Test) { return Results.NoContent(); } // SendTestEventAsync's fixed example assessment: apply nothing
-        if (webhookEvent.Data is AccountDeleted erased) { /* account.deleted: you erased erased.AccountId with Accounts.DeleteAsync */ }
-        else if (webhookEvent.Data is WorkspaceDeleted gone) { /* workspace.deleted: the workspace is deleted; the last event for gone.Environment */ }
-        else if (webhookEvent.Data is EndpointDisabled disabled) { /* disabled.EndpointId failed for 72 hours: fix it, verify it again */ }
-        else if (webhookEvent.Data is AccountRiskChanged changed) { /* account.risk_changed: changed.Account is the Account Accounts.GetAsync returns; changed.PreviousDecisionsByFlow holds the decisions it replaced */ }
-        else if (webhookEvent.IsExpired) { /* forget the assessment: GET now answers 404 */ }
-        else if (webhookEvent.Data is Assessment assessment) { /* act on assessment.Account?.Risk.Decision; keep the highest Detail.AssessmentVersion */ }
+        if (webhookEvent.AssessmentUpdatedEvent is { Test: true }) { return Results.NoContent(); } // SendTestEventAsync's fixed example assessment: apply nothing
+        if (webhookEvent.AccountDeletedEvent is { } erased) { /* account.deleted: you erased erased.Data.AccountId with Accounts.DeleteAsync */ }
+        else if (webhookEvent.WorkspaceDeletedEvent is { } gone) { /* workspace.deleted: the workspace is deleted; the last event for gone.Data.Environment */ }
+        else if (webhookEvent.WebhookEndpointDisabledEvent is { } disabled) { /* disabled.Data.EndpointId failed for 72 hours: fix it, verify it again */ }
+        else if (webhookEvent.AccountRiskChangedEvent is { } changed) { /* account.risk_changed: changed.Data.Account is the Account Accounts.GetAsync returns; changed.Data.PreviousDecisionsByFlow holds the decisions it replaced */ }
+        else if (webhookEvent.AssessmentUpdatedEvent?.Data.AssessmentExpired is { } expired) { /* forget expired.AssessmentId: GET now answers 404 */ }
+        else if (webhookEvent.AssessmentUpdatedEvent?.Data.Assessment is { } assessment) { /* act on assessment.Account?.Risk.Decision; keep the highest Detail.AssessmentVersion */ }
         return Results.NoContent();
     }
     catch (WebhookVerificationException)
@@ -218,7 +219,7 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
 });
 ```
 
-`ConstructEvent` refuses a missing, empty or repeated header, a delivery older than 300 seconds (`tolerance:` changes it), an unknown key id or a bad signature, and `WebhookVerificationException.Code` says which. Deliveries are at least once: deduplicate on `webhookEvent.Id`.
+`Webhook.ConstructEvent` is generated from the API document. It refuses a missing, empty or repeated header (in any letter case), a delivery more than 300 seconds from now (`tolerance:` changes it), an unknown key id, a bad signature or a body that is not a known event, and `WebhookVerificationException.Code` says which: `"missing_header"`, `"duplicate_header"`, `"invalid_timestamp"`, `"unknown_key"`, `"invalid_signature"` or `"invalid_payload"`, also available as constants on the exception class. It returns a `WebhookEvent` union: `Type.Value` is the wire type, and exactly one of `AssessmentUpdatedEvent`, `EndpointVerificationEvent`, `AccountDeletedEvent`, `WorkspaceDeletedEvent`, `WebhookEndpointDisabledEvent` and `AccountRiskChangedEvent` is set, each with `Id`, `CreatedAt`, `Test` and `Data`. Deliveries are at least once: deduplicate on the event's `Id`.
 
 
 ### Late results
@@ -228,7 +229,7 @@ An account's decision can rise to `review` or `block` after the account creation
 ```csharp
 using NoResponse.LateResults;
 
-var provider = LateResults.Clerk(Environment.GetEnvironmentVariable("CLERK_SECRET_KEY")!);
+var provider = LateResults.Clerk(System.Environment.GetEnvironmentVariable("CLERK_SECRET_KEY")!);
 var result = await LateResults.HandleAsync(buffer.ToArray(), request.Headers, secrets, provider);
 // result.Action is None, RevokeSessions or Ban; result.UserId is set when it acted.
 ```

@@ -37,7 +37,7 @@ namespace NoResponse
             Client = client ?? new NoResponseHttpClient();
             ServerUrl = "";
             ServerIndex = 0;
-            UserAgent = "noresponse-sdk/csharp 5.1.1 internal 1 NoResponse";
+            UserAgent = "noresponse-sdk/csharp 6.0.0 internal 1 NoResponse";
             SecuritySource = null;
             Hooks = new SDKHooks();
             RetryConfig = null;

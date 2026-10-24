@@ -11,7 +11,7 @@ namespace NoResponse.LateResults
     using System.Threading.Tasks;
     using Newtonsoft.Json.Linq;
     using NoResponse.Models.Shared;
-    using NoResponse.Webhooks;
+    using NoResponse.WebhookVerification;
 
     /// <summary>What to do to the user. Ban also ends every session.</summary>
     public enum LateResultAction
@@ -91,7 +91,7 @@ namespace NoResponse.LateResults
     }
 
     /// <summary>The outcome of HandleAsync.</summary>
-    /// <param name="Event">The verified event. Answer an endpoint.verification with Webhook.VerificationResponse.</param>
+    /// <param name="Event">The verified event. Answer an endpoint.verification by returning its challenge as a WebhookVerificationResponse.</param>
     /// <param name="Action">
     /// The action that ran. None when the policy, the event or the user id called for nothing. It can be stronger than the
     /// policy's action when the provider had to fall back: LateResults.Auth0 reports Ban when it blocked the user because the
@@ -146,16 +146,15 @@ namespace NoResponse.LateResults
         public static LateResultAction Action(WebhookEvent webhookEvent, IReadOnlyDictionary<string, LateResultAction>? policy = null)
         {
             policy ??= DefaultPolicy;
-            if (webhookEvent.Test) return LateResultAction.None;
             string? decision;
-            if (webhookEvent.Type == "account.risk_changed" && webhookEvent.Data is AccountRiskChanged changed)
+            if (webhookEvent.AccountRiskChangedEvent?.Data is { } changed)
             {
                 // The event is sent when any flow's decision changes; sessions are about the login
                 // decision, so an unchanged login decision acts on nothing.
                 decision = changed.Account.DecisionsByFlow.Login.Value;
                 if (changed.PreviousDecisionsByFlow?.Login?.Value == decision) return LateResultAction.None;
             }
-            else if (webhookEvent.Type == "assessment.updated" && webhookEvent.Data is Assessment assessment && !Status.Pending.Equals(assessment.Status))
+            else if (webhookEvent.AssessmentUpdatedEvent is { Test: not true, Data.Assessment: { } assessment } && !Status.Pending.Equals(assessment.Status))
                 decision = assessment.Account?.Risk.Decision?.Value;
             else
                 return LateResultAction.None;
@@ -193,9 +192,8 @@ namespace NoResponse.LateResults
             {
                 return new LateResult(webhookEvent, LateResultAction.None);
             }
-            var accountId = webhookEvent.Data is AccountRiskChanged riskChange
-                ? riskChange.Account.Id
-                : ((Assessment)webhookEvent.Data).Detail.AccountId;
+            var accountId = webhookEvent.AccountRiskChangedEvent?.Data.Account.Id
+                ?? webhookEvent.AssessmentUpdatedEvent!.Data.Assessment!.Detail.AccountId;
             var userId = options.UserId is null ? accountId : options.UserId(accountId, webhookEvent);
             if (string.IsNullOrEmpty(userId))
             {

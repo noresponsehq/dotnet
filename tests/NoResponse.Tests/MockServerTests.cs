@@ -15,7 +15,7 @@ namespace NoResponse.Tests
     {
         public MockServerFactAttribute()
         {
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("NORESPONSE_MOCK_URL")))
+            if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("NORESPONSE_MOCK_URL")))
             {
                 Skip = "set NORESPONSE_MOCK_URL to a running mock server";
             }
@@ -27,7 +27,7 @@ namespace NoResponse.Tests
         private static NoResponseClient Client() =>
             NoResponseClient.Builder()
                 .WithApiKey("nrk_mock_" + new string('k', 20))
-                .WithServerUrl(Environment.GetEnvironmentVariable("NORESPONSE_MOCK_URL")!)
+                .WithServerUrl(System.Environment.GetEnvironmentVariable("NORESPONSE_MOCK_URL")!)
                 .Build();
 
         [MockServerFact]

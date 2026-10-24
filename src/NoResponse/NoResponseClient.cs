@@ -154,9 +154,9 @@ namespace NoResponse
             {
                 _securitySource = () => new NoResponse.Models.Shared.Security() { ApiKey = apiKey };
             }
-            else if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("NORESPONSE_API_KEY")))
+            else if (!string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("NORESPONSE_API_KEY")))
             {
-                var _envSecurity = Environment.GetEnvironmentVariable("NORESPONSE_API_KEY")!;
+                var _envSecurity = System.Environment.GetEnvironmentVariable("NORESPONSE_API_KEY")!;
                 _securitySource = () => new NoResponse.Models.Shared.Security() { ApiKey = _envSecurity };
             }
             else
@@ -269,9 +269,9 @@ namespace NoResponse
             /// </summary>
             public NoResponseClient Build()
             {
-                if (_sdkConfig.SecuritySource == null && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("NORESPONSE_API_KEY")))
+                if (_sdkConfig.SecuritySource == null && !string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("NORESPONSE_API_KEY")))
                 {
-                    var _envSecurity = Environment.GetEnvironmentVariable("NORESPONSE_API_KEY")!;
+                    var _envSecurity = System.Environment.GetEnvironmentVariable("NORESPONSE_API_KEY")!;
                     _sdkConfig.SecuritySource = () => new NoResponse.Models.Shared.Security() { ApiKey = _envSecurity };
                 }
                 if (_sdkConfig.SecuritySource == null)
