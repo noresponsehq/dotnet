@@ -4,60 +4,68 @@ namespace NoResponse.LateResults
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Text;
+    using System.Text.Json;
+    using System.Text.Json.Nodes;
+    using System.Text.RegularExpressions;
     using System.Threading;
     using System.Threading.Tasks;
-    using Newtonsoft.Json.Linq;
+    using NoResponse.Models.Errors;
     using NoResponse.Models.Shared;
     using NoResponse.WebhookVerification;
 
-    /// <summary>What to do to the user. Ban also ends every session.</summary>
-    public enum LateResultAction
+    /// <summary>Runs one action in an identity provider. Build one with LateResults.IdentityProvider or LateResults.CustomProvider.</summary>
+    public interface IActionProvider
     {
-        None,
-        RevokeSessions,
-        Ban,
-    }
-
-    /// <summary>The action for each account decision key (allow, step_up, review, block). A key you leave out does nothing.</summary>
-    public sealed class LateResultPolicy : Dictionary<string, LateResultAction>
-    {
-        public LateResultPolicy() { }
-
-        public LateResultPolicy(IDictionary<string, LateResultAction> entries) : base(entries) { }
-    }
-
-    /// <summary>The two admin actions for one auth provider. Build one with LateResults.Clerk, WorkOS or Auth0.</summary>
-    public interface ILateResultProvider
-    {
+        /// <summary>clerk, workos, auth0 or custom.</summary>
         string Name { get; }
 
-        /// <summary>End every active session of the user.</summary>
-        Task RevokeSessionsAsync(string userId, CancellationToken cancellationToken = default);
-
-        /// <summary>Stop the user signing in again and end their sessions.</summary>
-        Task BanAsync(string userId, CancellationToken cancellationToken = default);
+        /// <summary>Take the action and return any other action that had to run with it (Auth0 restricts to end a session).</summary>
+        Task<IReadOnlyList<string>> RunAsync(string action, string userId, CancellationToken cancellationToken = default);
     }
+
+    /// <summary>Where the account is in your flow, from GetAccountState.</summary>
+    /// <param name="State">onboarding, provisional, active, restricted or rejected.</param>
+    /// <param name="UserId">The provider's user id. Defaults to the account id, as when you assess with the provider's user id.</param>
+    /// <param name="EnforcedRiskVersion">The risk version you last enforced (a result's RiskVersion that you stored). An account at or below it is skipped.</param>
+    public sealed record AccountStateAnswer(string State, string? UserId = null, long? EnforcedRiskVersion = null);
+
+    /// <summary>The policy for one flow.</summary>
+    /// <param name="Reinstate">Lift a restriction once the flow's decision is allow again. Off by default.</param>
+    public sealed record FlowPolicy(bool Reinstate = false);
+
+    /// <summary>One recorded enforcement.</summary>
+    public sealed record Enforced(string Flow, string Action, string Status, string? ErrorCode = null);
 
     /// <summary>
-    /// A provider that reports the action that ran. HandleAsync calls ActAsync when the provider implements it,
-    /// and BanAsync or RevokeSessionsAsync otherwise. A provider that has to do more than it was asked implements it:
-    /// LateResults.Auth0 returns Ban when the tenant's plan has no sessions API and it blocked the user to end their sessions.
+    /// What was done. Skipped says why nothing was: not_actionable (not account.risk_changed, or a test event),
+    /// account_gone (erased), unknown_user (GetAccountState returned null) or already_enforced.
     /// </summary>
-    public interface ILateResultActor : ILateResultProvider
+    public sealed record EnforcementResult
     {
-        /// <summary>Take <paramref name="action"/> (RevokeSessions or Ban) and return the action that ran.</summary>
-        Task<LateResultAction> ActAsync(LateResultAction action, string userId, CancellationToken cancellationToken = default);
+        /// <summary>The verified event, from HandleRiskChangeAsync. Answer an endpoint.verification with its challenge.</summary>
+        public WebhookEvent? Event { get; init; }
+
+        public Account? Account { get; init; }
+
+        public string? State { get; init; }
+
+        /// <summary>The risk version acted on. Store it and return it as EnforcedRiskVersion.</summary>
+        public long? RiskVersion { get; init; }
+
+        public string? Skipped { get; init; }
+
+        /// <summary>What was recorded, in order.</summary>
+        public IReadOnlyList<Enforced> Enforcements { get; init; } = Array.Empty<Enforced>();
     }
 
-    /// <summary>Thrown when the provider's admin API refuses a call. Answer the webhook with a 5xx so NoResponse retries it.</summary>
+    /// <summary>The provider refused an action or could not be reached (status 0). Answer the webhook with a 5xx so it is delivered again.</summary>
     public sealed class ProviderActionException : Exception
     {
-        public ProviderActionException(string provider, int status, string message) : this(provider, status, message, null) { }
-
-        public ProviderActionException(string provider, int status, string message, string? code) : base(message)
+        public ProviderActionException(string provider, int status, string message, string? code = null, Exception? inner = null) : base(message, inner)
         {
             Provider = provider;
             Status = status;
@@ -68,20 +76,19 @@ namespace NoResponse.LateResults
 
         public int Status { get; }
 
-        /// <summary>The provider's error code from the response body, such as Auth0's errorCode "insufficient_scope", when it sent one.</summary>
+        /// <summary>The provider's error code, such as Auth0's errorCode "insufficient_scope", when it sent one.</summary>
         public string? Code { get; }
     }
 
-    public sealed class LateResultOptions
+    public sealed class EnforcementOptions
     {
-        /// <summary>Account decision to action. Defaults to LateResults.DefaultPolicy.</summary>
-        public IReadOnlyDictionary<string, LateResultAction>? Policy { get; init; }
+        public required IActionProvider Provider { get; init; }
 
-        /// <summary>
-        /// The provider user id for the assessment's account id. Defaults to the account id itself,
-        /// as when you assess with the provider's user id. Return null or empty to take no action.
-        /// </summary>
-        public Func<string, WebhookEvent, string?>? UserId { get; init; }
+        /// <summary>The account's state in your flow; null for an account you do not hold.</summary>
+        public required Func<Account, Task<AccountStateAnswer?>> GetAccountState { get; init; }
+
+        /// <summary>Per flow (account_creation, login, purchase).</summary>
+        public IReadOnlyDictionary<string, FlowPolicy>? Flows { get; init; }
 
         /// <summary>Replay window, as for Webhook.ConstructEvent.</summary>
         public TimeSpan? Tolerance { get; init; }
@@ -90,552 +97,405 @@ namespace NoResponse.LateResults
         public DateTimeOffset? Now { get; init; }
     }
 
-    /// <summary>The outcome of HandleAsync.</summary>
-    /// <param name="Event">The verified event. Answer an endpoint.verification by returning its challenge as a WebhookVerificationResponse.</param>
-    /// <param name="Action">
-    /// The action that ran. None when the policy, the event or the user id called for nothing. It can be stronger than the
-    /// policy's action when the provider had to fall back: LateResults.Auth0 reports Ban when it blocked the user because the
-    /// tenant's plan cannot end sessions.
-    /// </param>
-    /// <param name="UserId">The provider user id acted on, when an action was taken.</param>
-    public sealed record LateResult(WebhookEvent Event, LateResultAction Action, string? UserId = null);
+    public sealed class IdentityProviderOptions
+    {
+        /// <summary>Clerk secret key, WorkOS API key or Auth0 Management API token.</summary>
+        public required string Token { get; init; }
+
+        /// <summary>Auth0 tenant domain, such as example.eu.auth0.com.</summary>
+        public string? Domain { get; init; }
+
+        /// <summary>The admin API's base URL, in place of the table's (or of Domain).</summary>
+        public string? BaseUrl { get; init; }
+
+        public HttpClient? HttpClient { get; init; }
+    }
 
     /// <summary>
-    /// Late-result handlers. Hand-written; not generated.
-    /// An assessment can be revised after the account creation was allowed: a slow source settles and the
-    /// account's decision rises. NoResponse sends the new version as a signed assessment.updated webhook.
-    /// HandleAsync verifies that delivery with Webhook.ConstructEvent, picks an action from your policy
-    /// and acts through the auth provider's admin API. It never acts on an unverified event or a test event.
-    /// Every provider call treats a 404 (user or session already gone) as done, so a repeated delivery is safe.
+    /// Late enforcement. Generated by tools/generate_overlays.py from tools/late_results/actions.json; do not edit.
+    ///
+    /// account.risk_changed only wakes the handler. HandleRiskChangeAsync verifies the delivery, reads the account's
+    /// current risk (GET /v1/accounts/{account_id}), asks your GetAccountState where the account is in your own flow,
+    /// and takes the actions the table names for that state and the decision of its flow: onboarding and provisional
+    /// (account_creation review or block) fail onboarding or reject activation and revoke sessions; active login review
+    /// revokes sessions and block restricts and revokes; restricted login allow unrestricts when Flows["login"].Reinstate.
+    /// Every action, or none, is recorded with Accounts.RecordEnforcementAsync at the risk version read, and a refused
+    /// action is recorded as failed and thrown. No action deletes a user. The same table and vectors
+    /// (tests/fixtures/late-results-vectors.json) run in every SDK.
     /// </summary>
     public static class LateResults
     {
-        /// <summary>Revoke sessions on review or block; do nothing on allow or step_up. Banning is opt-in.</summary>
-        public static readonly IReadOnlyDictionary<string, LateResultAction> DefaultPolicy = new Dictionary<string, LateResultAction>
-        {
-            ["allow"] = LateResultAction.None,
-            ["step_up"] = LateResultAction.None,
-            ["review"] = LateResultAction.RevokeSessions,
-            ["block"] = LateResultAction.RevokeSessions,
-        };
-
-        /// <summary>The wire string for an action: none, revoke_sessions or ban.</summary>
-        public static string Wire(LateResultAction action) => action switch
-        {
-            LateResultAction.None => "none",
-            LateResultAction.RevokeSessions => "revoke_sessions",
-            LateResultAction.Ban => "ban",
-            _ => throw new ArgumentException($"unknown late result action {(int)action}", nameof(action)),
-        };
-
-        /// <summary>Parse a wire string into an action.</summary>
-        public static LateResultAction Parse(string value) => value switch
-        {
-            "none" => LateResultAction.None,
-            "revoke_sessions" => LateResultAction.RevokeSessions,
-            "ban" => LateResultAction.Ban,
-            _ => throw new ArgumentException($"unknown late result action {value}", nameof(value)),
-        };
+        private static readonly JsonObject Table = JsonNode.Parse("{\"lifecycle\":{\"onboarding\":{\"flow\":\"account_creation\",\"on\":{\"review\":[\"fail_onboarding\",\"revoke_sessions\"],\"block\":[\"fail_onboarding\",\"revoke_sessions\"]}},\"provisional\":{\"flow\":\"account_creation\",\"on\":{\"review\":[\"reject_activation\",\"revoke_sessions\"],\"block\":[\"reject_activation\",\"revoke_sessions\"]}},\"active\":{\"flow\":\"login\",\"on\":{\"review\":[\"revoke_sessions\"],\"block\":[\"restrict\",\"revoke_sessions\"]}},\"restricted\":{\"flow\":\"login\",\"on\":{},\"reinstate\":{\"allow\":[\"unrestrict\"]}},\"rejected\":{\"flow\":\"account_creation\",\"on\":{}}},\"providers\":{\"clerk\":{\"base_url\":\"https://api.clerk.com/v1\",\"actions\":{\"fail_onboarding\":[{\"call\":{\"method\":\"POST\",\"path\":\"/users/{user}/ban\"}}],\"reject_activation\":[{\"call\":{\"method\":\"POST\",\"path\":\"/users/{user}/ban\"}}],\"restrict\":[{\"call\":{\"method\":\"POST\",\"path\":\"/users/{user}/ban\"}}],\"unrestrict\":[{\"call\":{\"method\":\"POST\",\"path\":\"/users/{user}/unban\"}}],\"revoke_sessions\":[{\"each\":{\"list\":{\"method\":\"GET\",\"path\":\"/sessions\",\"query\":{\"user_id\":\"{user}\",\"status\":\"active\",\"limit\":\"100\"}},\"page\":{\"kind\":\"offset\",\"param\":\"offset\",\"size\":100},\"where\":{\"status\":\"active\"}},\"call\":{\"method\":\"POST\",\"path\":\"/sessions/{item}/revoke\"}}]}},\"workos\":{\"base_url\":\"https://api.workos.com\",\"actions\":{\"fail_onboarding\":[{\"call\":{\"method\":\"PUT\",\"path\":\"/user_management/users/{user}\",\"body\":{\"metadata\":{\"noresponse_state\":\"onboarding_failed\"}}}}],\"reject_activation\":[{\"call\":{\"method\":\"PUT\",\"path\":\"/user_management/users/{user}\",\"body\":{\"metadata\":{\"noresponse_state\":\"activation_rejected\"}}}}],\"restrict\":[{\"call\":{\"method\":\"PUT\",\"path\":\"/user_management/users/{user}\",\"body\":{\"metadata\":{\"noresponse_state\":\"restricted\"}}}}],\"unrestrict\":[{\"call\":{\"method\":\"PUT\",\"path\":\"/user_management/users/{user}\",\"body\":{\"metadata\":{\"noresponse_state\":null}}}}],\"revoke_sessions\":[{\"each\":{\"list\":{\"method\":\"GET\",\"path\":\"/user_management/users/{user}/sessions\",\"query\":{\"limit\":\"100\"}},\"page\":{\"kind\":\"cursor\",\"param\":\"after\",\"next\":[\"list_metadata\",\"after\"]},\"where\":{\"status\":\"active\"}},\"call\":{\"method\":\"POST\",\"path\":\"/user_management/sessions/revoke\",\"body\":{\"session_id\":\"{item}\"}}}]}},\"auth0\":{\"base_url\":\"https://{domain}/api/v2\",\"actions\":{\"fail_onboarding\":[{\"call\":{\"method\":\"PATCH\",\"path\":\"/users/{user}\",\"body\":{\"blocked\":true}}}],\"reject_activation\":[{\"call\":{\"method\":\"PATCH\",\"path\":\"/users/{user}\",\"body\":{\"blocked\":true}}}],\"restrict\":[{\"call\":{\"method\":\"PATCH\",\"path\":\"/users/{user}\",\"body\":{\"blocked\":true}}}],\"unrestrict\":[{\"call\":{\"method\":\"PATCH\",\"path\":\"/users/{user}\",\"body\":{\"blocked\":false}}}],\"revoke_sessions\":[{\"call\":{\"method\":\"DELETE\",\"path\":\"/users/{user}/sessions\"},\"fallback\":{\"status\":403,\"code\":\"feature_not_enabled\",\"reports\":\"restrict\",\"steps\":[{\"call\":{\"method\":\"PATCH\",\"path\":\"/users/{user}\",\"body\":{\"blocked\":true}}}]}},{\"call\":{\"method\":\"DELETE\",\"path\":\"/users/{user}/refresh-tokens\"},\"fallback\":{\"status\":403,\"code\":\"feature_not_enabled\",\"steps\":[{\"each\":{\"list\":{\"method\":\"GET\",\"path\":\"/device-credentials\",\"query\":{\"user_id\":\"{user}\",\"type\":\"refresh_token\",\"per_page\":\"100\"}},\"page\":{\"kind\":\"index\",\"param\":\"page\",\"size\":100}},\"call\":{\"method\":\"DELETE\",\"path\":\"/device-credentials/{item}\"}},{\"each\":{\"list\":{\"method\":\"GET\",\"path\":\"/device-credentials\",\"query\":{\"user_id\":\"{user}\",\"type\":\"rotating_refresh_token\",\"per_page\":\"100\"}},\"page\":{\"kind\":\"index\",\"param\":\"page\",\"size\":100}},\"call\":{\"method\":\"DELETE\",\"path\":\"/device-credentials/{item}\"}}]}}]}}},\"limits\":{\"retries\":4,\"budget_ms\":3000,\"backoff_ms\":250,\"max_pages\":100}}")!.AsObject();
+        private static readonly JsonObject Limits = Table["limits"]!.AsObject();
+        private static readonly Regex Slug = new("^[a-z0-9_.-]+$");
 
         /// <summary>
-        /// The action your policy names for a verified event, keyed by account.risk.decision. Only a served assessment
-        /// that is no longer pending and whose account has a decision can act: a pending assessment carries an earlier
-        /// assessment's decision, which you have already acted on, and a test event from the send-test-event call never acts.
+        /// Verify an account.risk_changed delivery and enforce the account's current risk. A delivery that fails
+        /// verification throws WebhookVerificationException before anything is read; any other event, and a test
+        /// event, does nothing.
         /// </summary>
-        /// <exception cref="ArgumentException">The policy holds an unknown action.</exception>
-        public static LateResultAction Action(WebhookEvent webhookEvent, IReadOnlyDictionary<string, LateResultAction>? policy = null)
-        {
-            policy ??= DefaultPolicy;
-            string? decision;
-            if (webhookEvent.AccountRiskChangedEvent?.Data is { } changed)
-            {
-                // The event is sent when any flow's decision changes; sessions are about the login
-                // decision, so an unchanged login decision acts on nothing.
-                decision = changed.Account.DecisionsByFlow.Login.Value;
-                if (changed.PreviousDecisionsByFlow?.Login?.Value == decision) return LateResultAction.None;
-            }
-            else if (webhookEvent.AssessmentUpdatedEvent is { Test: not true, Data.Assessment: { } assessment } && !Status.Pending.Equals(assessment.Status))
-                decision = assessment.Account?.Risk.Decision?.Value;
-            else
-                return LateResultAction.None;
-            if (decision is not ("allow" or "step_up" or "review" or "block"))
-            {
-                return LateResultAction.None;
-            }
-            if (!policy.TryGetValue(decision, out var action))
-            {
-                return LateResultAction.None;
-            }
-            Wire(action);
-            return action;
-        }
-
-        /// <summary>
-        /// Verify a webhook delivery and apply your policy to it. <paramref name="payload"/>, <paramref name="headers"/>,
-        /// <paramref name="secrets"/> and the tolerance options are exactly what Webhook.ConstructEvent takes; a delivery
-        /// that fails verification throws WebhookVerificationException before any provider call. Deduplicate on
-        /// <c>result.Event.Id</c> and ignore versions older than one you have acted on.
-        /// </summary>
-        public static async Task<LateResult> HandleAsync<TValues>(
+        public static async Task<EnforcementResult> HandleRiskChangeAsync<TValues>(
+            NoResponseClient client,
             byte[] payload,
             IEnumerable<KeyValuePair<string, TValues>> headers,
             IReadOnlyDictionary<string, string> secrets,
-            ILateResultProvider provider,
-            LateResultOptions? options = null,
+            EnforcementOptions options,
             CancellationToken cancellationToken = default)
             where TValues : IEnumerable<string?>
         {
-            options ??= new LateResultOptions();
             var webhookEvent = Webhook.ConstructEvent(payload, headers, secrets, options.Tolerance, options.Now);
-            var action = Action(webhookEvent, options.Policy);
-            if (action == LateResultAction.None)
+            var changed = webhookEvent.AccountRiskChangedEvent;
+            if (webhookEvent.Type.Value != "account.risk_changed" || changed == null || changed.Test == true)
             {
-                return new LateResult(webhookEvent, LateResultAction.None);
+                return new EnforcementResult { Event = webhookEvent, Skipped = "not_actionable" };
             }
-            var accountId = webhookEvent.AccountRiskChangedEvent?.Data.Account.Id
-                ?? webhookEvent.AssessmentUpdatedEvent!.Data.Assessment!.Detail.AccountId;
-            var userId = options.UserId is null ? accountId : options.UserId(accountId, webhookEvent);
-            if (string.IsNullOrEmpty(userId))
+            Account account;
+            try
             {
-                return new LateResult(webhookEvent, LateResultAction.None);
+                account = (await client.Accounts.GetAsync(changed.Data.Account.Id, cancellationToken: cancellationToken)).Result;
             }
-            var ran = action;
-            if (provider is ILateResultActor actor)
+            catch (NotFoundException)
             {
-                ran = await actor.ActAsync(action, userId, cancellationToken).ConfigureAwait(false);
+                return new EnforcementResult { Event = webhookEvent, Skipped = "account_gone" };
             }
-            else if (action == LateResultAction.Ban)
-            {
-                await provider.BanAsync(userId, cancellationToken).ConfigureAwait(false);
-            }
-            else
-            {
-                await provider.RevokeSessionsAsync(userId, cancellationToken).ConfigureAwait(false);
-            }
-            return new LateResult(webhookEvent, ran, userId);
+            var result = await EnforceAccountAsync(client, account, options, cancellationToken);
+            return result with { Event = webhookEvent };
         }
+
+        /// <inheritdoc cref="HandleRiskChangeAsync{TValues}"/>
+        public static Task<EnforcementResult> HandleRiskChangeAsync(
+            NoResponseClient client,
+            byte[] payload,
+            IEnumerable<KeyValuePair<string, string>> headers,
+            IReadOnlyDictionary<string, string> secrets,
+            EnforcementOptions options,
+            CancellationToken cancellationToken = default) =>
+            HandleRiskChangeAsync(client, payload, headers.Select(h => new KeyValuePair<string, string?[]>(h.Key, new string?[] { h.Value })), secrets, options, cancellationToken);
 
         /// <summary>
-        /// Clerk Backend API. Revoking lists the user's active sessions (GET /sessions?user_id&amp;status=active) and
-        /// revokes each (POST /sessions/{id}/revoke). Ban is POST /users/{id}/ban, which revokes every session and blocks sign-in.
-        /// A 404 on any call (user or session already gone) counts as done, so a repeated delivery is safe.
+        /// Enforce one account as read: the account a handler fetched, or one from
+        /// Accounts.ListChangedAsync with unenforced true when catching up.
         /// </summary>
-        public static ILateResultProvider Clerk(string secretKey, string? baseUrl = null, HttpClient? httpClient = null)
+        public static async Task<EnforcementResult> EnforceAccountAsync(NoResponseClient client, Account account, EnforcementOptions options, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrEmpty(secretKey)) throw new ArgumentException("Clerk needs a secret key", nameof(secretKey));
-            return new ClerkProvider(new Caller("clerk", baseUrl ?? "https://api.clerk.com/v1", secretKey, httpClient));
-        }
-
-        /// <summary>
-        /// WorkOS User Management. Revoking pages through GET /user_management/users/{id}/sessions and revokes each
-        /// active one with POST /user_management/sessions/revoke. WorkOS has no block or ban, so Ban revokes the
-        /// sessions and then deletes the user (DELETE /user_management/users/{id}); deletion is permanent.
-        /// A 404 on any call (user or session already gone) counts as done, so a repeated delivery is safe.
-        /// </summary>
-        public static ILateResultProvider WorkOS(string apiKey, string? baseUrl = null, HttpClient? httpClient = null)
-        {
-            if (string.IsNullOrEmpty(apiKey)) throw new ArgumentException("WorkOS needs an API key", nameof(apiKey));
-            return new WorkOSProvider(new Caller("workos", baseUrl ?? "https://api.workos.com", apiKey, httpClient));
-        }
-
-        /// <summary>
-        /// Auth0 Management API at https://{domain}/api/v2 (or <paramref name="baseUrl"/>). Revoking deletes every session
-        /// (DELETE /users/{id}/sessions) and refresh token (DELETE /users/{id}/refresh-tokens). Ban first sets
-        /// blocked: true (PATCH /users/{id}), then does the same. The token needs update:users, delete:sessions,
-        /// delete:refresh_tokens, read:device_credentials and delete:device_credentials.
-        /// A 404 on any call (user already gone) counts as done, so a repeated delivery is safe.
-        /// Auth0 offers the sessions and refresh-token endpoints on Enterprise plans only; on other plans they answer
-        /// 403 feature_not_enabled. Then refresh tokens are deleted one by one through /device-credentials (types
-        /// refresh_token and rotating_refresh_token), which every plan has. A login session cannot be ended, so revoking
-        /// blocks the user before deleting the refresh tokens, and ActAsync reports Ban. Unblock the user in the
-        /// dashboard to undo it. Any other refusal, such as 403 insufficient_scope, throws.
-        /// A 429 from the Management API is waited out and retried: Retry-After, else X-RateLimit-Reset, else 250 ms
-        /// doubling, at most 4 retries a call and 3 s of waiting a revoke or ban. Past that the 429 throws as
-        /// ProviderActionException.
-        /// </summary>
-        public static ILateResultProvider Auth0(string token, string? domain = null, string? baseUrl = null, HttpClient? httpClient = null)
-        {
-            if (string.IsNullOrEmpty(token)) throw new ArgumentException("Auth0 needs a token", nameof(token));
-            var root = baseUrl ?? (string.IsNullOrEmpty(domain) ? null : $"https://{domain}/api/v2");
-            if (root is null) throw new ArgumentException("Auth0 needs a domain or a base URL", nameof(domain));
-            return new Auth0Provider(new Caller("auth0", root, token, httpClient, retryRateLimits: true));
-        }
-
-        /// <summary>
-        /// A provider for an app with its own login, or for trying the handler before you wire up a real one.
-        /// Revoking and banning each log one line saying what they would do and call nothing: no request leaves
-        /// your process. <paramref name="log"/> receives the line; by default it goes to standard output.
-        /// Replace it with your own ILateResultProvider once you know what revoking and banning mean in your app.
-        /// </summary>
-        public static ILateResultProvider LogOnly(Action<string>? log = null) => new LogOnlyProvider(log ?? Console.WriteLine);
-
-        private static readonly HttpClient SharedClient = new HttpClient();
-
-        private static string Segment(string id)
-        {
-            if (string.IsNullOrEmpty(id)) throw new ArgumentException("user id must be a non-empty string", nameof(id));
-            return Uri.EscapeDataString(id);
-        }
-
-        private static List<JToken> Sessions(JToken? body) => body switch
-        {
-            JArray array => new List<JToken>(array),
-            JObject { } obj when obj["data"] is JArray data => new List<JToken>(data),
-            _ => new List<JToken>(),
-        };
-
-        private static void CollectActive(IEnumerable<JToken> page, List<string> active)
-        {
-            foreach (var session in page)
+            var answer = await options.GetAccountState(account);
+            if (answer == null) return new EnforcementResult { Account = account, Skipped = "unknown_user" };
+            var state = answer.State;
+            var rule = Table["lifecycle"]![state]?.AsObject() ?? throw new ArgumentException($"unknown account state {state}");
+            var riskVersion = account.RiskVersion;
+            if (answer.EnforcedRiskVersion is long enforced && riskVersion <= enforced)
             {
-                if ((string?)session["status"] == "active" && session["id"] is JValue { Type: JTokenType.String } id && !string.IsNullOrEmpty((string?)id))
+                return new EnforcementResult { Account = account, State = state, RiskVersion = riskVersion, Skipped = "already_enforced" };
+            }
+            var flow = (string)rule["flow"]!;
+            var decision = DecisionOf(account.DecisionsByFlow, flow);
+            var reinstate = options.Flows != null && options.Flows.TryGetValue(flow, out var policy) && policy.Reinstate;
+            var actions = (rule["on"]![decision] ?? (reinstate ? rule["reinstate"]?[decision] : null))?.AsArray().Select(a => (string)a!).ToList() ?? new List<string>();
+            var provider = options.Provider;
+            var enforcements = new List<Enforced>();
+
+            async Task Record(string action, string status, string? errorCode = null)
+            {
+                var body = new EnforcementRequest
                 {
-                    active.Add((string)id!);
+                    RiskVersion = riskVersion,
+                    Flow = flow,
+                    Action = action,
+                    StateBefore = state,
+                    Status = status,
+                    Provider = provider.Name,
+                    ErrorCode = errorCode,
+                };
+                await client.Accounts.RecordEnforcementAsync(account.Id, body, cancellationToken: cancellationToken);
+                enforcements.Add(new Enforced(flow, action, status, errorCode));
+            }
+
+            if (actions.Count == 0)
+            {
+                // An adverse or step_up decision that needs nothing still counts as handled.
+                if (decision != "allow") await Record("none", "applied");
+                return new EnforcementResult { Account = account, State = state, RiskVersion = riskVersion, Enforcements = enforcements };
+            }
+            var recorded = new HashSet<string>();
+            foreach (var action in actions)
+            {
+                IReadOnlyList<string> alsoRan;
+                try
+                {
+                    alsoRan = await provider.RunAsync(action, string.IsNullOrEmpty(answer.UserId) ? account.Id : answer.UserId, cancellationToken);
+                }
+                catch (Exception error) when (error is not OperationCanceledException)
+                {
+                    await Record(action, "failed", FailureCode(provider.Name, error));
+                    throw;
+                }
+                foreach (var ran in alsoRan.Append(action))
+                {
+                    if (recorded.Add(ran)) await Record(ran, "applied");
                 }
             }
+            return new EnforcementResult { Account = account, State = state, RiskVersion = riskVersion, Enforcements = enforcements };
         }
 
-        /// <summary>The error code in a provider's error body: Auth0's errorCode, or a top-level code.</summary>
+        private static string DecisionOf(AccountDecisionsByFlow decisions, string flow) => flow switch
+        {
+            "account_creation" => decisions.AccountCreation.Value,
+            "login" => decisions.Login.Value,
+            "purchase" => decisions.Purchase.Value,
+            _ => throw new ArgumentException($"unknown flow {flow}"),
+        };
+
+        /// <summary>The error_code of a failed action: the provider's code, else its HTTP status, as provider.code.</summary>
+        private static string FailureCode(string provider, Exception error)
+        {
+            var refused = error as ProviderActionException;
+            var code = (refused?.Code ?? (error.Data["code"] as string))?.ToLowerInvariant();
+            var suffix = code != null && Slug.IsMatch(code)
+                ? code
+                : refused == null ? "error" : refused.Status == 0 ? "unreachable" : $"http_{refused.Status}";
+            var full = $"{provider}.{suffix}";
+            return full.Length > 128 ? full.Substring(0, 128) : full;
+        }
+
+        /// <summary>Clerk, WorkOS or Auth0 (clerk, workos or auth0), run from the shared action table.</summary>
+        public static IActionProvider IdentityProvider(string name, IdentityProviderOptions options)
+        {
+            var spec = Table["providers"]![name]?.AsObject() ?? throw new ArgumentException($"unknown identity provider {name}", nameof(name));
+            if (options == null || string.IsNullOrEmpty(options.Token)) throw new ArgumentException($"{name} needs Token", nameof(options));
+            var baseUrl = options.BaseUrl ?? (string)spec["base_url"]!;
+            if (baseUrl.Contains("{domain}"))
+            {
+                if (string.IsNullOrEmpty(options.Domain)) throw new ArgumentException($"{name} needs Domain or BaseUrl", nameof(options));
+                baseUrl = baseUrl.Replace("{domain}", options.Domain);
+            }
+            return new TableProvider(name, spec, baseUrl.TrimEnd('/'), options.Token, options.HttpClient ?? SharedHttp.Value);
+        }
+
+        /// <summary>Your own user store: one function per action you support, keyed by action. An action without one fails.</summary>
+        public static IActionProvider CustomProvider(IReadOnlyDictionary<string, Func<string, Task>> handlers) => new Custom(handlers);
+
+        private static readonly Lazy<HttpClient> SharedHttp = new(() => new HttpClient { Timeout = TimeSpan.FromSeconds(10) });
+
+        private sealed class Custom : IActionProvider
+        {
+            private readonly IReadOnlyDictionary<string, Func<string, Task>> handlers;
+
+            public Custom(IReadOnlyDictionary<string, Func<string, Task>> handlers) => this.handlers = handlers;
+
+            public string Name => "custom";
+
+            public async Task<IReadOnlyList<string>> RunAsync(string action, string userId, CancellationToken cancellationToken = default)
+            {
+                if (!handlers.TryGetValue(action, out var handler)) throw new InvalidOperationException($"CustomProvider has no {action} handler");
+                await handler(userId);
+                return Array.Empty<string>();
+            }
+        }
+
+        private sealed class Context
+        {
+            public required string Name { get; init; }
+            public required string Base { get; init; }
+            public required string Token { get; init; }
+            public required HttpClient Http { get; init; }
+            public required string User { get; init; }
+            public double WaitedMs { get; set; }
+        }
+
+        private sealed class TableProvider : IActionProvider
+        {
+            private readonly JsonObject spec;
+            private readonly string baseUrl;
+            private readonly string token;
+            private readonly HttpClient http;
+
+            public TableProvider(string name, JsonObject spec, string baseUrl, string token, HttpClient http)
+            {
+                Name = name;
+                this.spec = spec;
+                this.baseUrl = baseUrl;
+                this.token = token;
+                this.http = http;
+            }
+
+            public string Name { get; }
+
+            public Task<IReadOnlyList<string>> RunAsync(string action, string userId, CancellationToken cancellationToken = default)
+            {
+                if (string.IsNullOrEmpty(userId)) throw new ArgumentException("user id must be a non-empty string", nameof(userId));
+                var steps = spec["actions"]![action]?.AsArray() ?? throw new ArgumentException($"unknown action {action}", nameof(action));
+                var ctx = new Context { Name = Name, Base = baseUrl, Token = token, Http = http, User = userId };
+                return RunStepsAsync(steps, ctx, cancellationToken);
+            }
+        }
+
+        private static async Task<IReadOnlyList<string>> RunStepsAsync(JsonArray steps, Context ctx, CancellationToken cancellationToken)
+        {
+            var alsoRan = new List<string>();
+            foreach (var node in steps)
+            {
+                var step = node!.AsObject();
+                var call = step["call"]!.AsObject();
+                if (step["each"] is JsonObject each)
+                {
+                    foreach (var item in await CollectAsync(each, ctx, cancellationToken)) await SendAsync(call, ctx, item, null, cancellationToken);
+                    continue;
+                }
+                try
+                {
+                    await SendAsync(call, ctx, null, null, cancellationToken);
+                }
+                catch (ProviderActionException error) when (
+                    step["fallback"] is JsonObject fallback && error.Status == (int)fallback["status"]! && error.Code == (string?)fallback["code"])
+                {
+                    var fb = step["fallback"]!.AsObject();
+                    alsoRan.AddRange(await RunStepsAsync(fb["steps"]!.AsArray(), ctx, cancellationToken));
+                    if (fb["reports"] is JsonNode reports) alsoRan.Add((string)reports!);
+                }
+            }
+            return alsoRan;
+        }
+
+        /// <summary>Every matching item id across the list's pages, collected before any is acted on.</summary>
+        private static async Task<List<string>> CollectAsync(JsonObject each, Context ctx, CancellationToken cancellationToken)
+        {
+            var list = each["list"]!.AsObject();
+            var page = each["page"]!.AsObject();
+            var where = each["where"]?.AsObject();
+            var kind = (string)page["kind"]!;
+            var param = (string)page["param"]!;
+            var size = page["size"] is JsonNode s ? (int)s : 0;
+            var ids = new List<string>();
+            string? cursor = null;
+            var maxPages = (int)Limits["max_pages"]!;
+            for (var index = 0; index < maxPages; index++)
+            {
+                var query = new List<KeyValuePair<string, string>>();
+                foreach (var (key, value) in list["query"]?.AsObject() ?? new JsonObject()) query.Add(new(key, (string)value!));
+                if (kind == "offset") query.Add(new(param, (index * size).ToString(CultureInfo.InvariantCulture)));
+                else if (kind == "index") query.Add(new(param, index.ToString(CultureInfo.InvariantCulture)));
+                else if (cursor != null) query.Add(new(param, cursor));
+                var body = await SendAsync(list, ctx, null, query, cancellationToken);
+                var items = body as JsonArray ?? (body as JsonObject)?["data"] as JsonArray ?? new JsonArray();
+                foreach (var entry in items)
+                {
+                    if (entry is not JsonObject record) continue;
+                    if (record["id"] is not JsonValue idValue || !idValue.TryGetValue<string>(out var id) || id.Length == 0) continue;
+                    var matches = where == null || where.All(w => JsonNode.DeepEquals(record[w.Key], w.Value));
+                    if (matches) ids.Add(id);
+                }
+                if (kind == "cursor")
+                {
+                    JsonNode? next = body;
+                    foreach (var key in page["next"]!.AsArray()) next = (next as JsonObject)?[(string)key!];
+                    if (next is not JsonValue nextValue || !nextValue.TryGetValue<string>(out var following) || following.Length == 0) break;
+                    cursor = following;
+                }
+                else if (items.Count < size) break;
+            }
+            return ids;
+        }
+
+        private static JsonNode? Fill(JsonNode? value, string user, string? item) => value switch
+        {
+            JsonValue v when v.TryGetValue<string>(out var text) => JsonValue.Create(text.Replace("{user}", user).Replace("{item}", item ?? "")),
+            JsonArray array => new JsonArray(array.Select(entry => Fill(entry, user, item)).ToArray()),
+            JsonObject obj => new JsonObject(obj.Select(p => new KeyValuePair<string, JsonNode?>(p.Key, Fill(p.Value, user, item)))),
+            null => null,
+            _ => value.DeepClone(),
+        };
+
+        private static double? Number(string? text) =>
+            double.TryParse(text?.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out var value) && double.IsFinite(value) ? value : null;
+
+        /// <summary>How long a 429 asks to wait, in milliseconds.</summary>
+        private static double RateLimitWaitMs(HttpResponseMessage response, int retry)
+        {
+            var after = Number(Header(response, "Retry-After"));
+            if (after is double seconds && seconds >= 0) return seconds * 1000;
+            var reset = Number(Header(response, "X-RateLimit-Reset"));
+            if (reset is double at) return Math.Max(0, at * 1000 - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+            return (double)Limits["backoff_ms"]! * Math.Pow(2, retry);
+        }
+
+        private static string? Header(HttpResponseMessage response, string name) =>
+            response.Headers.TryGetValues(name, out var values) ? values.FirstOrDefault() : null;
+
+        /// <summary>The provider's error code: Auth0's errorCode, WorkOS's code or Clerk's errors[0].code.</summary>
         private static string? ErrorCode(string text)
         {
             try
             {
-                if (JToken.Parse(text) is not JObject body) return null;
-                foreach (var field in new[] { "errorCode", "code" })
+                if (JsonNode.Parse(text) is not JsonObject body) return null;
+                var code = body["errorCode"] ?? body["code"] ?? (body["errors"] as JsonArray)?.FirstOrDefault()?["code"];
+                return code is JsonValue v && v.TryGetValue<string>(out var s) && s.Length > 0 ? s : null;
+            }
+            catch (JsonException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>One admin API call. A 404 is done (null); a 429 is waited out inside the action's budget; any other failure throws.</summary>
+        private static async Task<JsonNode?> SendAsync(JsonObject request, Context ctx, string? item, List<KeyValuePair<string, string>>? query, CancellationToken cancellationToken)
+        {
+            var method = (string)request["method"]!;
+            var template = (string)request["path"]!;
+            var path = template.Replace("{user}", Uri.EscapeDataString(ctx.User)).Replace("{item}", Uri.EscapeDataString(item ?? ""));
+            query ??= (request["query"]?.AsObject() ?? new JsonObject()).Select(p => new KeyValuePair<string, string>(p.Key, (string)p.Value!)).ToList();
+            var search = string.Join("&", query.Select(p =>
+                Uri.EscapeDataString(p.Key) + "=" + Uri.EscapeDataString(p.Value.Replace("{user}", ctx.User).Replace("{item}", item ?? ""))));
+            var url = ctx.Base + path + (search.Length > 0 ? "?" + search : "");
+            var body = request["body"] is JsonNode template2 ? Fill(template2, ctx.User, item)!.ToJsonString() : null;
+            var label = $"{ctx.Name} {method} {template}";
+            var retries = (int)Limits["retries"]!;
+            var budget = (double)Limits["budget_ms"]!;
+            for (var retry = 0; ; retry++)
+            {
+                using var message = new HttpRequestMessage(new HttpMethod(method), url);
+                message.Headers.TryAddWithoutValidation("Authorization", "Bearer " + ctx.Token);
+                message.Headers.TryAddWithoutValidation("Accept", "application/json");
+                if (body != null) message.Content = new StringContent(body, Encoding.UTF8, "application/json");
+                HttpResponseMessage response;
+                string text;
+                try
                 {
-                    if (body[field] is JValue { Type: JTokenType.String } code && !string.IsNullOrEmpty((string?)code)) return (string?)code;
+                    response = await ctx.Http.SendAsync(message, cancellationToken);
+                    text = await response.Content.ReadAsStringAsync(cancellationToken);
                 }
-            }
-            catch (Newtonsoft.Json.JsonException)
-            {
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Rate limits. Auth0 answers 429 when the Management API rate limit is hit, and a 429 means it did not act, so
-        /// the call is safe to send again, a DELETE included. One revoke or ban waits at most RateLimitBudget in all,
-        /// and each call retries at most RateLimitRetries times: it waits Retry-After seconds, else until
-        /// X-RateLimit-Reset (Unix seconds), else 250 ms, 500 ms, 1 s, 2 s. A wait that would pass the budget is not
-        /// started: the 429 throws at once as ProviderActionException, the webhook answers 5xx and NoResponse
-        /// delivers it again later. The budget keeps the handler inside the 5 s a delivery has to be answered.
-        /// </summary>
-        private const int RateLimitRetries = 4;
-        private static readonly TimeSpan RateLimitBudget = TimeSpan.FromSeconds(3);
-        private static readonly TimeSpan RateLimitBackoff = TimeSpan.FromMilliseconds(250);
-
-        /// <summary>How long a 429 asks to wait.</summary>
-        private static TimeSpan RateLimitWait(HttpResponseMessage response, int retry)
-        {
-            var after = Number(Header(response, "Retry-After"));
-            // Capped at an hour so a huge header cannot overflow; anything past the budget gives up anyway.
-            if (after is { } delay && delay >= 0) return TimeSpan.FromSeconds(Math.Min(delay, 3600));
-            var reset = Number(Header(response, "X-RateLimit-Reset"));
-            if (reset is { } at)
-            {
-                var seconds = at - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000.0;
-                return TimeSpan.FromSeconds(Math.Clamp(seconds, 0, 3600));
-            }
-            return TimeSpan.FromMilliseconds(RateLimitBackoff.TotalMilliseconds * Math.Pow(2, retry));
-        }
-
-        private static string? Header(HttpResponseMessage response, string name)
-        {
-            if (response.Headers.TryGetValues(name, out var values) || response.Content.Headers.TryGetValues(name, out values))
-            {
-                foreach (var value in values) return value.Trim();
-            }
-            return null;
-        }
-
-        private static double? Number(string? text) =>
-            double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var value) && !double.IsNaN(value) && !double.IsInfinity(value) ? value : null;
-
-        private sealed class Caller
-        {
-            private readonly string name;
-            private readonly string baseUrl;
-            private readonly string credential;
-            private readonly string authorization;
-            private readonly HttpClient client;
-            private readonly bool retryRateLimits;
-            private TimeSpan waited = TimeSpan.Zero;
-
-            public Caller(string name, string baseUrl, string credential, HttpClient? client, bool retryRateLimits = false)
-            {
-                this.name = name;
-                this.baseUrl = baseUrl.TrimEnd('/');
-                this.credential = credential;
-                authorization = "Bearer " + credential;
-                this.client = client ?? SharedClient;
-                this.retryRateLimits = retryRateLimits;
-            }
-
-            /// <summary>A caller with the same settings and its own rate-limit budget, for one action.</summary>
-            public Caller Fresh() => new Caller(name, baseUrl, credential, client, retryRateLimits);
-
-            public async Task<JToken?> SendAsync(HttpMethod method, string path, IEnumerable<KeyValuePair<string, string>>? query, JObject? body, bool allow404, CancellationToken cancellationToken)
-            {
-                var url = new StringBuilder(baseUrl).Append(path);
-                var separator = '?';
-                foreach (var pair in query ?? Array.Empty<KeyValuePair<string, string>>())
+                catch (HttpRequestException error)
                 {
-                    url.Append(separator).Append(Uri.EscapeDataString(pair.Key)).Append('=').Append(Uri.EscapeDataString(pair.Value));
-                    separator = '&';
+                    throw new ProviderActionException(ctx.Name, 0, $"{label} failed: {error.Message}", null, error);
                 }
-                var target = new Uri(url.ToString());
-                for (var retry = 0; ; retry++)
+                catch (OperationCanceledException error) when (!cancellationToken.IsCancellationRequested)
                 {
-                    using var request = new HttpRequestMessage(method, target);
-                    request.Headers.TryAddWithoutValidation("Authorization", authorization);
-                    request.Headers.TryAddWithoutValidation("Accept", "application/json");
-                    if (body is not null)
+                    // HttpClient reports its own timeout as a cancellation; the provider was unreachable.
+                    throw new ProviderActionException(ctx.Name, 0, $"{label} timed out", null, error);
+                }
+                using (response)
+                {
+                    var status = (int)response.StatusCode;
+                    if (status == 429 && retry < retries)
                     {
-                        request.Content = new StringContent(body.ToString(Newtonsoft.Json.Formatting.None), Encoding.UTF8, "application/json");
-                    }
-                    using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-                    var text = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                    if ((int)response.StatusCode == 429 && retryRateLimits && retry < RateLimitRetries)
-                    {
-                        var wait = RateLimitWait(response, retry);
-                        if (waited + wait <= RateLimitBudget)
+                        var wait = RateLimitWaitMs(response, retry);
+                        if (ctx.WaitedMs + wait <= budget)
                         {
-                            waited += wait;
-                            await Task.Delay(wait, cancellationToken).ConfigureAwait(false);
+                            ctx.WaitedMs += wait;
+                            await Task.Delay(TimeSpan.FromMilliseconds(wait), cancellationToken);
                             continue;
                         }
                     }
-                    return Answer(method, path, response, text, allow404);
-                }
-            }
-
-            private JToken? Answer(HttpMethod method, string path, HttpResponseMessage response, string text, bool allow404)
-            {
-                if (allow404 && response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    return null;
-                }
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new ProviderActionException(name, (int)response.StatusCode, $"{name} {method.Method} {path} answered {(int)response.StatusCode}", ErrorCode(text));
-                }
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    return null;
-                }
-                try
-                {
-                    return JToken.Parse(text);
-                }
-                catch (Newtonsoft.Json.JsonException)
-                {
-                    return null;
-                }
-            }
-        }
-
-        private sealed class LogOnlyProvider : ILateResultProvider
-        {
-            private readonly Action<string> log;
-
-            public LogOnlyProvider(Action<string> log) { this.log = log; }
-
-            public string Name => "log_only";
-
-            public Task RevokeSessionsAsync(string userId, CancellationToken cancellationToken = default)
-            {
-                Segment(userId);
-                log($"NoResponse late result (log only): would revoke every session of user {userId}");
-                return Task.CompletedTask;
-            }
-
-            public Task BanAsync(string userId, CancellationToken cancellationToken = default)
-            {
-                Segment(userId);
-                log($"NoResponse late result (log only): would ban user {userId} and end their sessions");
-                return Task.CompletedTask;
-            }
-        }
-
-        private sealed class ClerkProvider : ILateResultProvider
-        {
-            private const int Page = 100;
-            private readonly Caller call;
-
-            public ClerkProvider(Caller call) { this.call = call; }
-
-            public string Name => "clerk";
-
-            public async Task RevokeSessionsAsync(string userId, CancellationToken cancellationToken = default)
-            {
-                Segment(userId);
-                var active = new List<string>();
-                for (var offset = 0; offset < Page * 1000; offset += Page)
-                {
-                    var query = new[]
+                    if (status == 404) return null;
+                    if (status < 200 || status >= 300) throw new ProviderActionException(ctx.Name, status, $"{label} answered {status}", ErrorCode(text));
+                    if (text.Length == 0) return null;
+                    try
                     {
-                        new KeyValuePair<string, string>("user_id", userId),
-                        new KeyValuePair<string, string>("status", "active"),
-                        new KeyValuePair<string, string>("limit", Page.ToString(CultureInfo.InvariantCulture)),
-                        new KeyValuePair<string, string>("offset", offset.ToString(CultureInfo.InvariantCulture)),
-                    };
-                    var page = Sessions(await call.SendAsync(HttpMethod.Get, "/sessions", query, null, true, cancellationToken).ConfigureAwait(false));
-                    CollectActive(page, active);
-                    if (page.Count < Page) break;
-                }
-                foreach (var id in active)
-                {
-                    await call.SendAsync(HttpMethod.Post, $"/sessions/{Uri.EscapeDataString(id)}/revoke", null, null, true, cancellationToken).ConfigureAwait(false);
-                }
-            }
-
-            public async Task BanAsync(string userId, CancellationToken cancellationToken = default)
-            {
-                await call.SendAsync(HttpMethod.Post, $"/users/{Segment(userId)}/ban", null, null, true, cancellationToken).ConfigureAwait(false);
-            }
-        }
-
-        private sealed class WorkOSProvider : ILateResultProvider
-        {
-            private readonly Caller call;
-
-            public WorkOSProvider(Caller call) { this.call = call; }
-
-            public string Name => "workos";
-
-            public async Task RevokeSessionsAsync(string userId, CancellationToken cancellationToken = default)
-            {
-                var user = Segment(userId);
-                var active = new List<string>();
-                string? after = null;
-                for (var round = 0; round < 1000; round++)
-                {
-                    var query = new List<KeyValuePair<string, string>> { new("limit", "100") };
-                    if (!string.IsNullOrEmpty(after)) query.Add(new("after", after));
-                    var body = await call.SendAsync(HttpMethod.Get, $"/user_management/users/{user}/sessions", query, null, true, cancellationToken).ConfigureAwait(false);
-                    CollectActive(Sessions(body), active);
-                    var next = body?["list_metadata"]?["after"];
-                    if (next is not JValue { Type: JTokenType.String } || string.IsNullOrEmpty((string?)next)) break;
-                    after = (string?)next;
-                }
-                foreach (var id in active)
-                {
-                    await call.SendAsync(HttpMethod.Post, "/user_management/sessions/revoke", null, new JObject { ["session_id"] = id }, true, cancellationToken).ConfigureAwait(false);
-                }
-            }
-
-            public async Task BanAsync(string userId, CancellationToken cancellationToken = default)
-            {
-                await RevokeSessionsAsync(userId, cancellationToken).ConfigureAwait(false);
-                await call.SendAsync(HttpMethod.Delete, $"/user_management/users/{Segment(userId)}", null, null, true, cancellationToken).ConfigureAwait(false);
-            }
-        }
-
-        private sealed class Auth0Provider : ILateResultActor
-        {
-            private const int Page = 100;
-            private readonly Caller call;
-
-            public Auth0Provider(Caller call) { this.call = call; }
-
-            public string Name => "auth0";
-
-            public async Task RevokeSessionsAsync(string userId, CancellationToken cancellationToken = default)
-            {
-                await RevokeAsync(userId, cancellationToken).ConfigureAwait(false);
-            }
-
-            public async Task BanAsync(string userId, CancellationToken cancellationToken = default)
-            {
-                var user = Segment(userId);
-                var call = this.call.Fresh();
-                await BlockAsync(call, user, cancellationToken).ConfigureAwait(false);
-                // The block already ends a session the plan cannot delete.
-                await DeleteSessionsAsync(call, user, cancellationToken).ConfigureAwait(false);
-                await DeleteRefreshTokensAsync(call, userId, user, cancellationToken).ConfigureAwait(false);
-            }
-
-            public async Task<LateResultAction> ActAsync(LateResultAction action, string userId, CancellationToken cancellationToken = default)
-            {
-                if (action == LateResultAction.Ban)
-                {
-                    await BanAsync(userId, cancellationToken).ConfigureAwait(false);
-                    return LateResultAction.Ban;
-                }
-                return await RevokeAsync(userId, cancellationToken).ConfigureAwait(false);
-            }
-
-            private async Task<LateResultAction> RevokeAsync(string userId, CancellationToken cancellationToken)
-            {
-                var user = Segment(userId);
-                var call = this.call.Fresh();
-                var ended = await DeleteSessionsAsync(call, user, cancellationToken).ConfigureAwait(false);
-                // Without the sessions API a login session survives; blocking is the only way to end it.
-                if (!ended)
-                {
-                    await BlockAsync(call, user, cancellationToken).ConfigureAwait(false);
-                }
-                await DeleteRefreshTokensAsync(call, userId, user, cancellationToken).ConfigureAwait(false);
-                return ended ? LateResultAction.RevokeSessions : LateResultAction.Ban;
-            }
-
-            /// <summary>Auth0 answers 403 feature_not_enabled when the tenant's plan does not include an endpoint.</summary>
-            private static bool NotOnPlan(ProviderActionException e) => e.Status == 403 && e.Code == "feature_not_enabled";
-
-            private static Task BlockAsync(Caller call, string user, CancellationToken cancellationToken) =>
-                call.SendAsync(HttpMethod.Patch, $"/users/{user}", null, new JObject { ["blocked"] = true }, true, cancellationToken);
-
-            /// <summary>End every session; false when the plan has no sessions API.</summary>
-            private static async Task<bool> DeleteSessionsAsync(Caller call, string user, CancellationToken cancellationToken)
-            {
-                try
-                {
-                    await call.SendAsync(HttpMethod.Delete, $"/users/{user}/sessions", null, null, true, cancellationToken).ConfigureAwait(false);
-                    return true;
-                }
-                catch (ProviderActionException e) when (NotOnPlan(e))
-                {
-                    return false;
-                }
-            }
-
-            private static async Task DeleteRefreshTokensAsync(Caller call, string userId, string user, CancellationToken cancellationToken)
-            {
-                try
-                {
-                    await call.SendAsync(HttpMethod.Delete, $"/users/{user}/refresh-tokens", null, null, true, cancellationToken).ConfigureAwait(false);
-                    return;
-                }
-                catch (ProviderActionException e) when (NotOnPlan(e))
-                {
-                }
-                // Collect every id before deleting any, so the pages do not shift underneath.
-                var ids = new List<string>();
-                foreach (var type in new[] { "refresh_token", "rotating_refresh_token" })
-                {
-                    for (var page = 0; page < 10; page++)
-                    {
-                        var query = new[]
-                        {
-                            new KeyValuePair<string, string>("user_id", userId),
-                            new KeyValuePair<string, string>("type", type),
-                            new KeyValuePair<string, string>("page", page.ToString(CultureInfo.InvariantCulture)),
-                            new KeyValuePair<string, string>("per_page", Page.ToString(CultureInfo.InvariantCulture)),
-                        };
-                        var listed = await call.SendAsync(HttpMethod.Get, "/device-credentials", query, null, true, cancellationToken).ConfigureAwait(false) as JArray;
-                        foreach (var credential in listed ?? new JArray())
-                        {
-                            if (credential["id"] is JValue { Type: JTokenType.String } id && !string.IsNullOrEmpty((string?)id))
-                            {
-                                ids.Add((string)id!);
-                            }
-                        }
-                        if ((listed?.Count ?? 0) < Page) break;
+                        return JsonNode.Parse(text);
                     }
-                }
-                foreach (var id in ids)
-                {
-                    await call.SendAsync(HttpMethod.Delete, $"/device-credentials/{Uri.EscapeDataString(id)}", null, null, true, cancellationToken).ConfigureAwait(false);
+                    catch (JsonException)
+                    {
+                        return null;
+                    }
                 }
             }
         }

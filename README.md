@@ -2,7 +2,7 @@
 
 # NoResponse for .NET
 
-The NoResponse client for .NET 8 and later. It assesses an account creation, login or purchase, polls a pending assessment, pages through an account's history, records what you later learned, rotates your API key and verifies webhooks. The client is generated from the NoResponse OpenAPI document; webhook verification is generated too; the wait helper, auth adapters and late results are hand-written.
+The NoResponse client for .NET 8 and later. It assesses an account creation, login or purchase, polls a pending assessment, pages through an account's history, records what you later learned, rotates your API key and verifies webhooks. The client is generated from the NoResponse OpenAPI document; webhook verification is generated too; the wait helper is hand-written, and the auth adapters and late enforcement are emitted from shared tables.
 
 Keep the API key on your server.
 
@@ -12,7 +12,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v6.0.1 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v7.0.0 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -20,7 +20,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v6.0.1
+git -C third_party/noresponse-dotnet checkout v7.0.0
 git add third_party/noresponse-dotnet
 ```
 
@@ -224,17 +224,21 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
 
 ### Late results
 
-An account's decision can rise to `review` or `block` after the account creation was allowed. `LateResults.HandleAsync` verifies the delivery with `ConstructEvent` first, applies your policy to `account.risk.decision` (`LateResults.DefaultPolicy` revokes sessions on `review` and `block` and does nothing otherwise) and acts through Clerk, WorkOS or Auth0. WorkOS has no block, so its ban deletes the user permanently. An `account.risk_changed` event acts on its new `login` decision when that decision changed; one that moved only another flow's decision acts on nothing.
+`account.risk_changed` only wakes your handler. `LateResults.HandleRiskChangeAsync` verifies the delivery with `ConstructEvent`, reads the account's current risk with `Accounts.GetAsync` (the event's own decision is ignored), asks your `GetAccountState` where the account is in your flow, and acts on the decision of that state's flow: an `onboarding` or `provisional` account with an `account_creation` decision of `review` or `block` fails onboarding or is refused activation; an `active` account is signed out on a `login` decision of `review`, and restricted and signed out on `block`. A `restricted` account is unrestricted when its `login` decision is `allow` again, only if you set `Flows["login"] = new FlowPolicy(Reinstate: true)`. Each action, or `none`, is recorded with `Accounts.RecordEnforcementAsync` at the risk version read. Nothing is ever deleted: Clerk bans (reversed by unban), Auth0 sets `blocked`, and WorkOS, which has no block, gets `noresponse_state` in the user's metadata and its sessions revoked.
 
 ```csharp
 using NoResponse.LateResults;
 
-var provider = LateResults.Clerk(System.Environment.GetEnvironmentVariable("CLERK_SECRET_KEY")!);
-var result = await LateResults.HandleAsync(buffer.ToArray(), request.Headers, secrets, provider);
-// result.Action is None, RevokeSessions or Ban; result.UserId is set when it acted.
+var provider = LateResults.IdentityProvider("clerk", new IdentityProviderOptions { Token = Environment.GetEnvironmentVariable("CLERK_SECRET_KEY")! });
+var result = await LateResults.HandleRiskChangeAsync(client, buffer.ToArray(), request.Headers, secrets, new EnforcementOptions
+{
+    Provider = provider,
+    GetAccountState = account => users.StateOfAsync(account.Id), // AccountStateAnswer, or null for an account you do not hold
+});
+// Store result.RiskVersion and return it as EnforcedRiskVersion, so a replayed or older event changes nothing.
 ```
 
-If your app has its own login, `LateResults.LogOnly()` logs what it would revoke or ban (to standard output, or pass an `Action<string>`) and calls nothing. Use it to try the handler, then implement `ILateResultProvider` yourself: `Name`, `RevokeSessionsAsync(userId)` and `BanAsync(userId)`.
+A refused provider call is recorded as failed and thrown as `ProviderActionException` (`Provider`, `Status`, `Code`): answer 5xx so the delivery is retried. `LateResults.EnforceAccountAsync` enforces an account from `Accounts.ListChangedAsync` with `unenforced: true`, to catch up on missed deliveries. For your own user store, `LateResults.CustomProvider` takes one function per action.
 
 ## Changes since 2.0.0
 
