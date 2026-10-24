@@ -161,7 +161,7 @@ namespace NoResponse.Tests
             Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "account.deleted", "x", new AccountDeleted("acct_1", 1, "x"))));
             Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "workspace.deleted", "x", new WorkspaceDeleted("tnt_1", "live", "x"))));
             Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "webhook_endpoint.disabled", "x", new EndpointDisabled("whe_1", "x", "x"))));
-            var blocked = new Account { Id = "acct_1", Risk = new AccountRisk { Score = 90, Decision = AccountDecision.Block }, DecisionsByFlow = new AccountDecisionsByFlow { Login = AccountDecision.Block } };
+            var blocked = new Account { Id = "acct_1", Risk = new AccountRisk { Score = 90, Decision = AccountDecision.Block }, DecisionsByFlow = new AccountDecisionsByFlow { Login = AccountDecision.Block }, RiskVersion = 3 };
             Assert.Equal(LateResultAction.RevokeSessions, LateResults.Action(new WebhookEvent("evt_x", "account.risk_changed", "x", new AccountRiskChanged(blocked, new AccountDecisionsByFlow { Login = AccountDecision.Allow }))));
             // A change to another flow with the login decision as it was acts on nothing.
             Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "account.risk_changed", "x", new AccountRiskChanged(blocked, new AccountDecisionsByFlow { Login = AccountDecision.Block, Purchase = AccountDecision.Allow }))));

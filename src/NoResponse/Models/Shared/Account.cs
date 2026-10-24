@@ -42,5 +42,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("updated_at", Required = Newtonsoft.Json.Required.Always)]
         public string UpdatedAt { get; set; } = default!;
+
+        /// <summary>
+        /// The version of the account's current risk. It increases every time the account's current risk or decisions_by_flow changes, and does not decrease. Of two copies of an account, the one with the higher risk_version is newer. account.risk_changed carries the risk_version that its change made.
+        /// </summary>
+        [JsonProperty("risk_version", Required = Newtonsoft.Json.Required.Always)]
+        public long RiskVersion { get; set; } = default!;
     }
 }
