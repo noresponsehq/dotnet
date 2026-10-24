@@ -161,8 +161,10 @@ namespace NoResponse.Tests
             Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "account.deleted", "x", new AccountDeleted("acct_1", 1, "x"))));
             Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "workspace.deleted", "x", new WorkspaceDeleted("tnt_1", "live", "x"))));
             Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "webhook_endpoint.disabled", "x", new EndpointDisabled("whe_1", "x", "x"))));
-            var blocked = new Account { Id = "acct_1", Risk = new AccountRisk { Score = 90, Decision = AccountDecision.Block } };
-            Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "account.risk_changed", "x", new AccountRiskChanged(blocked, new AccountDecisionsByFlow()))));
+            var blocked = new Account { Id = "acct_1", Risk = new AccountRisk { Score = 90, Decision = AccountDecision.Block }, DecisionsByFlow = new AccountDecisionsByFlow { Login = AccountDecision.Block } };
+            Assert.Equal(LateResultAction.RevokeSessions, LateResults.Action(new WebhookEvent("evt_x", "account.risk_changed", "x", new AccountRiskChanged(blocked, new AccountDecisionsByFlow { Login = AccountDecision.Allow }))));
+            // A change to another flow with the login decision as it was acts on nothing.
+            Assert.Equal(LateResultAction.None, LateResults.Action(new WebhookEvent("evt_x", "account.risk_changed", "x", new AccountRiskChanged(blocked, new AccountDecisionsByFlow { Login = AccountDecision.Block, Purchase = AccountDecision.Allow }))));
             var stepUpBan = new Dictionary<string, LateResultAction> { ["step_up"] = LateResultAction.Ban };
             Assert.Equal(LateResultAction.Ban, LateResults.Action(Served("complete", "step_up"), stepUpBan));
             Assert.Equal(LateResultAction.None, LateResults.Action(Served("complete", "review"), stepUpBan));
@@ -313,11 +315,11 @@ namespace NoResponse.Tests
                 var d = Delivery(data);
                 Assert.Equal(LateResultAction.None, (await LateResults.HandleAsync(d.Raw, d.Headers, Secrets, auth0, Options())).Action);
             }
-            // account.risk_changed is verified and typed, and acts on nothing: the
-            // assessment.updated that moved the decision does.
+            // account.risk_changed carries a separate account decision.
             var changed = WebhookTests.Fixture("valid/webhook-account-risk-changed.json");
             var c = Delivery((JObject)changed["data"]!, type: "account.risk_changed");
-            var ignored = await LateResults.HandleAsync(c.Raw, c.Headers, Secrets, auth0, Options());
+            var ignored = await LateResults.HandleAsync(c.Raw, c.Headers, Secrets, auth0, Options(userId: (_, _) => null));
+            Assert.Equal(LateResultAction.RevokeSessions, LateResults.Action(ignored.Event));
             Assert.Equal(LateResultAction.None, ignored.Action);
             Assert.Equal("account.risk_changed", ignored.Event.Type);
             Assert.Equal(AccountDecision.Review, Assert.IsType<AccountRiskChanged>(ignored.Event.Data).Account.DecisionsByFlow.Login);

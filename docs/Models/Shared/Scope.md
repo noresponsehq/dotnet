@@ -18,6 +18,7 @@ var custom = Scope.Of("custom_value");
 | -------------- | -------------- |
 | `Assess`       | assess         |
 | `History`      | history        |
+| `Delete`       | delete         |
 | `Webhooks`     | webhooks       |
 | `Detailed`     | detailed       |
 | `Integrations` | integrations   |

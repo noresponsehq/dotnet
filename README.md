@@ -12,7 +12,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v5.0.1 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v5.1.0 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -20,7 +20,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v5.0.1
+git -C third_party/noresponse-dotnet checkout v5.1.0
 git add third_party/noresponse-dotnet
 ```
 
@@ -223,7 +223,7 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
 
 ### Late results
 
-An account's decision can rise to `review` or `block` after the account creation was allowed. `LateResults.HandleAsync` verifies the delivery with `ConstructEvent` first, applies your policy to `account.risk.decision` (`LateResults.DefaultPolicy` revokes sessions on `review` and `block` and does nothing otherwise) and acts through Clerk, WorkOS or Auth0. WorkOS has no block, so its ban deletes the user permanently. An `account.risk_changed` event acts on nothing: the handler acts on the `assessment.updated` that changed the decision.
+An account's decision can rise to `review` or `block` after the account creation was allowed. `LateResults.HandleAsync` verifies the delivery with `ConstructEvent` first, applies your policy to `account.risk.decision` (`LateResults.DefaultPolicy` revokes sessions on `review` and `block` and does nothing otherwise) and acts through Clerk, WorkOS or Auth0. WorkOS has no block, so its ban deletes the user permanently. An `account.risk_changed` event acts on its new `login` decision when that decision changed; one that moved only another flow's decision acts on nothing.
 
 ```csharp
 using NoResponse.LateResults;

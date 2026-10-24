@@ -146,15 +146,19 @@ namespace NoResponse.LateResults
         public static LateResultAction Action(WebhookEvent webhookEvent, IReadOnlyDictionary<string, LateResultAction>? policy = null)
         {
             policy ??= DefaultPolicy;
-            if (webhookEvent.Type != "assessment.updated" || webhookEvent.Test || webhookEvent.Data is not Assessment assessment)
+            if (webhookEvent.Test) return LateResultAction.None;
+            string? decision;
+            if (webhookEvent.Type == "account.risk_changed" && webhookEvent.Data is AccountRiskChanged changed)
             {
-                return LateResultAction.None;
+                // The event is sent when any flow's decision changes; sessions are about the login
+                // decision, so an unchanged login decision acts on nothing.
+                decision = changed.Account.DecisionsByFlow.Login.Value;
+                if (changed.PreviousDecisionsByFlow?.Login?.Value == decision) return LateResultAction.None;
             }
-            if (Status.Pending.Equals(assessment.Status))
-            {
+            else if (webhookEvent.Type == "assessment.updated" && webhookEvent.Data is Assessment assessment && !Status.Pending.Equals(assessment.Status))
+                decision = assessment.Account?.Risk.Decision?.Value;
+            else
                 return LateResultAction.None;
-            }
-            var decision = assessment.Account?.Risk.Decision?.Value;
             if (decision is not ("allow" or "step_up" or "review" or "block"))
             {
                 return LateResultAction.None;
@@ -185,11 +189,13 @@ namespace NoResponse.LateResults
             options ??= new LateResultOptions();
             var webhookEvent = Webhook.ConstructEvent(payload, headers, secrets, options.Tolerance, options.Now);
             var action = Action(webhookEvent, options.Policy);
-            if (action == LateResultAction.None || webhookEvent.Data is not Assessment assessment)
+            if (action == LateResultAction.None)
             {
                 return new LateResult(webhookEvent, LateResultAction.None);
             }
-            var accountId = assessment.Detail.AccountId;
+            var accountId = webhookEvent.Data is AccountRiskChanged riskChange
+                ? riskChange.Account.Id
+                : ((Assessment)webhookEvent.Data).Detail.AccountId;
             var userId = options.UserId is null ? accountId : options.UserId(accountId, webhookEvent);
             if (string.IsNullOrEmpty(userId))
             {

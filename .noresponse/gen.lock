@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 70bd5ecd-d923-41ca-9a42-6e3360b4ce2f
 management:
-  docChecksum: 1e91afd9eeaae1ea06aa6386415c78f3
+  docChecksum: d01e9ab9cf7cf24545ea2ca1a0c76eab
   docVersion: "1"
   speakeasyVersion: internal
   generationVersion: internal
-  releaseVersion: 5.0.1
-  configChecksum: 2ddea959340d31d83ef2cd0604a36d6f
+  releaseVersion: 5.1.0
+  configChecksum: f2bc097c905870e4fd01745354251762
 features:
   csharp:
     additionalDependencies: 0.1.0
@@ -303,7 +303,7 @@ trackedFiles:
   docs/Models/Shared/RiskSummaryUsername.md:
     last_write_checksum: sha1:46aa3905641d5d801ce0818cc691dbfd0cac02fb
   docs/Models/Shared/Scope.md:
-    last_write_checksum: sha1:3ff3f4b6681d0e45230be31e52613b7a39e3e2a7
+    last_write_checksum: sha1:1de8aaf1f8253995a7e667a18423919208d87c37
   docs/Models/Shared/Security.md:
     last_write_checksum: sha1:4e0c7daba47f06eb3da80f01b6325d59f07c3a68
   docs/Models/Shared/Signal.md:
@@ -663,7 +663,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/RiskSummaryUsername.cs:
     last_write_checksum: sha1:399bb0e921d12df2dafb685a66c9957e659b9a00
   src/NoResponse/Models/Shared/Scope.cs:
-    last_write_checksum: sha1:2e19a62977ac939c5588c5e7df52f08bbac4097c
+    last_write_checksum: sha1:3ab6d656389713bef20f0aa3129b52c851872660
   src/NoResponse/Models/Shared/Security.cs:
     last_write_checksum: sha1:007fcd6309c317f2b871d9652ae975db4df99d71
   src/NoResponse/Models/Shared/Signal.cs:
@@ -721,17 +721,17 @@ trackedFiles:
   src/NoResponse/Models/Shared/WebsiteUnion.cs:
     last_write_checksum: sha1:53bf6746b6b3c7af983c7a485eded1378eb80ed7
   src/NoResponse/NoResponse.csproj:
-    last_write_checksum: sha1:de799781917e027b08d3a7bcba2c07612b1cc881
+    last_write_checksum: sha1:cd5a568610fef8a64b65ea3793d83b6f88254fcc
   src/NoResponse/NoResponseClient.cs:
     last_write_checksum: sha1:59c619eadb4aee1e4357dd80184fe2ba9702c47e
   src/NoResponse/SDKConfig.cs:
-    last_write_checksum: sha1:101db982792ad9daa68b6ef4b35263be8f468494
+    last_write_checksum: sha1:a35d718f5f213a3784bcd620215e4593558f80e9
   src/NoResponse/Utils/AnyDeserializer.cs:
     last_write_checksum: sha1:2fc4560840c33ca0a329e2c1a4122510eecf6aec
   src/NoResponse/Utils/BigIntStrConverter.cs:
     last_write_checksum: sha1:8803aa46f7bca5595c22751ede125e3c4e993856
   src/NoResponse/Utils/Constants.cs:
-    last_write_checksum: sha1:8b9c720197555b3edf55263528d3dd62e8370fc2
+    last_write_checksum: sha1:d9be0d339c4aae5cf51a74568e9ef4e2b491e2ca
   src/NoResponse/Utils/DecimalStrConverter.cs:
     last_write_checksum: sha1:1fa9c1159f476245dfff02718e434accbba46136
   src/NoResponse/Utils/EnumConverter.cs:

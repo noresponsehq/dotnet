@@ -13,6 +13,7 @@ namespace NoResponse.Models.Shared
     {
         public static readonly Scope Assess = new Scope("assess");
         public static readonly Scope History = new Scope("history");
+        public static readonly Scope Delete = new Scope("delete");
         public static readonly Scope Webhooks = new Scope("webhooks");
         public static readonly Scope Detailed = new Scope("detailed");
         public static readonly Scope Integrations = new Scope("integrations");
@@ -21,6 +22,7 @@ namespace NoResponse.Models.Shared
             new Dictionary<string, Scope>() {
                 ["assess"] = Assess,
                 ["history"] = History,
+                ["delete"] = Delete,
                 ["webhooks"] = Webhooks,
                 ["detailed"] = Detailed,
                 ["integrations"] = Integrations
