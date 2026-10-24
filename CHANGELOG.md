@@ -1,5 +1,31 @@
 # Changelog
 
+## 6.0.1
+
+* `Sdk.Accounts.ListChanged()`: **Added**
+* `Sdk.Accounts.RecordEnforcement()`: **Added**
+* `Sdk.Assessments.Create()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.Assessments.Get()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.Assessments.Delete()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.Assessments.RecordOutcome()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.Assessments.Query()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.Accounts.Get()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.Accounts.Delete()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.Accounts.ListAssessments()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.KeyUsage.Record()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.Keys.Rotate()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.Integrations.Create()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.Integrations.List()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.Integrations.Delete()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.Integrations.Rotate()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.WebhookEndpoints.List()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.WebhookEndpoints.Create()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.WebhookEndpoints.Delete()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.WebhookEndpoints.RotateSigningKey()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.WebhookEndpoints.SendTestEvent()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.WebhookEndpoints.ListDeliveries()`:  `error.code.Enum(riskVersionAhead)` **Added**
+* `Sdk.WebhookEndpoints.ReplayDelivery()`:  `error.code.Enum(riskVersionAhead)` **Added**
+
 ## 6.0.0
 
 No changes detected.

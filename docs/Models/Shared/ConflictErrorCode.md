@@ -23,3 +23,4 @@ var custom = ConflictErrorCode.Of("custom_value");
 | `WebhookEndpointLimitReached`  | webhook_endpoint_limit_reached |
 | `WebhookEndpointUnverified`    | webhook_endpoint_unverified    |
 | `TooManyIntegrations`          | too_many_integrations          |
+| `RiskVersionAhead`             | risk_version_ahead             |

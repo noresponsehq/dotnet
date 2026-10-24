@@ -6,9 +6,74 @@ Your accounts, each with one current risk, and their assessment history.
 
 ### Available Operations
 
+* [ListChanged](#listchanged) - Poll the accounts whose risk changed.
 * [Get](#get) - Read an account's one current risk.
 * [Delete](#delete) - Erase an account and its history.
 * [ListAssessments](#listassessments) - Page through one account's unexpired assessments.
+* [RecordEnforcement](#recordenforcement) - Record what you did to an account in your identity provider.
+
+## ListChanged
+
+Your accounts whose risk changed, oldest change first, each as accounts.get answers it. Every page carries next_cursor: pass it back as changed_since to read the changes made after that page; without changed_since the list starts from the oldest change. When nothing changed, items is empty and next_cursor is the cursor you sent, so poll by calling again with the latest next_cursor. An account appears again each time its risk changes, with a higher risk_version; keep the copy with the highest. unenforced=true lists only accounts with a decision other than allow for some flow and no applied enforcement at their current risk_version; such a page can hold fewer than limit items, or none, while later changes exist, so keep polling with next_cursor. Requires the history scope. Read-only and safe to retry. A tampered or foreign cursor answers 400 invalid_cursor.
+
+### Example Usage: caughtUp
+
+<!-- UsageSnippet language="csharp" operationID="listAccounts" method="get" path="/v1/accounts" example="caughtUp" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+var res = await sdk.Accounts.ListChangedAsync(
+    limit: 50,
+    unenforced: false
+);
+
+// handle response
+```
+### Example Usage: page
+
+<!-- UsageSnippet language="csharp" operationID="listAccounts" method="get" path="/v1/accounts" example="page" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+var res = await sdk.Accounts.ListChangedAsync(
+    limit: 50,
+    unenforced: false
+);
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                                                                                         | Type                                                                                                                              | Required                                                                                                                          | Description                                                                                                                       |
+| --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `ChangedSince`                                                                                                                    | *string*                                                                                                                          | :heavy_minus_sign:                                                                                                                | next_cursor from an earlier page, unchanged. Absent, the list starts from the oldest change.                                      |
+| `Limit`                                                                                                                           | *long*                                                                                                                            | :heavy_minus_sign:                                                                                                                | Most accounts per page.                                                                                                           |
+| `Unenforced`                                                                                                                      | *bool*                                                                                                                            | :heavy_minus_sign:                                                                                                                | true lists only accounts with a decision other than allow for some flow and no applied enforcement at their current risk_version. |
+
+### Response
+
+**[ListAccountsResponse](../../Models/Operations/ListAccountsResponse.md)**
+
+### Errors
+
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
 
 ## Get
 
@@ -160,6 +225,83 @@ while(res != null)
 ### Response
 
 **[ListAccountAssessmentsResponse](../../Models/Operations/ListAccountAssessmentsResponse.md)**
+
+### Errors
+
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
+
+## RecordEnforcement
+
+Records what you did to the account in your identity provider for one flow's decision at one risk_version: the action (or none), the account's state before it, the provider and whether it was applied or failed. It is your action, not an outcome, and it leaves the account's risk unchanged. A record is kept once per account, risk_version, flow and action: the first report answers 201, and a repeat answers 200 with the stored record unchanged, so retries are safe without an Idempotency-Key. An applied report after a failed one replaces the failed record, keeping its id and created_at, and answers 201. A risk_version older than the account's current one is accepted and stored, but only an applied record at the current risk_version takes the account out of listChanged with unenforced=true; a newer one answers 409 risk_version_ahead. An account with no current risk answers 404 not_found. error_code is allowed only with status failed. Requires the history scope.
+
+### Example Usage: applied
+
+<!-- UsageSnippet language="csharp" operationID="recordEnforcement" method="post" path="/v1/accounts/{account_id}/enforcements" example="applied" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+var res = await sdk.Accounts.RecordEnforcementAsync(
+    accountId: "acct_7f3a9c",
+    body: new EnforcementRequest() {
+        RiskVersion = 3,
+        Flow = Flow.AccountCreation,
+        Action = EnforcementAction.Restrict,
+        StateBefore = EnforcementState.Provisional,
+        Status = EnforcementStatus.Applied,
+        Provider = EnforcementProvider.Clerk,
+    }
+);
+
+// handle response
+```
+### Example Usage: failed
+
+<!-- UsageSnippet language="csharp" operationID="recordEnforcement" method="post" path="/v1/accounts/{account_id}/enforcements" example="failed" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+var res = await sdk.Accounts.RecordEnforcementAsync(
+    accountId: "acct_7f3a9c",
+    body: new EnforcementRequest() {
+        RiskVersion = 3,
+        Flow = Flow.AccountCreation,
+        Action = EnforcementAction.Restrict,
+        StateBefore = EnforcementState.Provisional,
+        Status = EnforcementStatus.Failed,
+        Provider = EnforcementProvider.Clerk,
+        ErrorCode = "clerk.rate_limited",
+    }
+);
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                                                                                                                                                                          | Type                                                                                                                                                                                                               | Required                                                                                                                                                                                                           | Description                                                                                                                                                                                                        | Example                                                                                                                                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `AccountId`                                                                                                                                                                                                        | *string*                                                                                                                                                                                                           | :heavy_check_mark:                                                                                                                                                                                                 | The account_id the workspace sends with its assessments, as one path segment (percent-encode '\|' and ':' if the client requires it). A value that does not match the account_id shape answers 400 invalid_request. | acct_7f3a9c                                                                                                                                                                                                        |
+| `Body`                                                                                                                                                                                                             | [EnforcementRequest](../../Models/Shared/EnforcementRequest.md)                                                                                                                                                    | :heavy_check_mark:                                                                                                                                                                                                 | N/A                                                                                                                                                                                                                |                                                                                                                                                                                                                    |
+
+### Response
+
+**[RecordEnforcementResponse](../../Models/Operations/RecordEnforcementResponse.md)**
 
 ### Errors
 

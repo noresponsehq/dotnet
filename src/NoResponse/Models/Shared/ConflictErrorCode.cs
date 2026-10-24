@@ -19,6 +19,7 @@ namespace NoResponse.Models.Shared
         public static readonly ConflictErrorCode WebhookEndpointLimitReached = new ConflictErrorCode("webhook_endpoint_limit_reached");
         public static readonly ConflictErrorCode WebhookEndpointUnverified = new ConflictErrorCode("webhook_endpoint_unverified");
         public static readonly ConflictErrorCode TooManyIntegrations = new ConflictErrorCode("too_many_integrations");
+        public static readonly ConflictErrorCode RiskVersionAhead = new ConflictErrorCode("risk_version_ahead");
 
         private static readonly Dictionary<string, ConflictErrorCode> _knownValues =
             new Dictionary<string, ConflictErrorCode>() {
@@ -26,7 +27,8 @@ namespace NoResponse.Models.Shared
                 ["key_rotation_in_progress"] = KeyRotationInProgress,
                 ["webhook_endpoint_limit_reached"] = WebhookEndpointLimitReached,
                 ["webhook_endpoint_unverified"] = WebhookEndpointUnverified,
-                ["too_many_integrations"] = TooManyIntegrations
+                ["too_many_integrations"] = TooManyIntegrations,
+                ["risk_version_ahead"] = RiskVersionAhead
             };
 
         private static readonly ConcurrentDictionary<string, ConflictErrorCode> _values =
