@@ -19,3 +19,4 @@ var custom = PermissionDeniedErrorCode.Of("custom_value");
 | Name                 | Value                |
 | -------------------- | -------------------- |
 | `WorkspaceForbidden` | workspace_forbidden  |
+| `RoleForbidden`      | role_forbidden       |

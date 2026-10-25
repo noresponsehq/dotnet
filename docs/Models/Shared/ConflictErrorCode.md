@@ -24,3 +24,5 @@ var custom = ConflictErrorCode.Of("custom_value");
 | `WebhookEndpointUnverified`    | webhook_endpoint_unverified    |
 | `TooManyIntegrations`          | too_many_integrations          |
 | `RiskVersionAhead`             | risk_version_ahead             |
+| `KeyLimitReached`              | key_limit_reached              |
+| `SelfRevocation`               | self_revocation                |

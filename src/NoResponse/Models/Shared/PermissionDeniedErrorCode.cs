@@ -15,10 +15,12 @@ namespace NoResponse.Models.Shared
     public class PermissionDeniedErrorCode : IEquatable<PermissionDeniedErrorCode>, IOpenEnum<string>
     {
         public static readonly PermissionDeniedErrorCode WorkspaceForbidden = new PermissionDeniedErrorCode("workspace_forbidden");
+        public static readonly PermissionDeniedErrorCode RoleForbidden = new PermissionDeniedErrorCode("role_forbidden");
 
         private static readonly Dictionary<string, PermissionDeniedErrorCode> _knownValues =
             new Dictionary<string, PermissionDeniedErrorCode>() {
-                ["workspace_forbidden"] = WorkspaceForbidden
+                ["workspace_forbidden"] = WorkspaceForbidden,
+                ["role_forbidden"] = RoleForbidden
             };
 
         private static readonly ConcurrentDictionary<string, PermissionDeniedErrorCode> _values =

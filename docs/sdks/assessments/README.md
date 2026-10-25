@@ -30,7 +30,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
-        Flow = Flow.Purchase,
+        Flow = Flow.AccountCreation,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new.user",
@@ -104,7 +104,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
-        Flow = Flow.Purchase,
+        Flow = Flow.AccountCreation,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new.user",
@@ -208,7 +208,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
-        Flow = Flow.Purchase,
+        Flow = Flow.AccountCreation,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new.user",
@@ -338,7 +338,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
-        Flow = Flow.Purchase,
+        Flow = Flow.AccountCreation,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new.user",
@@ -629,7 +629,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.RecordOutcomeAsync(
     assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
     body: new AssessmentOutcomeRequest() {
-        Outcome = Outcome.Legitimate,
+        Outcome = Outcome.AccountTakeover,
         ObservedAt = "2026-10-14T09:04:30.000Z",
         ExternalRef = "case-48213",
         Notes = "Chargeback filed two days after account creation.",

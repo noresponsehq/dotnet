@@ -1,14 +1,14 @@
-# Scope
+# KeyScope
 
 ## Example Usage
 
 ```csharp
 using NoResponse.Models.Shared;
 
-var value = Scope.Assess;
+var value = KeyScope.Assess;
 
 // Open enum: use .Of() to create instances from custom string values
-var custom = Scope.Of("custom_value");
+var custom = KeyScope.Of("custom_value");
 ```
 
 
@@ -22,3 +22,4 @@ var custom = Scope.Of("custom_value");
 | `Webhooks`     | webhooks       |
 | `Detailed`     | detailed       |
 | `Integrations` | integrations   |
+| `Management`   | management     |

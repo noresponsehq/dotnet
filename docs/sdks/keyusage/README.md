@@ -59,15 +59,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 
 var res = await sdk.KeyUsage.RecordAsync(
     body: new KeyUsageBatchRequest() {
-        Events = new List<KeyUsageEvent>() {
-            new KeyUsageEvent() {
-                KeySha256 = "2bdbf5c72f2a36df0ef40fb92203612274d4546f56dba946070a6a79c2401a1b",
-                Ip = "203.0.113.24",
-                OccurredAt = "2026-10-23T09:14:07.000Z",
-                UserAgent = "python-requests/2.32.3",
-                Model = "gpt-4o-mini",
-            },
-        },
+        Events = new List<KeyUsageEvent>() {},
     },
     idempotencyKey: "account-acct_7f3a9c"
 );

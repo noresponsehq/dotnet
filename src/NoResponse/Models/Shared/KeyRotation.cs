@@ -30,7 +30,7 @@ namespace NoResponse.Models.Shared
         /// The scopes of the new key: those of the presented key.
         /// </summary>
         [JsonProperty("scopes", Required = Newtonsoft.Json.Required.Always)]
-        public List<Scope> Scopes { get; set; } = default!;
+        public List<KeyRotationScope> Scopes { get; set; } = default!;
 
         [JsonProperty("created_at", Required = Newtonsoft.Json.Required.Always)]
         public string CreatedAt { get; set; } = default!;

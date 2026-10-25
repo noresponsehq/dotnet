@@ -1,5 +1,38 @@
 # Changelog
 
+## 7.1.0
+
+* `Sdk.Keys.Create()`: **Added**
+* `Sdk.Keys.List()`: **Added**
+* `Sdk.Keys.Revoke()`: **Added**
+* `Sdk.Settings.Get()`: **Added**
+* `Sdk.Settings.Update()`: **Added**
+* `Sdk.Assessments.Create()`:  `error.code` **Changed**
+* `Sdk.Assessments.Get()`:  `error.code` **Changed**
+* `Sdk.Assessments.Delete()`:  `error.code` **Changed**
+* `Sdk.Assessments.RecordOutcome()`:  `error.code` **Changed**
+* `Sdk.Assessments.Query()`:  `error.code` **Changed**
+* `Sdk.Accounts.ListChanged()`:  `error.code` **Changed**
+* `Sdk.Accounts.Get()`:  `error.code` **Changed**
+* `Sdk.Accounts.Delete()`:  `error.code` **Changed**
+* `Sdk.Accounts.ListAssessments()`:  `error.code` **Changed**
+* `Sdk.Accounts.RecordEnforcement()`:  `error.code` **Changed**
+* `Sdk.KeyUsage.Record()`:  `error.code` **Changed**
+* `Sdk.Keys.Rotate()`: 
+  *  `response.scopes[].Enum(management)` **Added**
+  *  `error.code` **Changed**
+* `Sdk.Integrations.Create()`:  `error.code` **Changed**
+* `Sdk.Integrations.List()`:  `error.code` **Changed**
+* `Sdk.Integrations.Delete()`:  `error.code` **Changed**
+* `Sdk.Integrations.Rotate()`:  `error.code` **Changed**
+* `Sdk.WebhookEndpoints.List()`:  `error.code` **Changed**
+* `Sdk.WebhookEndpoints.Create()`:  `error.code` **Changed**
+* `Sdk.WebhookEndpoints.Delete()`:  `error.code` **Changed**
+* `Sdk.WebhookEndpoints.RotateSigningKey()`:  `error.code` **Changed**
+* `Sdk.WebhookEndpoints.SendTestEvent()`:  `error.code` **Changed**
+* `Sdk.WebhookEndpoints.ListDeliveries()`:  `error.code` **Changed**
+* `Sdk.WebhookEndpoints.ReplayDelivery()`:  `error.code` **Changed**
+
 ## 7.0.5
 
 No changes detected.

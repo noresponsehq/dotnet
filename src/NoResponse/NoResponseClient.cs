@@ -46,6 +46,8 @@ namespace NoResponse
         /// Your webhook endpoints: register, list, rotate signing keys, send test events and delete.
         /// </summary>
         public IWebhookEndpoints WebhookEndpoints { get; }
+
+        public ISettings Settings { get; }
     }
 
     /// <summary>
@@ -84,6 +86,10 @@ namespace NoResponse
         /// The WebhookEndpoints sub-SDK.
         /// </summary>
         public IWebhookEndpoints WebhookEndpoints { get; private set; }
+        /// <summary>
+        /// The Settings sub-SDK.
+        /// </summary>
+        public ISettings Settings { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the SDK based on a <see cref="SDKConfig"/> configuration object.
@@ -105,6 +111,8 @@ namespace NoResponse
             Integrations = new Integrations(SDKConfiguration);
 
             WebhookEndpoints = new WebhookEndpoints(SDKConfiguration);
+
+            Settings = new Settings(SDKConfiguration);
         }
 
         /// <summary>
@@ -184,6 +192,8 @@ namespace NoResponse
             Integrations = new Integrations(SDKConfiguration);
 
             WebhookEndpoints = new WebhookEndpoints(SDKConfiguration);
+
+            Settings = new Settings(SDKConfiguration);
         }
 
         private void InitHooks()
