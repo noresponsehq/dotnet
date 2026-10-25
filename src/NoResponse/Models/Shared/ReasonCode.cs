@@ -54,6 +54,8 @@ namespace NoResponse.Models.Shared
         public static readonly ReasonCode YoungEmailDomain = new ReasonCode("young_email_domain");
         public static readonly ReasonCode EmailDomainNoMx = new ReasonCode("email_domain_no_mx");
         public static readonly ReasonCode EmailDomainNonexistent = new ReasonCode("email_domain_nonexistent");
+        public static readonly ReasonCode ForumSanctioned = new ReasonCode("forum_sanctioned");
+        public static readonly ReasonCode PriorPaymentAbuse = new ReasonCode("prior_payment_abuse");
 
         private static readonly Dictionary<string, ReasonCode> _knownValues =
             new Dictionary<string, ReasonCode>() {
@@ -96,7 +98,9 @@ namespace NoResponse.Models.Shared
                 ["shared_api_key"] = SharedApiKey,
                 ["young_email_domain"] = YoungEmailDomain,
                 ["email_domain_no_mx"] = EmailDomainNoMx,
-                ["email_domain_nonexistent"] = EmailDomainNonexistent
+                ["email_domain_nonexistent"] = EmailDomainNonexistent,
+                ["forum_sanctioned"] = ForumSanctioned,
+                ["prior_payment_abuse"] = PriorPaymentAbuse
             };
 
         private static readonly ConcurrentDictionary<string, ReasonCode> _values =
