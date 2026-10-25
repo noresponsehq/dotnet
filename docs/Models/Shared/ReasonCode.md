@@ -55,3 +55,6 @@ var custom = ReasonCode.Of("custom_value");
 | `PriorAbuseLink`              | prior_abuse_link              |
 | `TestScenario`                | test_scenario                 |
 | `SharedApiKey`                | shared_api_key                |
+| `YoungEmailDomain`            | young_email_domain            |
+| `EmailDomainNoMx`             | email_domain_no_mx            |
+| `EmailDomainNonexistent`      | email_domain_nonexistent      |
