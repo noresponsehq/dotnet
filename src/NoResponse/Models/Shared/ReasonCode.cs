@@ -56,6 +56,12 @@ namespace NoResponse.Models.Shared
         public static readonly ReasonCode EmailDomainNonexistent = new ReasonCode("email_domain_nonexistent");
         public static readonly ReasonCode ForumSanctioned = new ReasonCode("forum_sanctioned");
         public static readonly ReasonCode PriorPaymentAbuse = new ReasonCode("prior_payment_abuse");
+        public static readonly ReasonCode IpHistoryMatch = new ReasonCode("ip_history_match");
+        public static readonly ReasonCode IdentityAttributeConflict = new ReasonCode("identity_attribute_conflict");
+        public static readonly ReasonCode ImpossibleIdentityAge = new ReasonCode("impossible_identity_age");
+        public static readonly ReasonCode BreachSharedIp = new ReasonCode("breach_shared_ip");
+        public static readonly ReasonCode NationalityMismatch = new ReasonCode("nationality_mismatch");
+        public static readonly ReasonCode MinorIdentity = new ReasonCode("minor_identity");
 
         private static readonly Dictionary<string, ReasonCode> _knownValues =
             new Dictionary<string, ReasonCode>() {
@@ -100,7 +106,13 @@ namespace NoResponse.Models.Shared
                 ["email_domain_no_mx"] = EmailDomainNoMx,
                 ["email_domain_nonexistent"] = EmailDomainNonexistent,
                 ["forum_sanctioned"] = ForumSanctioned,
-                ["prior_payment_abuse"] = PriorPaymentAbuse
+                ["prior_payment_abuse"] = PriorPaymentAbuse,
+                ["ip_history_match"] = IpHistoryMatch,
+                ["identity_attribute_conflict"] = IdentityAttributeConflict,
+                ["impossible_identity_age"] = ImpossibleIdentityAge,
+                ["breach_shared_ip"] = BreachSharedIp,
+                ["nationality_mismatch"] = NationalityMismatch,
+                ["minor_identity"] = MinorIdentity
             };
 
         private static readonly ConcurrentDictionary<string, ReasonCode> _values =

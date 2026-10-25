@@ -9,7 +9,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// The submitted identifier a breach table matched on: email or username. Phone and name are not breach selectors.
+    /// The submitted email or username whose own search matched the table. A submitted full name is searched as well, and what it finds feeds the identity's reasons rather than this list.
     /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class BreachSelector : IEquatable<BreachSelector>, IOpenEnum<string>

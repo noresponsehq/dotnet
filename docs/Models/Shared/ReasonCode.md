@@ -60,3 +60,9 @@ var custom = ReasonCode.Of("custom_value");
 | `EmailDomainNonexistent`      | email_domain_nonexistent      |
 | `ForumSanctioned`             | forum_sanctioned              |
 | `PriorPaymentAbuse`           | prior_payment_abuse           |
+| `IpHistoryMatch`              | ip_history_match              |
+| `IdentityAttributeConflict`   | identity_attribute_conflict   |
+| `ImpossibleIdentityAge`       | impossible_identity_age       |
+| `BreachSharedIp`              | breach_shared_ip              |
+| `NationalityMismatch`         | nationality_mismatch          |
+| `MinorIdentity`               | minor_identity                |
