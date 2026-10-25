@@ -16,11 +16,13 @@ namespace NoResponse.Models.Shared
     {
         public static readonly IntegrationPlatform Workos = new IntegrationPlatform("workos");
         public static readonly IntegrationPlatform Auth0 = new IntegrationPlatform("auth0");
+        public static readonly IntegrationPlatform Supabase = new IntegrationPlatform("supabase");
 
         private static readonly Dictionary<string, IntegrationPlatform> _knownValues =
             new Dictionary<string, IntegrationPlatform>() {
                 ["workos"] = Workos,
-                ["auth0"] = Auth0
+                ["auth0"] = Auth0,
+                ["supabase"] = Supabase
             };
 
         private static readonly ConcurrentDictionary<string, IntegrationPlatform> _values =

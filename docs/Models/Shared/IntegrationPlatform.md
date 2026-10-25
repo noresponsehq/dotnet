@@ -16,7 +16,8 @@ var custom = IntegrationPlatform.Of("custom_value");
 
 ## Values
 
-| Name     | Value    |
-| -------- | -------- |
-| `Workos` | workos   |
-| `Auth0`  | auth0    |
+| Name       | Value      |
+| ---------- | ---------- |
+| `Workos`   | workos     |
+| `Auth0`    | auth0      |
+| `Supabase` | supabase   |
