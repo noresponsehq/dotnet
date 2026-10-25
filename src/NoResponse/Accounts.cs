@@ -31,7 +31,7 @@ namespace NoResponse
         /// </remarks>
         /// <param name="changedSince">next_cursor from an earlier page, unchanged. Absent, the list starts from the oldest change.</param>
         /// <param name="limit">Most accounts per page.</param>
-        /// <param name="unenforced">true lists only accounts with a decision other than allow for some flow and no applied enforcement at their current risk_version.</param>
+        /// <param name="unenforced">true lists only accounts with no applied enforcement at their current risk_version that have a decision other than allow for some flow or a hold no later applied enforcement resolved.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="ListAccountsResponse"/> object when completed.</returns>
@@ -194,7 +194,7 @@ namespace NoResponse
         /// </remarks>
         /// <param name="changedSince">next_cursor from an earlier page, unchanged. Absent, the list starts from the oldest change.</param>
         /// <param name="limit">Most accounts per page.</param>
-        /// <param name="unenforced">true lists only accounts with a decision other than allow for some flow and no applied enforcement at their current risk_version.</param>
+        /// <param name="unenforced">true lists only accounts with no applied enforcement at their current risk_version that have a decision other than allow for some flow or a hold no later applied enforcement resolved.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="ListAccountsResponse"/> object when completed.</returns>

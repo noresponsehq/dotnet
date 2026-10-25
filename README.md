@@ -12,7 +12,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v7.1.0 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v7.1.1 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -20,7 +20,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v7.1.0
+git -C third_party/noresponse-dotnet checkout v7.1.1
 git add third_party/noresponse-dotnet
 ```
 
@@ -240,7 +240,7 @@ var result = await LateResults.HandleRiskChangeAsync(client, buffer.ToArray(), r
 
 A refused provider call is recorded as failed and thrown as `ProviderActionException` (`Provider`, `Status`, `Code`): answer 5xx so the delivery is retried. `LateResults.EnforceAccountAsync` enforces an account from `Accounts.ListChangedAsync` with `unenforced: true`, to catch up on missed deliveries. For your own user store, `LateResults.CustomProvider` takes one function per action.
 
-A held flow (workspace settings `admission: held`) answers `held` until its investigation completes or `hold_seconds` pass, and the handler records `none` for it. When the final decision arrives as `account.risk_changed`, an `onboarding` or `provisional` account fails onboarding or is refused activation on `review` or `block`. On `allow` the handler does nothing, so admit the account yourself from the result's account. See https://docs.noresponse.org/guides/late-results.
+A held flow (workspace settings `admission: held`) answers `held` until its investigation completes or `hold_seconds` pass, and the handler records `none` for it. When the final decision arrives as `account.risk_changed`, an `onboarding` or `provisional` account fails onboarding or is refused activation on `review` or `block`. On `allow` the handler records `activate` (no provider call; a custom provider runs its own `activate`), so admit the account when the result's enforcements hold it. An account at `allow` that needs no change, such as an `active` one after a held login, is recorded as `none`. Either way the account leaves the unenforced list. See https://docs.noresponse.org/guides/late-results.
 
 ## Changes since 2.0.0
 

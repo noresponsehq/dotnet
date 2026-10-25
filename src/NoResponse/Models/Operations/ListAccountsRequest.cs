@@ -18,7 +18,7 @@ namespace NoResponse.Models.Operations
         public long? Limit { get; set; } = 50;
 
         /// <summary>
-        /// true lists only accounts with a decision other than allow for some flow and no applied enforcement at their current risk_version.
+        /// true lists only accounts with no applied enforcement at their current risk_version that have a decision other than allow for some flow or a hold no later applied enforcement resolved.
         /// </summary>
         [NoResponseMetadata("queryParam:style=form,explode=true,name=unenforced")]
         public bool? Unenforced { get; set; } = false;

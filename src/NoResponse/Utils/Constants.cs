@@ -14,7 +14,7 @@ namespace NoResponse.Utils
         /// <summary>
         /// The version of the SDK.
         /// </summary>
-        public const string SdkVersion = "7.1.0";
+        public const string SdkVersion = "7.1.1";
 
         /// <summary>
         /// The version of the SDK generator used to create this SDK.

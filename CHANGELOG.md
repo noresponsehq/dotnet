@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.1.1
+
+* `Sdk.Accounts.RecordEnforcement()`: 
+  *  `request.body.Action.Enum(activate)` **Added**
+  *  `response.action.Enum(activate)` **Added**
+
 ## 7.1.0
 
 * `Sdk.Keys.Create()`: **Added**

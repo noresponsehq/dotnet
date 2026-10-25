@@ -9,7 +9,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// What the workspace did in its identity provider: revoke_sessions (signed the account out everywhere), restrict (limited what the account can do), unrestrict (lifted an earlier restriction), fail_onboarding (stopped an account that was still onboarding), reject_activation (refused to activate a provisional account) or none (decided to take no action).
+    /// What the workspace did in its identity provider: revoke_sessions (signed the account out everywhere), restrict (limited what the account can do), unrestrict (lifted an earlier restriction), fail_onboarding (stopped an account that was still onboarding), reject_activation (refused to activate a provisional account), activate (let a held onboarding or provisional account in) or none (decided to take no action).
     /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class EnforcementAction : IEquatable<EnforcementAction>, IOpenEnum<string>
@@ -19,6 +19,7 @@ namespace NoResponse.Models.Shared
         public static readonly EnforcementAction Unrestrict = new EnforcementAction("unrestrict");
         public static readonly EnforcementAction FailOnboarding = new EnforcementAction("fail_onboarding");
         public static readonly EnforcementAction RejectActivation = new EnforcementAction("reject_activation");
+        public static readonly EnforcementAction Activate = new EnforcementAction("activate");
         public static readonly EnforcementAction None = new EnforcementAction("none");
 
         private static readonly Dictionary<string, EnforcementAction> _knownValues =
@@ -28,6 +29,7 @@ namespace NoResponse.Models.Shared
                 ["unrestrict"] = Unrestrict,
                 ["fail_onboarding"] = FailOnboarding,
                 ["reject_activation"] = RejectActivation,
+                ["activate"] = Activate,
                 ["none"] = None
             };
 
