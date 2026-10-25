@@ -12,7 +12,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v7.0.1 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v7.0.2 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -20,7 +20,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v7.0.1
+git -C third_party/noresponse-dotnet checkout v7.0.2
 git add third_party/noresponse-dotnet
 ```
 
@@ -207,9 +207,9 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
         if (webhookEvent.AccountDeletedEvent is { } erased) { /* account.deleted: you erased erased.Data.AccountId with Accounts.DeleteAsync */ }
         else if (webhookEvent.WorkspaceDeletedEvent is { } gone) { /* workspace.deleted: the workspace is deleted; the last event for gone.Data.Environment */ }
         else if (webhookEvent.WebhookEndpointDisabledEvent is { } disabled) { /* disabled.Data.EndpointId failed for 72 hours: fix it, verify it again */ }
-        else if (webhookEvent.AccountRiskChangedEvent is { } changed) { /* account.risk_changed: changed.Data.Account is the Account Accounts.GetAsync returns; changed.Data.PreviousDecisionsByFlow holds the decisions it replaced */ }
+        else if (webhookEvent.AccountRiskChangedEvent is { } changed) { /* account.risk_changed, the one event to act on: this verifier alone does not enforce it: use LateResults.HandleRiskChangeAsync (below) as this endpoint's receiver */ }
         else if (webhookEvent.AssessmentUpdatedEvent?.Data.AssessmentExpired is { } expired) { /* forget expired.AssessmentId: GET now answers 404 */ }
-        else if (webhookEvent.AssessmentUpdatedEvent?.Data.Assessment is { } assessment) { /* act on assessment.Account?.Risk.Decision; keep the highest Detail.AssessmentVersion */ }
+        else if (webhookEvent.AssessmentUpdatedEvent?.Data.Assessment is { } assessment) { /* progress only: apply nothing */ }
         return Results.NoContent();
     }
     catch (WebhookVerificationException)
@@ -239,6 +239,8 @@ var result = await LateResults.HandleRiskChangeAsync(client, buffer.ToArray(), r
 ```
 
 A refused provider call is recorded as failed and thrown as `ProviderActionException` (`Provider`, `Status`, `Code`): answer 5xx so the delivery is retried. `LateResults.EnforceAccountAsync` enforces an account from `Accounts.ListChangedAsync` with `unenforced: true`, to catch up on missed deliveries. For your own user store, `LateResults.CustomProvider` takes one function per action.
+
+A held flow (workspace settings `admission: held`) answers `held` until its investigation completes or `hold_seconds` pass, and the handler records `none` for it. When the final decision arrives as `account.risk_changed`, an `onboarding` or `provisional` account fails onboarding or is refused activation on `review` or `block`. On `allow` the handler does nothing, so admit the account yourself from the result's account. See https://docs.noresponse.org/guides/late-results.
 
 ## Changes since 2.0.0
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.2
+
+No changes detected.
+
 ## 7.0.1
 
 * `Sdk.Assessments.Create()`:  `response.account.Risk.Decision.Enum(held)` **Added**
