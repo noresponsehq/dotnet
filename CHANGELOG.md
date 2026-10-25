@@ -1,5 +1,12 @@
 # Changelog
 
+## 7.0.3
+
+* `Sdk.Assessments.Create()`:  `response.detail.IncompleteSources[].Lane.Enum(domain)` **Added**
+* `Sdk.Assessments.Get()`:  `response.detail.IncompleteSources[].Lane.Enum(domain)` **Added**
+* `Sdk.Assessments.Query()`:  `response.items[].IncompleteSources[].Lane.Enum(domain)` **Added**
+* `Sdk.Accounts.ListAssessments()`:  `response.items[].IncompleteSources[].Lane.Enum(domain)` **Added**
+
 ## 7.0.2
 
 No changes detected.

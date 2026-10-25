@@ -9,7 +9,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// An evidence lane: accounts (account presence for email and username), phone, breach and ip.
+    /// An evidence lane: accounts (account presence for email and username), phone, breach, domain (the email domain's registration) and ip.
     /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class Lane : IEquatable<Lane>, IOpenEnum<string>
@@ -17,6 +17,7 @@ namespace NoResponse.Models.Shared
         public static readonly Lane Accounts = new Lane("accounts");
         public static readonly Lane Phone = new Lane("phone");
         public static readonly Lane Breach = new Lane("breach");
+        public static readonly Lane Domain = new Lane("domain");
         public static readonly Lane Ip = new Lane("ip");
 
         private static readonly Dictionary<string, Lane> _knownValues =
@@ -24,6 +25,7 @@ namespace NoResponse.Models.Shared
                 ["accounts"] = Accounts,
                 ["phone"] = Phone,
                 ["breach"] = Breach,
+                ["domain"] = Domain,
                 ["ip"] = Ip
             };
 

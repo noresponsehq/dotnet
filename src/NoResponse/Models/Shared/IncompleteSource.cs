@@ -15,7 +15,7 @@ namespace NoResponse.Models.Shared
     public class IncompleteSource
     {
         /// <summary>
-        /// An evidence lane: accounts (account presence for email and username), phone, breach and ip.
+        /// An evidence lane: accounts (account presence for email and username), phone, breach, domain (the email domain's registration) and ip.
         /// </summary>
         [JsonProperty("lane", Required = Newtonsoft.Json.Required.Always)]
         public Lane Lane { get; set; } = default!;
