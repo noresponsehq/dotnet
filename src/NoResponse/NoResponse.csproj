@@ -3,7 +3,7 @@
   <PropertyGroup>
     <IsPackable>true</IsPackable>
     <PackageId>NoResponse</PackageId>
-    <Version>7.1.3</Version>
+    <Version>7.1.4</Version>
     <TargetFramework>net8.0</TargetFramework>
     <Authors>NoResponse</Authors>
     <Copyright>Copyright (c) NoResponse 2026</Copyright>
