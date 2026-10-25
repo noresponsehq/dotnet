@@ -1,10 +1,12 @@
-<img src="https://raw.githubusercontent.com/noresponsehq/.github/main/profile/sdk-header.png" alt="NoResponse" width="100%">
+<a href="https://noresponse.org"><img src="https://raw.githubusercontent.com/noresponsehq/.github/main/profile/sdk-header.png" alt="NoResponse · Identity Intelligence" width="100%"></a>
 
 # NoResponse for .NET
 
-The NoResponse client for .NET 8 and later. It assesses an account creation, login or purchase, polls a pending assessment, pages through an account's history, records what you later learned, rotates your API key and verifies webhooks. The client is generated from the NoResponse OpenAPI document; webhook verification is generated too; the wait helper is hand-written, and the auth adapters and late enforcement are emitted from shared tables.
+Assess sign-ups, logins and purchases with the NoResponse Identity Intelligence API.
 
-Keep the API key on your server.
+.NET 8+ · C#.
+
+[Documentation](https://docs.noresponse.org/sdks/csharp) · [API reference](https://docs.noresponse.org/api-reference) · [Releases](https://github.com/noresponsehq/dotnet/releases)
 
 ## Install
 
@@ -12,19 +14,24 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v7.1.1 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v7.1.2 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
+
+<details>
+<summary>Install as a Git submodule</summary>
 
 In a repository of your own, add it as a submodule and check out the tag before you commit:
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v7.1.1
+git -C third_party/noresponse-dotnet checkout v7.1.2
 git add third_party/noresponse-dotnet
 ```
 
-Use the latest tag from https://github.com/noresponsehq/dotnet/tags.
+Use the [latest release tag](https://github.com/noresponsehq/dotnet/tags).
+
+</details>
 
 ## Quick start
 
@@ -53,6 +60,19 @@ Console.WriteLine(assessment.Detail.Risk?.Score);     // this assessment's own f
 ```
 
 Every method returns an envelope: `Result` holds the object and `Headers` the response headers (`X-Request-ID`, `Retry-After`, `Idempotent-Replayed`).
+
+## Go further
+
+| Task | Guide |
+| --- | --- |
+| Configure this client and explore its methods | [.NET SDK guide](https://docs.noresponse.org/sdks/csharp) |
+| Act when an account's decision changes | [Late results](https://docs.noresponse.org/guides/late-results) |
+| Explore request and response fields | [API reference](https://docs.noresponse.org/api-reference) |
+
+<details>
+<summary><strong>SDK reference</strong> · configuration, methods, errors and webhooks</summary>
+
+[Configure the client](#configure-the-client) · [Assessments](#assessments) · [Keys](#keys) · [Errors](#errors) · [Retries](#retries) · [Issued keys](#issued-keys) · [Webhooks](#webhooks) · [Changes since 2.0.0](#changes-since-200)
 
 ## Configure the client
 
@@ -258,4 +278,11 @@ Names that changed:
 
 The `[Obsolete]` copies of the payload fields on each exception are gone: read `Payload`. The error code enums (`BadRequestErrorCode` and the rest) keep their names.
 
-Issues: https://github.com/noresponsehq/dotnet/issues. Quote `RequestId` when you write to us.
+</details>
+
+## Support
+
+[Open an issue](https://github.com/noresponsehq/dotnet/issues) and include the request ID from the response or error.
+Keep API keys and personal data out of issues.
+
+[Apache-2.0](LICENSE).
