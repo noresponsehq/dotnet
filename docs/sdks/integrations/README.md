@@ -45,7 +45,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 
 IntegrationRequest req = new IntegrationRequest() {
     Platform = IntegrationPlatform.Supabase,
-    SigningSecret = "v1,whsec_dGVzdC1zdXBhYmFzZS1ob29rLXNlY3JldC1ub3QtcmVhbA==",
+    SigningSecret = null,
 };
 
 var res = await sdk.Integrations.CreateAsync(req);
@@ -69,7 +69,7 @@ IntegrationRequest req = new IntegrationRequest() {
         IntegrationHookPoint.PreRegistration,
         IntegrationHookPoint.PostLogin,
     },
-    SigningSecret = "wos_action_secret_k3Yx8pQ2mN7vR4tW",
+    SigningSecret = null,
 };
 
 var res = await sdk.Integrations.CreateAsync(req);
@@ -209,7 +209,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Integrations.RotateAsync(
     integrationId: "int_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
     body: new IntegrationRotationRequest() {
-        SigningSecret = "wos_action_secret_Z9cD1eF5gH0jL4sP",
+        SigningSecret = null,
     }
 );
 

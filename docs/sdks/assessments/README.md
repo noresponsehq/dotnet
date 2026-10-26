@@ -725,7 +725,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 
 AssessmentQuery req = new AssessmentQuery() {
     AccountId = "acct_7f3a9c",
-    Cursor = "eyJvIjoyMH0",
+    Cursor = null,
 };
 
 QueryAccountAssessmentsResponse? res = await sdk.Assessments.QueryAsync(req);
