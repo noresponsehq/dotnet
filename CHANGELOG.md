@@ -1,5 +1,14 @@
 # Changelog
 
+## 8.0.0
+
+* `Sdk.Assessments.Create()`:  `response` **Changed** (Breaking ⚠️)
+* `Sdk.Assessments.Get()`:  `response` **Changed** (Breaking ⚠️)
+* `Sdk.Assessments.Query()`:  `response.items[].Risk.Reasons[].Weight` **Removed** (Breaking ⚠️)
+* `Sdk.Accounts.ListChanged()`:  `response.items[].Risk.Reasons[].Weight` **Removed** (Breaking ⚠️)
+* `Sdk.Accounts.Get()`:  `response.risk.Reasons[].Weight` **Removed** (Breaking ⚠️)
+* `Sdk.Accounts.ListAssessments()`:  `response.items[].Risk.Reasons[].Weight` **Removed** (Breaking ⚠️)
+
 ## 7.2.2
 
 No changes detected.

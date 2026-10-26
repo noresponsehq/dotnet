@@ -31,12 +31,5 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("identifier", Required = Newtonsoft.Json.Required.DisallowNull)]
         public ReasonIdentifier? Identifier { get; set; }
-
-        /// <summary>
-        /// Deprecated and always 0: the policy's weights are not published. It is sent so that SDK versions that require it keep reading reasons. Read direction and impact.
-        /// </summary>
-        [Obsolete("This field will be removed in a future release, please migrate away from it as soon as possible")]
-        [JsonProperty("weight", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public long Weight { get; } = 0;
     }
 }
