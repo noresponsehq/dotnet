@@ -25,5 +25,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("breach_names", Required = Newtonsoft.Json.Required.DisallowNull)]
         public List<RiskDetailsBreachName>? BreachNames { get; set; }
+
+        /// <summary>
+        /// The identity's dated footprint events, newest first, at most 100: the year and month, what happened (created, last_active, breached), the site, its category, the kind of evidence and the identifier it belongs to. No breach value: dates are coarsened to the month.
+        /// </summary>
+        [JsonProperty("events", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<RiskDetailsEvent>? Events { get; set; }
     }
 }

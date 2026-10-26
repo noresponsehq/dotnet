@@ -10,7 +10,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// The one risk decision for this event. score is 0 (safe) to 100 (risky): the sum of the weights of the reasons that fired, clamped to 0 to 100, from hand-set versioned weights. Every answer with a recommendation carries it, and the top-level recommendation equals risk.recommendation. It names no source or provider.
+    /// The one risk decision for this event. score is 0 (safe) to 100 (risky), set by the reasons that fired under a hand-set, versioned heuristic policy. Each reason carries its direction and impact band; the policy's weights are not published. Every answer with a recommendation carries it, and the top-level recommendation equals risk.recommendation. It names no source or provider.
     /// </summary>
     public class Risk
     {
@@ -48,7 +48,7 @@ namespace NoResponse.Models.Shared
         public RiskConfidence Confidence { get; set; } = default!;
 
         /// <summary>
-        /// Version of the hand-authored heuristic weights that produced the recommendation, for example 'risk-2026-10.7'. A workspace threshold override adds a +t&lt;N&gt; suffix, e.g. 'risk-2026-10.7+t3'.
+        /// Version of the hand-authored heuristic policy that produced the recommendation, for example 'risk-2026-10.7'. A workspace threshold override adds a +t&lt;N&gt; suffix, e.g. 'risk-2026-10.7+t3'.
         /// </summary>
         [JsonProperty("policy_version", Required = Newtonsoft.Json.Required.Always)]
         public string PolicyVersion { get; set; } = default!;
@@ -60,7 +60,7 @@ namespace NoResponse.Models.Shared
         public string PolicyBasis { get; } = "heuristic_unvalidated";
 
         /// <summary>
-        /// Every reason that fired, highest weight first. The weights sum to score before clamping.
+        /// Every reason that fired: risk-raising reasons first, then neutral, then risk-lowering, each strongest impact band first and then by code. The policy's numeric weights are kept private, so a reason carries only its direction and impact band.
         /// </summary>
         [JsonProperty("reasons", Required = Newtonsoft.Json.Required.Always)]
         public List<RiskReason> Reasons { get; set; } = default!;

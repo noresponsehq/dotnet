@@ -30,5 +30,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("consistency", Required = Newtonsoft.Json.Required.DisallowNull)]
         public Consistency? Consistency { get; set; }
+
+        /// <summary>
+        /// How long and how widely the signup's email and username have existed, and how far independent sources agree on the person behind them, in years and counts only. families are the kinds of evidence that found either identifier. Omitted when nothing found them: a footprint lookup that failed makes no claim, and absence is no_digital_footprint's to state.
+        /// </summary>
+        [JsonProperty("footprint", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public Footprint? Footprint { get; set; }
     }
 }
