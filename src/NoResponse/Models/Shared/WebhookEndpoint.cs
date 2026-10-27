@@ -48,6 +48,24 @@ namespace NoResponse.Models.Shared
         public string? VerifiedAt { get; set; }
 
         /// <summary>
+        /// The first failed delivery attempt of the endpoint's current failure streak. Absent while its latest attempt succeeded, before any attempt failed, and after it is verified again.
+        /// </summary>
+        [JsonProperty("failing_since", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? FailingSince { get; set; }
+
+        /// <summary>
+        /// The latest failed delivery attempt of the current failure streak; present exactly when failing_since is. A failure more than 2 hours after it starts a new streak.
+        /// </summary>
+        [JsonProperty("last_failure_at", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? LastFailureAt { get; set; }
+
+        /// <summary>
+        /// When the endpoint was disabled after failing continuously for 72 hours, as in the webhook_endpoint.disabled event. Present while state is disabled; absent before and after it is verified again.
+        /// </summary>
+        [JsonProperty("disabled_at", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? DisabledAt { get; set; }
+
+        /// <summary>
         /// The keys a receiver may see in NR-Webhook-Key-Id, oldest first. The last one signs every new delivery; an older one keeps verifying until its expires_at.
         /// </summary>
         [JsonProperty("signing_keys", Required = Newtonsoft.Json.Required.Always)]
