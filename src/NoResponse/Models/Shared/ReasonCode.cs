@@ -51,6 +51,7 @@ namespace NoResponse.Models.Shared
         public static readonly ReasonCode PriorAbuseLink = new ReasonCode("prior_abuse_link");
         public static readonly ReasonCode TestScenario = new ReasonCode("test_scenario");
         public static readonly ReasonCode SharedApiKey = new ReasonCode("shared_api_key");
+        public static readonly ReasonCode ListMatch = new ReasonCode("list_match");
         public static readonly ReasonCode YoungEmailDomain = new ReasonCode("young_email_domain");
         public static readonly ReasonCode EmailDomainNoMx = new ReasonCode("email_domain_no_mx");
         public static readonly ReasonCode EmailDomainNonexistent = new ReasonCode("email_domain_nonexistent");
@@ -102,6 +103,7 @@ namespace NoResponse.Models.Shared
                 ["prior_abuse_link"] = PriorAbuseLink,
                 ["test_scenario"] = TestScenario,
                 ["shared_api_key"] = SharedApiKey,
+                ["list_match"] = ListMatch,
                 ["young_email_domain"] = YoungEmailDomain,
                 ["email_domain_no_mx"] = EmailDomainNoMx,
                 ["email_domain_nonexistent"] = EmailDomainNonexistent,

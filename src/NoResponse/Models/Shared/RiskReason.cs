@@ -31,5 +31,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("identifier", Required = Newtonsoft.Json.Required.DisallowNull)]
         public ReasonIdentifier? Identifier { get; set; }
+
+        /// <summary>
+        /// The list entry a list_match reason applied. No other reason carries it.
+        /// </summary>
+        [JsonProperty("list_entry_id", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? ListEntryId { get; set; }
     }
 }

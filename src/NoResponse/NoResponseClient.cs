@@ -48,6 +48,8 @@ namespace NoResponse
         public IWebhookEndpoints WebhookEndpoints { get; }
 
         public ISettings Settings { get; }
+
+        public ILists Lists { get; }
     }
 
     /// <summary>
@@ -90,6 +92,10 @@ namespace NoResponse
         /// The Settings sub-SDK.
         /// </summary>
         public ISettings Settings { get; private set; }
+        /// <summary>
+        /// The Lists sub-SDK.
+        /// </summary>
+        public ILists Lists { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the SDK based on a <see cref="SDKConfig"/> configuration object.
@@ -113,6 +119,8 @@ namespace NoResponse
             WebhookEndpoints = new WebhookEndpoints(SDKConfiguration);
 
             Settings = new Settings(SDKConfiguration);
+
+            Lists = new Lists(SDKConfiguration);
         }
 
         /// <summary>
@@ -194,6 +202,8 @@ namespace NoResponse
             WebhookEndpoints = new WebhookEndpoints(SDKConfiguration);
 
             Settings = new Settings(SDKConfiguration);
+
+            Lists = new Lists(SDKConfiguration);
         }
 
         private void InitHooks()
