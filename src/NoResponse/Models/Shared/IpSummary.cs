@@ -27,6 +27,12 @@ namespace NoResponse.Models.Shared
         public IpSummaryType? Type { get; set; }
 
         /// <summary>
+        /// Autonomous system number of the network that announces the address, from the offline database. Absent when unknown.
+        /// </summary>
+        [JsonProperty("asn", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? Asn { get; set; }
+
+        /// <summary>
         /// Assessments in this workspace with the same IP in the last 24 hours, this one included. A count only.
         /// </summary>
         [JsonProperty("seen_in_workspace", Required = Newtonsoft.Json.Required.DisallowNull)]
