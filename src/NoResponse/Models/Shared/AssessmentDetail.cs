@@ -33,6 +33,12 @@ namespace NoResponse.Models.Shared
         public string AccountId { get; set; } = default!;
 
         /// <summary>
+        /// The identifiers an assessment was sent: each member of the request's identifiers object exactly as received, before the server normalised it (the email domain keeps its case, the name its Unicode form). A member the request did not send is absent. NoResponse keeps them encrypted under the workspace's own key, does not index or log them, and deletes them with the assessment: on DELETE of the assessment or its account, at its expires_at, and with the workspace.
+        /// </summary>
+        [JsonProperty("identifiers", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public SentIdentifiers? Identifiers { get; set; }
+
+        /// <summary>
         /// An optional provider correlation id, echoed back. It is not an idempotency key. Refuses an exact-shape JWT or a bare 40, 64 or 128 character hex digest; a UUID is accepted.
         /// </summary>
         [JsonProperty("request_id", Required = Newtonsoft.Json.Required.DisallowNull)]
