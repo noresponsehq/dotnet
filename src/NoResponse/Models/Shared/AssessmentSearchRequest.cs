@@ -60,9 +60,15 @@ namespace NoResponse.Models.Shared
         public ResponseMode? ResponseMode { get; set; }
 
         /// <summary>
-        /// The decision of the assessment's latest stored revision: block when its stored risk.block is true, otherwise its recommendation. This is not the account's current decision or held-admission state. Combined with recommendation using AND.
+        /// An assessment's own decision: block when its stored risk.block is true, otherwise its recommendation. It is not the account's decision or held-admission state.
         /// </summary>
         [JsonProperty("decision", Required = Newtonsoft.Json.Required.DisallowNull)]
         public Decision? Decision { get; set; }
+
+        /// <summary>
+        /// Which answer of each assessment the filters describe: latest, the latest stored revision, or first, the first answer, as served when the assessment was first answered (POST /v1/assessments/aggregate counts first answers). A cell of an aggregate drills down to POST /v1/assessments/search with the same filters, revision first and the cell's bucket as from and to.
+        /// </summary>
+        [JsonProperty("revision", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public AnswerRevision? Revision { get; set; }
     }
 }

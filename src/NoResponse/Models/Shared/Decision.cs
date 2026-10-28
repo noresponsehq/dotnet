@@ -4,48 +4,70 @@ namespace NoResponse.Models.Shared
     using Newtonsoft.Json;
     using NoResponse.Utils;
     using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
-    /// The decision of the assessment's latest stored revision: block when its stored risk.block is true, otherwise its recommendation. This is not the account's current decision or held-admission state. Combined with recommendation using AND.
+    /// An assessment's own decision: block when its stored risk.block is true, otherwise its recommendation. It is not the account's decision or held-admission state.
     /// </summary>
-    public enum Decision
+    [JsonConverter(typeof(OpenEnumConverter))]
+    public class Decision : IEquatable<Decision>, IOpenEnum<string>
     {
-        [JsonProperty("allow")] Allow,
-        [JsonProperty("step_up")] StepUp,
-        [JsonProperty("review")] Review,
-        [JsonProperty("block")] Block,
-    }
+        public static readonly Decision Allow = new Decision("allow");
+        public static readonly Decision StepUp = new Decision("step_up");
+        public static readonly Decision Review = new Decision("review");
+        public static readonly Decision Block = new Decision("block");
 
-    public static class DecisionExtension
-    {
-        public static string Value(this Decision value)
+        private static readonly Dictionary<string, Decision> _knownValues =
+            new Dictionary<string, Decision>() {
+                ["allow"] = Allow,
+                ["step_up"] = StepUp,
+                ["review"] = Review,
+                ["block"] = Block
+            };
+
+        private static readonly ConcurrentDictionary<string, Decision> _values =
+            new ConcurrentDictionary<string, Decision>(_knownValues);
+
+        private Decision(string value)
         {
-            return ((JsonPropertyAttribute)value.GetType().GetMember(value.ToString()) [0].GetCustomAttributes(typeof(JsonPropertyAttribute), false)[0]).PropertyName ?? value.ToString();
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            Value = value;
         }
 
-        public static Decision ToEnum(this string value)
+        public string Value { get; }
+
+        public static Decision Of(string value)
         {
-            foreach (var field in typeof(Decision).GetFields())
-            {
-                var attributes = field.GetCustomAttributes(typeof(JsonPropertyAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    continue;
-                }
-
-                var attribute = attributes[0] as JsonPropertyAttribute;
-                if (attribute != null && attribute.PropertyName == value)
-                {
-                    var enumVal = field.GetValue(null);
-
-                    if (enumVal is Decision)
-                    {
-                        return (Decision)enumVal;
-                    }
-                }
-            }
-
-            throw new Exception($"Unknown value {value} for enum Decision");
+            return _values.GetOrAdd(value,
+                                    _ => new Decision(value));
         }
+
+        public static implicit operator Decision(string value) => Of(value);
+        public static implicit operator string(Decision decision) => decision.Value;
+
+        public static Decision[] Values()
+        {
+            return _values.Values.ToArray();
+        }
+
+        public override string ToString() => Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        public bool IsKnown()
+        {
+            return _knownValues.ContainsKey(Value);
+        }
+
+        public override bool Equals(object? obj) => Equals(obj as Decision);
+
+        public bool Equals(Decision? other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other is null) return false;
+            return string.Equals(Value, other.Value);
+        }
+
+        public override int GetHashCode() => Value.GetHashCode();
     }
 }
