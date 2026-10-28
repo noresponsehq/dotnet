@@ -1,5 +1,39 @@
 # Changelog
 
+## 8.1.3
+
+* `Sdk.Assessments.Create()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Assessments.Get()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Assessments.Delete()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Assessments.RecordOutcome()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Assessments.Query()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Accounts.ListChanged()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Accounts.Get()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Accounts.Delete()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Accounts.ListAssessments()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Accounts.RecordEnforcement()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.KeyUsage.Record()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Keys.Rotate()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Keys.Create()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Keys.List()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Keys.Revoke()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Integrations.Create()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Integrations.List()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Integrations.Delete()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Integrations.Rotate()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.WebhookEndpoints.List()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.WebhookEndpoints.Create()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.WebhookEndpoints.Delete()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.WebhookEndpoints.RotateSigningKey()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.WebhookEndpoints.SendTestEvent()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.WebhookEndpoints.ListDeliveries()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.WebhookEndpoints.ReplayDelivery()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Settings.Get()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Settings.Update()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Lists.List()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Lists.Create()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+* `Sdk.Lists.Delete()`:  `error.code.Enum(listEntryTooBroad)` **Added**
+
 ## 8.1.2
 
 * `Sdk.Lists.List()`: **Added**

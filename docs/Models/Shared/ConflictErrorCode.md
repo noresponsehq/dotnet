@@ -28,3 +28,4 @@ var custom = ConflictErrorCode.Of("custom_value");
 | `SelfRevocation`               | self_revocation                |
 | `ListEntryExists`              | list_entry_exists              |
 | `ListLimitReached`             | list_limit_reached             |
+| `ListEntryTooBroad`            | list_entry_too_broad           |

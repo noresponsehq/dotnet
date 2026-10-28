@@ -52,7 +52,7 @@ namespace NoResponse
         /// Add an entry to an environment's list.
         /// </summary>
         /// <remarks>
-        /// Adds an exact email (kind email) or an email domain (kind email_domain) to the signing key's environment's list with the action block or allow, and answers the entry with its value in canonical form. An account matches when one of its assessments sent the email, or an email of the domain: a block entry decides block for every flow and an allow entry allow, block winning when both match, and the account's risk carries list_match with the entry's id while its score is unchanged. Every matching account is re-decided at once and sends account.risk_changed when its decision changes. A value already on the list answers 409 list_entry_exists; a full list, or an entry matching more than 5,000 accounts, 409 list_limit_reached. Requires the management scope; the other environment answers 404 not_found.
+        /// Adds an exact email (kind email) or an email domain (kind email_domain) to the signing key's environment's list with the action block or allow, and answers the entry with its value in canonical form. An account matches when one of its assessments sent the email, or an email of the domain: a block entry decides block for every flow and an allow entry allow, block winning when both match, and the account's risk carries list_match with the entry's id while its score is unchanged. Every matching account is re-decided at once and sends account.risk_changed when its decision changes. A value already on the list answers 409 list_entry_exists, a full list 409 list_limit_reached, and an entry matching more than 5,000 accounts 409 list_entry_too_broad. Requires the management scope; the other environment answers 404 not_found.
         /// </remarks>
         /// <param name="workspaceId">Your workspace id, as each key lists it in workspace_id. Another workspace, a malformed id and a test environment's id answer 404.</param>
         /// <param name="environment">The environment: live or test. Each has its own settings. Any other value answers 400. An API key reads and changes only its own environment's; the other answers 404.</param>
@@ -68,7 +68,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">list_entry_exists: the value is already on the environment's list; delete its entry first to change its action. list_limit_reached: the environment already holds 10,000 entries, or the entry matches more than 5,000 accounts. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">list_entry_exists: the value is already on the environment's list; delete its entry first to change its action. list_limit_reached: the environment already holds 10,000 entries. list_entry_too_broad: the entry matches more than 5,000 accounts. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<CreateListEntryResponse> CreateAsync(
@@ -83,7 +83,7 @@ namespace NoResponse
         /// Remove an entry from an environment's list.
         /// </summary>
         /// <remarks>
-        /// Removes an entry from the signing key's environment's list and re-decides every account it matched, each sending account.risk_changed when its decision changes. An unknown or already removed entry answers 404 not_found. Requires the management scope.
+        /// Removes an entry from the signing key's environment's list and re-decides the accounts it matched, the 5,000 most recently assessed at most, each sending account.risk_changed when its decision changes. An unknown or already removed entry answers 404 not_found. Requires the management scope.
         /// </remarks>
         /// <param name="workspaceId">Your workspace id, as each key lists it in workspace_id. Another workspace, a malformed id and a test environment's id answer 404.</param>
         /// <param name="environment">The environment: live or test. Each has its own settings. Any other value answers 400. An API key reads and changes only its own environment's; the other answers 404.</param>
@@ -407,7 +407,7 @@ namespace NoResponse
         /// Add an entry to an environment's list.
         /// </summary>
         /// <remarks>
-        /// Adds an exact email (kind email) or an email domain (kind email_domain) to the signing key's environment's list with the action block or allow, and answers the entry with its value in canonical form. An account matches when one of its assessments sent the email, or an email of the domain: a block entry decides block for every flow and an allow entry allow, block winning when both match, and the account's risk carries list_match with the entry's id while its score is unchanged. Every matching account is re-decided at once and sends account.risk_changed when its decision changes. A value already on the list answers 409 list_entry_exists; a full list, or an entry matching more than 5,000 accounts, 409 list_limit_reached. Requires the management scope; the other environment answers 404 not_found.
+        /// Adds an exact email (kind email) or an email domain (kind email_domain) to the signing key's environment's list with the action block or allow, and answers the entry with its value in canonical form. An account matches when one of its assessments sent the email, or an email of the domain: a block entry decides block for every flow and an allow entry allow, block winning when both match, and the account's risk carries list_match with the entry's id while its score is unchanged. Every matching account is re-decided at once and sends account.risk_changed when its decision changes. A value already on the list answers 409 list_entry_exists, a full list 409 list_limit_reached, and an entry matching more than 5,000 accounts 409 list_entry_too_broad. Requires the management scope; the other environment answers 404 not_found.
         /// </remarks>
         /// <param name="workspaceId">Your workspace id, as each key lists it in workspace_id. Another workspace, a malformed id and a test environment's id answer 404.</param>
         /// <param name="environment">The environment: live or test. Each has its own settings. Any other value answers 400. An API key reads and changes only its own environment's; the other answers 404.</param>
@@ -423,7 +423,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">list_entry_exists: the value is already on the environment's list; delete its entry first to change its action. list_limit_reached: the environment already holds 10,000 entries, or the entry matches more than 5,000 accounts. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">list_entry_exists: the value is already on the environment's list; delete its entry first to change its action. list_limit_reached: the environment already holds 10,000 entries. list_entry_too_broad: the entry matches more than 5,000 accounts. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<CreateListEntryResponse> CreateAsync(
@@ -696,7 +696,7 @@ namespace NoResponse
         /// Remove an entry from an environment's list.
         /// </summary>
         /// <remarks>
-        /// Removes an entry from the signing key's environment's list and re-decides every account it matched, each sending account.risk_changed when its decision changes. An unknown or already removed entry answers 404 not_found. Requires the management scope.
+        /// Removes an entry from the signing key's environment's list and re-decides the accounts it matched, the 5,000 most recently assessed at most, each sending account.risk_changed when its decision changes. An unknown or already removed entry answers 404 not_found. Requires the management scope.
         /// </remarks>
         /// <param name="workspaceId">Your workspace id, as each key lists it in workspace_id. Another workspace, a malformed id and a test environment's id answer 404.</param>
         /// <param name="environment">The environment: live or test. Each has its own settings. Any other value answers 400. An API key reads and changes only its own environment's; the other answers 404.</param>

@@ -24,6 +24,7 @@ namespace NoResponse.Models.Shared
         public static readonly ConflictErrorCode SelfRevocation = new ConflictErrorCode("self_revocation");
         public static readonly ConflictErrorCode ListEntryExists = new ConflictErrorCode("list_entry_exists");
         public static readonly ConflictErrorCode ListLimitReached = new ConflictErrorCode("list_limit_reached");
+        public static readonly ConflictErrorCode ListEntryTooBroad = new ConflictErrorCode("list_entry_too_broad");
 
         private static readonly Dictionary<string, ConflictErrorCode> _knownValues =
             new Dictionary<string, ConflictErrorCode>() {
@@ -36,7 +37,8 @@ namespace NoResponse.Models.Shared
                 ["key_limit_reached"] = KeyLimitReached,
                 ["self_revocation"] = SelfRevocation,
                 ["list_entry_exists"] = ListEntryExists,
-                ["list_limit_reached"] = ListLimitReached
+                ["list_limit_reached"] = ListLimitReached,
+                ["list_entry_too_broad"] = ListEntryTooBroad
             };
 
         private static readonly ConcurrentDictionary<string, ConflictErrorCode> _values =
