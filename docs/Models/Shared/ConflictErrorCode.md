@@ -26,6 +26,9 @@ var custom = ConflictErrorCode.Of("custom_value");
 | `RiskVersionAhead`             | risk_version_ahead             |
 | `KeyLimitReached`              | key_limit_reached              |
 | `SelfRevocation`               | self_revocation                |
+| `OutcomeConflict`              | outcome_conflict               |
+| `CredentialConflict`           | credential_conflict            |
+| `BindingConflict`              | binding_conflict               |
 | `ListEntryExists`              | list_entry_exists              |
 | `ListLimitReached`             | list_limit_reached             |
 | `ListEntryTooBroad`            | list_entry_too_broad           |

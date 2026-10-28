@@ -11,6 +11,9 @@ Assessments of account creation, login and purchase.
 * [Delete](#delete) - Delete one assessment.
 * [RecordOutcome](#recordoutcome) - Report what was later learned about an assessed account.
 * [Query](#query) - Page through one account's unexpired assessments.
+* [Search](#search) - Search assessments across this environment
+* [RetrieveVersion](#retrieveversion) - Retrieve an exact assessment revision
+* [BindAccount](#bindaccount) - Bind a provisional signup account
 
 ## Create
 
@@ -747,6 +750,147 @@ while(res != null)
 ### Response
 
 **[QueryAccountAssessmentsResponse](../../Models/Operations/QueryAccountAssessmentsResponse.md)**
+
+### Errors
+
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
+
+## Search
+
+Search retained assessments created in [from,to), over at most 366 days. Filters use each assessment decision, rather than the current account decision. Results can change between pages. Keep the assessment version to retrieve the exact decision later. This read does not require an idempotency key.
+
+### Example Usage
+
+<!-- UsageSnippet language="csharp" operationID="searchAssessments" method="post" path="/v1/assessments/search" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+AssessmentSearchRequest req = new AssessmentSearchRequest() {
+    From = "2026-01-01T00:00:00Z",
+    To = "2026-01-02T00:00:00Z",
+    AccountId = "acct_7f3a9c",
+    Cursor = "eyJ0IjoxNzY3MjI1NjAwMDAwMDAwLCJpIjoiYXNtX2V4YW1wbGUiLCJlIjoxNzY3MjI5MjAwfQ",
+};
+
+var res = await sdk.Assessments.SearchAsync(req);
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                                 | Type                                                                      | Required                                                                  | Description                                                               |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `request`                                                                 | [AssessmentSearchRequest](../../Models/Shared/AssessmentSearchRequest.md) | :heavy_check_mark:                                                        | The request object to use for the request.                                |
+
+### Response
+
+**[SearchAssessmentsResponse](../../Models/Operations/SearchAssessmentsResponse.md)**
+
+### Errors
+
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
+
+## RetrieveVersion
+
+Retrieve a retained assessment version with its original decision, policy, flow and depth. This response excludes the current account decision. Current retention and response-mode permissions still apply.
+
+### Example Usage
+
+<!-- UsageSnippet language="csharp" operationID="getAssessmentVersion" method="get" path="/v1/assessments/{assessment_id}/versions/{version}" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+var res = await sdk.Assessments.RetrieveVersionAsync(
+    assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
+    version: 849915
+);
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                                                                         | Type                                                                                                              | Required                                                                                                          | Description                                                                                                       | Example                                                                                                           |
+| ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `AssessmentId`                                                                                                    | *string*                                                                                                          | :heavy_check_mark:                                                                                                | Path segment, matched case-sensitively. A value that does not match the assessment_id shape answers 404, not 400. | asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                                                                    |
+| `Version`                                                                                                         | *long*                                                                                                            | :heavy_check_mark:                                                                                                | The stored assessment_version, in canonical decimal form. An unavailable or malformed version answers 404.        |                                                                                                                   |
+| `ResponseMode`                                                                                                    | [ResponseMode](../../Models/Shared/ResponseMode.md)                                                               | :heavy_minus_sign:                                                                                                | Optional standard or separately authorised detailed customer view; raw is rejected.                               |                                                                                                                   |
+
+### Response
+
+**[GetAssessmentVersionResponse](../../Models/Operations/GetAssessmentVersionResponse.md)**
+
+### Errors
+
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
+
+## BindAccount
+
+One-time association to an opaque stable customer account. The assessment is its natural idempotency key. Repeating the same binding returns its first receipt; a conflicting target is refused. No arbitrary account merging.
+
+### Example Usage
+
+<!-- UsageSnippet language="csharp" operationID="bindProvisionalAccount" method="post" path="/v1/assessments/{assessment_id}/bind" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+var res = await sdk.Assessments.BindAccountAsync(
+    assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
+    body: new AccountBindingRequest() {
+        AccountId = "acct_7f3a9c",
+    }
+);
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                                                                         | Type                                                                                                              | Required                                                                                                          | Description                                                                                                       | Example                                                                                                           |
+| ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `AssessmentId`                                                                                                    | *string*                                                                                                          | :heavy_check_mark:                                                                                                | Path segment, matched case-sensitively. A value that does not match the assessment_id shape answers 404, not 400. | asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                                                                    |
+| `Body`                                                                                                            | [AccountBindingRequest](../../Models/Shared/AccountBindingRequest.md)                                             | :heavy_check_mark:                                                                                                | N/A                                                                                                               |                                                                                                                   |
+
+### Response
+
+**[BindProvisionalAccountResponse](../../Models/Operations/BindProvisionalAccountResponse.md)**
 
 ### Errors
 

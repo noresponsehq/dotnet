@@ -1,5 +1,62 @@
 # Changelog
 
+## 8.2.0
+
+* `Sdk.Assessments.Search()`: **Added**
+* `Sdk.Assessments.RetrieveVersion()`: **Added**
+* `Sdk.Assessments.BindAccount()`: **Added**
+* `Sdk.Accounts.RecordOutcome()`: **Added**
+* `Sdk.Accounts.ListOutcomes()`: **Added**
+* `Sdk.Accounts.RetrieveDecision()`: **Added**
+* `Sdk.Accounts.AssociateCredential()`: **Added**
+* `Sdk.Accounts.ListCredentials()`: **Added**
+* `Sdk.Accounts.RetireCredential()`: **Added**
+* `Sdk.Accounts.Export()`: **Added**
+* `Sdk.Requests.List()`: **Added**
+* `Sdk.Assessments.Create()`: 
+  *  `response.account.Risk.Reasons[].Code.Enum(reportedAccountAbuse)` **Added**
+  *  `error.code` **Changed**
+* `Sdk.Assessments.Get()`: 
+  *  `response.account.Risk.Reasons[].Code.Enum(reportedAccountAbuse)` **Added**
+  *  `error.code` **Changed**
+* `Sdk.Assessments.Delete()`:  `error.code` **Changed**
+* `Sdk.Assessments.RecordOutcome()`:  `error.code` **Changed**
+* `Sdk.Assessments.Query()`: 
+  *  `response.items[].Risk.Reasons[].Code.Enum(reportedAccountAbuse)` **Added**
+  *  `error.code` **Changed**
+* `Sdk.Accounts.ListChanged()`: 
+  *  `response.items[].Risk.Reasons[].Code.Enum(reportedAccountAbuse)` **Added**
+  *  `error.code` **Changed**
+* `Sdk.Accounts.Get()`: 
+  *  `response.risk.Reasons[].Code.Enum(reportedAccountAbuse)` **Added**
+  *  `error.code` **Changed**
+* `Sdk.Accounts.Delete()`:  `error.code` **Changed**
+* `Sdk.Accounts.ListAssessments()`: 
+  *  `response.items[].Risk.Reasons[].Code.Enum(reportedAccountAbuse)` **Added**
+  *  `error.code` **Changed**
+* `Sdk.Accounts.RecordEnforcement()`:  `error.code` **Changed**
+* `Sdk.KeyUsage.Record()`:  `error.code` **Changed**
+* `Sdk.Keys.Rotate()`:  `error.code` **Changed**
+* `Sdk.Keys.Create()`:  `error.code` **Changed**
+* `Sdk.Keys.List()`:  `error.code` **Changed**
+* `Sdk.Keys.Revoke()`:  `error.code` **Changed**
+* `Sdk.Integrations.Create()`:  `error.code` **Changed**
+* `Sdk.Integrations.List()`:  `error.code` **Changed**
+* `Sdk.Integrations.Delete()`:  `error.code` **Changed**
+* `Sdk.Integrations.Rotate()`:  `error.code` **Changed**
+* `Sdk.WebhookEndpoints.List()`:  `error.code` **Changed**
+* `Sdk.WebhookEndpoints.Create()`:  `error.code` **Changed**
+* `Sdk.WebhookEndpoints.Delete()`:  `error.code` **Changed**
+* `Sdk.WebhookEndpoints.RotateSigningKey()`:  `error.code` **Changed**
+* `Sdk.WebhookEndpoints.SendTestEvent()`:  `error.code` **Changed**
+* `Sdk.WebhookEndpoints.ListDeliveries()`:  `error.code` **Changed**
+* `Sdk.WebhookEndpoints.ReplayDelivery()`:  `error.code` **Changed**
+* `Sdk.Settings.Get()`:  `error.code` **Changed**
+* `Sdk.Settings.Update()`:  `error.code` **Changed**
+* `Sdk.Lists.List()`:  `error.code` **Changed**
+* `Sdk.Lists.Create()`:  `error.code` **Changed**
+* `Sdk.Lists.Delete()`:  `error.code` **Changed**
+
 ## 8.1.3
 
 * `Sdk.Assessments.Create()`:  `error.code.Enum(listEntryTooBroad)` **Added**

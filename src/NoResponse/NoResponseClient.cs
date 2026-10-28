@@ -49,6 +49,8 @@ namespace NoResponse
 
         public ISettings Settings { get; }
 
+        public IRequests Requests { get; }
+
         public ILists Lists { get; }
     }
 
@@ -93,6 +95,10 @@ namespace NoResponse
         /// </summary>
         public ISettings Settings { get; private set; }
         /// <summary>
+        /// The Requests sub-SDK.
+        /// </summary>
+        public IRequests Requests { get; private set; }
+        /// <summary>
         /// The Lists sub-SDK.
         /// </summary>
         public ILists Lists { get; private set; }
@@ -119,6 +125,8 @@ namespace NoResponse
             WebhookEndpoints = new WebhookEndpoints(SDKConfiguration);
 
             Settings = new Settings(SDKConfiguration);
+
+            Requests = new Requests(SDKConfiguration);
 
             Lists = new Lists(SDKConfiguration);
         }
@@ -202,6 +210,8 @@ namespace NoResponse
             WebhookEndpoints = new WebhookEndpoints(SDKConfiguration);
 
             Settings = new Settings(SDKConfiguration);
+
+            Requests = new Requests(SDKConfiguration);
 
             Lists = new Lists(SDKConfiguration);
         }

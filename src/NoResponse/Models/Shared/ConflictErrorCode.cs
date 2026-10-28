@@ -22,6 +22,9 @@ namespace NoResponse.Models.Shared
         public static readonly ConflictErrorCode RiskVersionAhead = new ConflictErrorCode("risk_version_ahead");
         public static readonly ConflictErrorCode KeyLimitReached = new ConflictErrorCode("key_limit_reached");
         public static readonly ConflictErrorCode SelfRevocation = new ConflictErrorCode("self_revocation");
+        public static readonly ConflictErrorCode OutcomeConflict = new ConflictErrorCode("outcome_conflict");
+        public static readonly ConflictErrorCode CredentialConflict = new ConflictErrorCode("credential_conflict");
+        public static readonly ConflictErrorCode BindingConflict = new ConflictErrorCode("binding_conflict");
         public static readonly ConflictErrorCode ListEntryExists = new ConflictErrorCode("list_entry_exists");
         public static readonly ConflictErrorCode ListLimitReached = new ConflictErrorCode("list_limit_reached");
         public static readonly ConflictErrorCode ListEntryTooBroad = new ConflictErrorCode("list_entry_too_broad");
@@ -36,6 +39,9 @@ namespace NoResponse.Models.Shared
                 ["risk_version_ahead"] = RiskVersionAhead,
                 ["key_limit_reached"] = KeyLimitReached,
                 ["self_revocation"] = SelfRevocation,
+                ["outcome_conflict"] = OutcomeConflict,
+                ["credential_conflict"] = CredentialConflict,
+                ["binding_conflict"] = BindingConflict,
                 ["list_entry_exists"] = ListEntryExists,
                 ["list_limit_reached"] = ListLimitReached,
                 ["list_entry_too_broad"] = ListEntryTooBroad
