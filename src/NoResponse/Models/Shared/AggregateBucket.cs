@@ -26,6 +26,12 @@ namespace NoResponse.Models.Shared
         [JsonProperty("score_histogram", Required = Newtonsoft.Json.Required.DisallowNull)]
         public List<AggregateScoreCount>? ScoreHistogram { get; set; }
 
+        /// <summary>
+        /// With metric score_outcomes: the score_histogram's first answers whose assessment has a reported outcome, by its latest. A bin's count less its score_outcomes is the first answers with none reported.
+        /// </summary>
+        [JsonProperty("score_outcomes", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<AggregateScoreOutcome>? ScoreOutcomes { get; set; }
+
         [JsonProperty("late_flips", Required = Newtonsoft.Json.Required.DisallowNull)]
         public List<AggregateLateFlip>? LateFlips { get; set; }
     }

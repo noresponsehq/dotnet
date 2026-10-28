@@ -9,6 +9,7 @@ namespace NoResponse.Models.Shared
     {
         [JsonProperty("count")] Count,
         [JsonProperty("score_histogram")] ScoreHistogram,
+        [JsonProperty("score_outcomes")] ScoreOutcomes,
         [JsonProperty("late_flips")] LateFlips,
     }
 

@@ -39,7 +39,7 @@ namespace NoResponse.Models.Shared
         public List<AggregateDimension>? GroupBy { get; set; }
 
         /// <summary>
-        /// count: each bucket's count and groups. score_histogram: first answers by flow and 5-point score bucket. late_flips: changes of an assessment's account decision for its flow after its first answer, by from, to and delay.
+        /// count: each bucket's count and groups. score_histogram: first answers by flow and 5-point score bucket. score_outcomes: the histogram's first answers that have a reported outcome, by flow, 5-point score bucket and the latest outcome reported for the assessment (POST /v1/assessments/{assessment_id}/outcomes); the rest of a bin has none reported. late_flips: changes of an assessment's account decision for its flow after its first answer, by from, to and delay.
         /// </summary>
         [JsonProperty("metrics", Required = Newtonsoft.Json.Required.DisallowNull)]
         public List<AssessmentAggregateRequestMetric>? Metrics { get; set; }

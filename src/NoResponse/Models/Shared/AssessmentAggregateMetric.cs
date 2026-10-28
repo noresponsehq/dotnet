@@ -13,12 +13,14 @@ namespace NoResponse.Models.Shared
     {
         public static readonly AssessmentAggregateMetric Count = new AssessmentAggregateMetric("count");
         public static readonly AssessmentAggregateMetric ScoreHistogram = new AssessmentAggregateMetric("score_histogram");
+        public static readonly AssessmentAggregateMetric ScoreOutcomes = new AssessmentAggregateMetric("score_outcomes");
         public static readonly AssessmentAggregateMetric LateFlips = new AssessmentAggregateMetric("late_flips");
 
         private static readonly Dictionary<string, AssessmentAggregateMetric> _knownValues =
             new Dictionary<string, AssessmentAggregateMetric>() {
                 ["count"] = Count,
                 ["score_histogram"] = ScoreHistogram,
+                ["score_outcomes"] = ScoreOutcomes,
                 ["late_flips"] = LateFlips
             };
 
