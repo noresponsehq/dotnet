@@ -1,5 +1,11 @@
 # Changelog
 
+## 9.3.0
+
+* `Sdk.Assessments.Aggregate()`: 
+  *  `request.TimeZone` **Added**
+  *  `response.timeZone` **Added**
+
 ## 9.2.0
 
 * `Sdk.Assessments.Search()`: 

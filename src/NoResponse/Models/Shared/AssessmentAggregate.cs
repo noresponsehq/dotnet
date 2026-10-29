@@ -27,7 +27,7 @@ namespace NoResponse.Models.Shared
         public string To { get; set; } = default!;
 
         /// <summary>
-        /// The period each count covers, in UTC; a week starts on Monday.
+        /// The period each count covers: an hour, or a day or a week (from Monday) in time_zone. Hour buckets are whole UTC hours in any time zone.
         /// </summary>
         [JsonProperty("bucket", Required = Newtonsoft.Json.Required.Always)]
         public Bucket Bucket { get; set; } = default!;
@@ -37,6 +37,12 @@ namespace NoResponse.Models.Shared
 
         [JsonProperty("metrics", Required = Newtonsoft.Json.Required.Always)]
         public List<AssessmentAggregateMetric> Metrics { get; set; } = default!;
+
+        /// <summary>
+        /// The time zone whose local midnight started each day and week bucket, as requested; UTC when the request named none.
+        /// </summary>
+        [JsonProperty("time_zone", Required = Newtonsoft.Json.Required.Always)]
+        public string TimeZone { get; set; } = default!;
 
         /// <summary>
         /// The calling workspace's configured retention period in days. Default 365 (12 months), which is also the maximum: a workspace may only shorten it, to at least 1 day. Each record expires from its own created_at; see assessment expires_at.

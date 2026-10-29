@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 70bd5ecd-d923-41ca-9a42-6e3360b4ce2f
 management:
-  docChecksum: 05a265b4b0bb0f187d9cc7fe27904447
+  docChecksum: ef5bf92f13432ce2101609929d8d4213
   docVersion: "1"
   speakeasyVersion: internal
   generationVersion: internal
-  releaseVersion: 9.2.0
-  configChecksum: 646fe38407cb566a0ef3c92c69de77dc
+  releaseVersion: 9.3.0
+  configChecksum: 869caec0129140a3b98446e11d3ec782
 features:
   csharp:
     additionalDependencies: 0.1.0
@@ -477,7 +477,7 @@ trackedFiles:
   docs/Models/Shared/Admission.md:
     last_write_checksum: sha1:bfbb03885fbb1e625913680393fee0eeff612de4
   docs/Models/Shared/AggregateBucket.md:
-    last_write_checksum: sha1:ca29ec712478598c378f21708e1e0807f403758d
+    last_write_checksum: sha1:e7254b68e980c36cb756e64d252ab1102d4e60f8
   docs/Models/Shared/AggregateDimension.md:
     last_write_checksum: sha1:b0d6397a17718d54b687cc7d1ef6cf5bbc35e386
   docs/Models/Shared/AggregateGroup.md:
@@ -501,13 +501,13 @@ trackedFiles:
   docs/Models/Shared/Assessment.md:
     last_write_checksum: sha1:f740bc64790193e373e51b11590b8bd735da59ba
   docs/Models/Shared/AssessmentAggregate.md:
-    last_write_checksum: sha1:6610306c63f3e7be9bd871ddfbc5ee15cd13808e
+    last_write_checksum: sha1:a74140b3d22380e7ef1e8e1896659ae45f859bbb
   docs/Models/Shared/AssessmentAggregateCoverage.md:
     last_write_checksum: sha1:2d2c5ceb08c533d368ff7afe0125ad2c8d451f91
   docs/Models/Shared/AssessmentAggregateMetric.md:
     last_write_checksum: sha1:e3ec1261e86f6d8f5f43849d2f5efd0f82fe11b3
   docs/Models/Shared/AssessmentAggregateRequest.md:
-    last_write_checksum: sha1:5b8cec2d5633102a59d2219ccea0fa22ae5ff472
+    last_write_checksum: sha1:6b40fe1701a1c7dfec025f2c0b8c4f579ca2ad56
   docs/Models/Shared/AssessmentAggregateRequestMetric.md:
     last_write_checksum: sha1:2e2c03a4f8b73469d3e417dcf611a922aaed930c
   docs/Models/Shared/AssessmentDeletion.md:
@@ -601,7 +601,7 @@ trackedFiles:
   docs/Models/Shared/BreachSummary.md:
     last_write_checksum: sha1:b0ff68008fca78207d2dd10a5c3a9c9988ce3eb2
   docs/Models/Shared/Bucket.md:
-    last_write_checksum: sha1:e8ff7a99330b7d570380d9536c4c3f9a25a7c97b
+    last_write_checksum: sha1:c12a8f58392b5c7a0f712c2a46cf2dbd8aa0e7aa
   docs/Models/Shared/Conclusion.md:
     last_write_checksum: sha1:4ec45eb7fed0faf525111c69329d9ecc92017071
   docs/Models/Shared/Confidence.md:
@@ -1131,7 +1131,7 @@ trackedFiles:
   docs/sdks/accounts/README.md:
     last_write_checksum: sha1:4839bb5b1265376b100e4c901da008f03eef7b7e
   docs/sdks/assessments/README.md:
-    last_write_checksum: sha1:b259c79eda817be0dc309902bb5249448e63dccd
+    last_write_checksum: sha1:cfde37a373ffbeaf17c64a8fe18aca2aef19b054
   docs/sdks/audit/README.md:
     last_write_checksum: sha1:19e4b9cbdbf4fb54c1d0602cc3eab75371807a99
   docs/sdks/erasures/README.md:
@@ -1169,7 +1169,7 @@ trackedFiles:
   src/NoResponse/Accounts.cs:
     last_write_checksum: sha1:3a79d5a8e30384b16752e8a18ece63058b9afa3f
   src/NoResponse/Assessments.cs:
-    last_write_checksum: sha1:af571d5943c220dad1080be620d7c1f6c7e9859e
+    last_write_checksum: sha1:51b64eb5d08488ce0438ccce9128eb8594c27627
   src/NoResponse/Audit.cs:
     last_write_checksum: sha1:729ad268a04c7dcab9e62dcd3b03ba26d1957650
   src/NoResponse/Erasures.cs:
@@ -1639,7 +1639,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/Admission.cs:
     last_write_checksum: sha1:bbd6db5c0b2c6b2a483f8305282e9d3b00e52a44
   src/NoResponse/Models/Shared/AggregateBucket.cs:
-    last_write_checksum: sha1:ad4395cf20998e0dfe7fe0e3715a5163c1d3eac1
+    last_write_checksum: sha1:f125135cf6cbff5129333a991c76f0fd34095613
   src/NoResponse/Models/Shared/AggregateDimension.cs:
     last_write_checksum: sha1:b38ae89ba55f4f162dc35b9a5dda91642fc0d13a
   src/NoResponse/Models/Shared/AggregateGroup.cs:
@@ -1663,13 +1663,13 @@ trackedFiles:
   src/NoResponse/Models/Shared/Assessment.cs:
     last_write_checksum: sha1:fcb8b2a3361be6d273993e8b89ca31599426d8d6
   src/NoResponse/Models/Shared/AssessmentAggregate.cs:
-    last_write_checksum: sha1:4702dc85d361fa55bb26f7382432a880c5c99aed
+    last_write_checksum: sha1:27e940249810bbe280bd7daadd278beb3927fe48
   src/NoResponse/Models/Shared/AssessmentAggregateCoverage.cs:
     last_write_checksum: sha1:5fd54ca3e981cd17ba0f1b5f40d6ba35bef794cc
   src/NoResponse/Models/Shared/AssessmentAggregateMetric.cs:
     last_write_checksum: sha1:663e5277efd95e3f22aa68a7ba2bc316154bb4da
   src/NoResponse/Models/Shared/AssessmentAggregateRequest.cs:
-    last_write_checksum: sha1:8d1ec678038bbda37a6d88956456d1b2ac7caf34
+    last_write_checksum: sha1:b559105f8cc65533acd7e3fe7462305253b9e075
   src/NoResponse/Models/Shared/AssessmentAggregateRequestMetric.cs:
     last_write_checksum: sha1:67db946748d64bc505b429ada5b66758bd83ff40
   src/NoResponse/Models/Shared/AssessmentDeletion.cs:
@@ -1763,7 +1763,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/BreachSummary.cs:
     last_write_checksum: sha1:207265dcd52dcd186538f1cc032a8abd81c06cf9
   src/NoResponse/Models/Shared/Bucket.cs:
-    last_write_checksum: sha1:8c51a4c0c951b97c4078cd6a5cefaaa2e3c71776
+    last_write_checksum: sha1:003381a3409e69c325cc88b3d517df2d8cdc34ef
   src/NoResponse/Models/Shared/Conclusion.cs:
     last_write_checksum: sha1:5fdcaa16662f68d3e2000afccb5609f89738741d
   src/NoResponse/Models/Shared/Confidence.cs:
@@ -2291,17 +2291,17 @@ trackedFiles:
   src/NoResponse/Models/Shared/WorkspaceOperationsSummaryRequest.cs:
     last_write_checksum: sha1:29c3ef293b3925883936aca2d63cb0cb41988bf2
   src/NoResponse/NoResponse.csproj:
-    last_write_checksum: sha1:29ec0405b3b3e7efb61d3e9e209e7966107acfc4
+    last_write_checksum: sha1:85c1ffd2d9a7d8be8334f906298c882f7d85936d
   src/NoResponse/NoResponseClient.cs:
     last_write_checksum: sha1:6870e6deb19ba04cbc76e80eb7cbb47ec395a43e
   src/NoResponse/Operations.cs:
     last_write_checksum: sha1:38fbfa4df1a026b11f719acfb2b4dd6d9a7ee053
   src/NoResponse/Requests.cs:
-    last_write_checksum: sha1:e69218890848a9da83c2f7527e02055979cb283c
+    last_write_checksum: sha1:986eadc9601232895b8a2ff771312fdf083fa79b
   src/NoResponse/Reviews.cs:
     last_write_checksum: sha1:5ea00d3bf72817eac669a17dc2b2e36c550a6019
   src/NoResponse/SDKConfig.cs:
-    last_write_checksum: sha1:00ddb9f45d274ee17c3613d84268a7e883c88408
+    last_write_checksum: sha1:0a296d1070d5126ee82417ff95e045be680b6c31
   src/NoResponse/Settings.cs:
     last_write_checksum: sha1:bf725236fad278a8690a82e6114d82c22fe974a4
   src/NoResponse/Usage.cs:
@@ -2311,7 +2311,7 @@ trackedFiles:
   src/NoResponse/Utils/BigIntStrConverter.cs:
     last_write_checksum: sha1:8803aa46f7bca5595c22751ede125e3c4e993856
   src/NoResponse/Utils/Constants.cs:
-    last_write_checksum: sha1:eaa9a678d6021d0dae511408f91ff1174a817205
+    last_write_checksum: sha1:81468cbba594d903b4fd1427a8098712635cc51d
   src/NoResponse/Utils/DecimalStrConverter.cs:
     last_write_checksum: sha1:1fa9c1159f476245dfff02718e434accbba46136
   src/NoResponse/Utils/EnumConverter.cs:
@@ -2355,7 +2355,7 @@ trackedFiles:
   src/NoResponse/Utils/Utilities.cs:
     last_write_checksum: sha1:12620d7c94b9ffadfd2c82aa279f5675b7b8901a
   src/NoResponse/WebhookEndpoints.cs:
-    last_write_checksum: sha1:6f99a8e4de8e7b34999e1aaccd5de862346b4122
+    last_write_checksum: sha1:bdc9267fe056abf09826851dc769b880276abbb5
   src/NoResponse/WebhookVerification/Webhook.cs:
     last_write_checksum: sha1:107f0033047fb25f28f44a3e18e16cd01b6dbe49
 examples:
@@ -2603,10 +2603,10 @@ examples:
   aggregateAssessments:
     noresponse-default-aggregate-assessments:
       requestBody:
-        application/json: {"from": "2026-10-19T00:00:00Z", "to": "2026-10-26T00:00:00Z", "bucket": "week", "limit": 20, "country": "GB"}
+        application/json: {"from": "2026-10-19T00:00:00Z", "to": "2026-10-26T00:00:00Z", "bucket": "week", "time_zone": "UTC", "limit": 20, "country": "GB"}
       responses:
         "200":
-          application/json: {"schema_version": "1", "from": "2026-10-19T00:00:00.000Z", "to": "2026-10-26T00:00:00.000Z", "bucket": "week", "group_by": [], "metrics": [], "retention_days": 365, "groups_truncated": false, "coverage": {"as_of": "2026-01-01T00:00:00Z", "first_answers_started_at": "2026-01-01T00:00:00Z", "score_outcomes_started_at": "2026-01-01T00:00:00Z", "retained_from": "2026-01-01T00:00:00Z", "population": "first_answers", "erased_records_included": true, "overlapping_groups": false, "late_flip_unit": "decision_transitions", "historical_backfill": false}, "buckets": []}
+          application/json: {"schema_version": "1", "from": "2026-10-19T00:00:00.000Z", "to": "2026-10-26T00:00:00.000Z", "bucket": "week", "group_by": [], "metrics": [], "time_zone": "UTC", "retention_days": 365, "groups_truncated": false, "coverage": {"as_of": "2026-01-01T00:00:00Z", "first_answers_started_at": "2026-01-01T00:00:00Z", "score_outcomes_started_at": "2026-01-01T00:00:00Z", "retained_from": "2026-01-01T00:00:00Z", "population": "first_answers", "erased_records_included": true, "overlapping_groups": false, "late_flip_unit": "decision_transitions", "historical_backfill": false}, "buckets": []}
         "400":
           application/problem+json: {"type": "https://docs.noresponse.org/errors/invalid_request", "title": "Invalid request", "status": 400, "detail": "identifiers: at least one of email, username or phone is required.", "instance": "/v1/assessments", "code": "invalid_idempotency_key", "request_id": "9f2c4b7a1d3e4f5a8b6c0d1e2f3a4b5c", "invalid_params": [{"field": "identifiers", "reason": "at least one of email, username or phone is required", "example": "new.user@example.com"}]}
         "401":
