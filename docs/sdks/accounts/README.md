@@ -20,6 +20,7 @@ Your accounts, each with one current risk, and their assessment history.
 * [RetireCredential](#retirecredential) - Retire an issued credential association
 * [Export](#export) - Export an account
 * [ListDecisions](#listdecisions) - Page through recorded account decisions
+* [Search](#search) - Search distinct accounts by email or account ID
 
 ## ListChanged
 
@@ -750,6 +751,53 @@ while(res != null)
 ### Response
 
 **[ListAccountDecisionsResponse](../../Models/Operations/ListAccountDecisionsResponse.md)**
+
+### Errors
+
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
+
+## Search
+
+Search distinct accounts observed in retained assessments in this environment. Match an exact account_id or canonical email; an email matches any retained assessment belonging to the account. The response contains one row per account with its newest retained assessment, current decision when available, per-account assessment count, and total distinct-account count. Send next_cursor with unchanged filters to continue. Totals are exact below 10000 and capped at 10000. Results are live across pages. Requires history access and identifier access for email. Read-only and safe to retry.
+
+### Example Usage
+
+<!-- UsageSnippet language="csharp" operationID="searchAccounts" method="post" path="/v1/accounts/search" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+AccountDirectorySearchRequest req = new AccountDirectorySearchRequest() {
+    AccountId = "acct_7f3a9c",
+    Email = "new.user@example.com",
+    Cursor = "eyJ0IjoxNzY3MjI1NjAwMDAwMDAwLCJpIjoiYXNtX2V4YW1wbGUiLCJlIjoxNzY3MjI5MjAwfQ",
+};
+
+var res = await sdk.Accounts.SearchAsync(req);
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                                             | Type                                                                                  | Required                                                                              | Description                                                                           |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `request`                                                                             | [AccountDirectorySearchRequest](../../Models/Shared/AccountDirectorySearchRequest.md) | :heavy_check_mark:                                                                    | The request object to use for the request.                                            |
+
+### Response
+
+**[SearchAccountsResponse](../../Models/Operations/SearchAccountsResponse.md)**
 
 ### Errors
 
