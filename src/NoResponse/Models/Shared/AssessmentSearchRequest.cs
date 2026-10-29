@@ -27,6 +27,12 @@ namespace NoResponse.Models.Shared
         public string? AccountId { get; set; }
 
         /// <summary>
+        /// Assessments of every account that one of its retained admitted assessments sent this mailbox as identifiers.email, matched as lists match an email entry: case-insensitive, a +tag removed and, at gmail.com and googlemail.com, the dots of the local part ignored. Only assessments stored since email list matching began carry the mailbox. An address that is not a valid mailbox is refused with 400.
+        /// </summary>
+        [JsonProperty("email", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? Email { get; set; }
+
+        /// <summary>
         /// The event an assessment is made for: account_creation (a user creates an account), login (a user returns to an existing account) or purchase (a payment or a credit grant). The account's risk is reported with the decision for this flow.
         /// </summary>
         [JsonProperty("flow", Required = Newtonsoft.Json.Required.DisallowNull)]
@@ -115,5 +121,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("list_match", Required = Newtonsoft.Json.Required.DisallowNull)]
         public ListMatch? ListMatch { get; set; }
+
+        /// <summary>
+        /// true returns only assessments whose latest stored revision's decision differs from their first answer's decision (see decision); false only the others. An assessment whose first answer or latest revision has no decision yet is not changed. Cannot be combined with revision first.
+        /// </summary>
+        [JsonProperty("changed", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public bool? Changed { get; set; }
     }
 }

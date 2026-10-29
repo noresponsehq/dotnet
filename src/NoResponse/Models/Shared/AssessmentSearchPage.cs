@@ -7,7 +7,7 @@ namespace NoResponse.Models.Shared
     using System.Collections.Generic;
 
     /// <summary>
-    /// A bounded page of latest assessment revisions, newest creation first. Each revision identifies the exact result found; no current account risk is attached.
+    /// A bounded page of latest assessment revisions, newest creation first, with how many assessments match the filters. Each item is the revision found and its first answer's decision; no current account risk is attached.
     /// </summary>
     public class AssessmentSearchPage
     {
@@ -18,7 +18,19 @@ namespace NoResponse.Models.Shared
         public string SchemaVersion { get; } = "1";
 
         [JsonProperty("items", Required = Newtonsoft.Json.Required.Always)]
-        public List<AssessmentRevision> Items { get; set; } = default!;
+        public List<AssessmentSearchItem> Items { get; set; } = default!;
+
+        /// <summary>
+        /// How many assessments match the filters over every page, counted when this page was read: exact up to 10000. At 10000 or more it is 10000 and total_capped is true. The cursor does not change it; a later page can count differently, as results are live.
+        /// </summary>
+        [JsonProperty("total", Required = Newtonsoft.Json.Required.Always)]
+        public long Total { get; set; } = default!;
+
+        /// <summary>
+        /// True when at least 10000 assessments match, so total is 10000 and not the exact count.
+        /// </summary>
+        [JsonProperty("total_capped", Required = Newtonsoft.Json.Required.Always)]
+        public bool TotalCapped { get; set; } = default!;
 
         /// <summary>
         /// Opaque, expiring cursor bound to this environment, operation and every filter. Keep the filters unchanged.
