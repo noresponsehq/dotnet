@@ -25,7 +25,7 @@ Collaborative review cases, comments and linked subjects.
 
 ## List
 
-List retained investigation reviews using filters and an authenticated cursor.
+List retained investigation reviews using filters and an authenticated cursor. Optional account_id selects one exact account in this environment before pagination. All filters are bound into the cursor.
 
 ### Example Usage
 
@@ -502,6 +502,7 @@ var res = await sdk.Reviews.CreateViewAsync(
         Name = "High priority reviews",
         Shared = true,
         Filter = new Filter() {
+            AccountId = "acct_7f3a9c",
             Assignee = "usr_customer_admin",
             AssigneePrincipalId = "mem_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
         },
@@ -557,6 +558,7 @@ var res = await sdk.Reviews.UpdateViewAsync(
         Name = "High priority reviews",
         Shared = false,
         Filter = new Filter() {
+            AccountId = "acct_7f3a9c",
             Assignee = "usr_customer_admin",
             AssigneePrincipalId = "mem_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
         },

@@ -27,7 +27,7 @@ namespace NoResponse
         /// List retained account reviews.
         /// </summary>
         /// <remarks>
-        /// List retained investigation reviews using filters and an authenticated cursor.
+        /// List retained investigation reviews using filters and an authenticated cursor. Optional account_id selects one exact account in this environment before pagination. All filters are bound into the cursor.
         /// </remarks>
         /// <param name="request">A <see cref="ListReviewsRequest"/> parameter.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
@@ -544,7 +544,7 @@ namespace NoResponse
         /// List retained account reviews.
         /// </summary>
         /// <remarks>
-        /// List retained investigation reviews using filters and an authenticated cursor.
+        /// List retained investigation reviews using filters and an authenticated cursor. Optional account_id selects one exact account in this environment before pagination. All filters are bound into the cursor.
         /// </remarks>
         /// <param name="request">A <see cref="ListReviewsRequest"/> parameter.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
@@ -678,7 +678,8 @@ namespace NoResponse
                     Priority = request.Priority,
                     Assignee = request.Assignee,
                     Unassigned = request.Unassigned,
-                    AssigneePrincipalId = request.AssigneePrincipalId
+                    AssigneePrincipalId = request.AssigneePrincipalId,
+                    AccountId = request.AccountId
                 };
 
                 return await ListAsync(

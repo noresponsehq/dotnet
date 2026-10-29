@@ -11,6 +11,12 @@ namespace NoResponse.Models.Shared
 
     public class Filter
     {
+        /// <summary>
+        /// Only reviews of this exact account in the authenticated workspace and environment. Applied before pagination.
+        /// </summary>
+        [JsonProperty("account_id", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? AccountId { get; set; }
+
         [JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull)]
         public ReviewStatus? Status { get; set; }
 
