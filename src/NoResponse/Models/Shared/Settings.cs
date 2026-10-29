@@ -33,7 +33,7 @@ namespace NoResponse.Models.Shared
         public long RetentionDays { get; set; } = default!;
 
         /// <summary>
-        /// How many times this environment's policy has changed; 0 while the defaults apply. A served risk.policy_version ends in +t&lt;policy_version&gt; once it is above 0.
+        /// The monotonic settings configuration epoch, including retention changes. Zero while defaults apply. Historical assessments keep their frozen policy version; the active version reaches new assessments within a minute.
         /// </summary>
         [JsonProperty("policy_version", Required = Newtonsoft.Json.Required.Always)]
         public long PolicyVersion { get; set; } = default!;

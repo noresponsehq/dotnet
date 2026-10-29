@@ -1,0 +1,16 @@
+# ReviewSubjectRequest
+
+An assessment link also requires assessment_id and assessment_version; an issued_credential link also requires credential_id. Every reference must belong to account_id in this environment. Other kinds reject those fields.
+
+
+## Fields
+
+| Field                                                         | Type                                                          | Required                                                      | Description                                                   | Example                                                       |
+| ------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------- |
+| `Kind`                                                        | [ReviewSubjectKind](../../Models/Shared/ReviewSubjectKind.md) | :heavy_check_mark:                                            | N/A                                                           |                                                               |
+| `AccountId`                                                   | *string*                                                      | :heavy_check_mark:                                            | N/A                                                           | acct_7f3a9c                                                   |
+| `AssessmentId`                                                | *string*                                                      | :heavy_minus_sign:                                            | N/A                                                           | asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                |
+| `AssessmentVersion`                                           | *long*                                                        | :heavy_minus_sign:                                            | N/A                                                           |                                                               |
+| `CredentialId`                                                | *string*                                                      | :heavy_minus_sign:                                            | N/A                                                           | cred_01JA2Z8K6Q4V7W9XBCDEFGHJKM                               |
+| `Reason`                                                      | *string*                                                      | :heavy_check_mark:                                            | N/A                                                           | Linked during review of the account evidence.                 |
+| `ExpectedVersion`                                             | *long*                                                        | :heavy_check_mark:                                            | N/A                                                           |                                                               |

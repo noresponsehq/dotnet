@@ -1,5 +1,7 @@
 # Impact
 
+The selected reason's served impact band. Requires reason.
+
 ## Example Usage
 
 ```csharp

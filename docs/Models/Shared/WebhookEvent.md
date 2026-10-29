@@ -40,3 +40,9 @@ WebhookEvent.CreateWebhookEndpointDisabled(/* values here */);
 ```csharp
 WebhookEvent.CreateAccountRiskChanged(/* values here */);
 ```
+
+### AuditEvent
+
+```csharp
+WebhookEvent.CreateAuditEvent(/* values here */);
+```

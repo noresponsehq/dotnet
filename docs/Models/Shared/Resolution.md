@@ -1,0 +1,15 @@
+# Resolution
+
+
+## Fields
+
+| Field                                                       | Type                                                        | Required                                                    | Description                                                 | Example                                                     |
+| ----------------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------- |
+| `ReviewVersion`                                             | *long*                                                      | :heavy_check_mark:                                          | N/A                                                         |                                                             |
+| `RiskVersion`                                               | *long*                                                      | :heavy_check_mark:                                          | N/A                                                         |                                                             |
+| `AssessmentVersion`                                         | *long*                                                      | :heavy_check_mark:                                          | N/A                                                         |                                                             |
+| `AssessmentId`                                              | *string*                                                    | :heavy_check_mark:                                          | N/A                                                         | asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM                              |
+| `Conclusion`                                                | [Conclusion](../../Models/Shared/Conclusion.md)             | :heavy_check_mark:                                          | N/A                                                         |                                                             |
+| `Note`                                                      | *string*                                                    | :heavy_check_mark:                                          | N/A                                                         | Reviewed the retained account evidence and customer report. |
+| `CreatedBy`                                                 | *string*                                                    | :heavy_check_mark:                                          | N/A                                                         | usr_customer_admin                                          |
+| `CreatedAt`                                                 | *string*                                                    | :heavy_check_mark:                                          | N/A                                                         | 2026-01-01T00:00:00Z                                        |

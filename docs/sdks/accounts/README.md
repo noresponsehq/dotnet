@@ -11,6 +11,7 @@ Your accounts, each with one current risk, and their assessment history.
 * [Delete](#delete) - Erase an account and its history.
 * [ListAssessments](#listassessments) - Page through one account's unexpired assessments.
 * [RecordEnforcement](#recordenforcement) - Record what you did to an account in your identity provider.
+* [ListEnforcements](#listenforcements) - Page through account enforcements
 * [RecordOutcome](#recordoutcome) - Record or correct an account outcome
 * [ListOutcomes](#listoutcomes) - List retained account feedback
 * [RetrieveDecision](#retrievedecision) - Retrieve an exact historical account decision
@@ -18,6 +19,7 @@ Your accounts, each with one current risk, and their assessment history.
 * [ListCredentials](#listcredentials) - List issued credential associations
 * [RetireCredential](#retirecredential) - Retire an issued credential association
 * [Export](#export) - Export an account
+* [ListDecisions](#listdecisions) - Page through recorded account decisions
 
 ## ListChanged
 
@@ -322,6 +324,58 @@ var res = await sdk.Accounts.RecordEnforcementAsync(
 | NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
 | NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
 
+## ListEnforcements
+
+List retained enforcement reports for one account with an authenticated cursor.
+
+### Example Usage
+
+<!-- UsageSnippet language="csharp" operationID="listAccountEnforcements" method="get" path="/v1/accounts/{account_id}/enforcements" example="page" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Operations;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+ListAccountEnforcementsResponse? res = await sdk.Accounts.ListEnforcementsAsync(
+    accountId: "acct_7f3a9c",
+    limit: 20
+);
+
+while(res != null)
+{
+    // handle items
+
+    res = await res.Next!();
+}
+```
+
+### Parameters
+
+| Parameter                                                                                                                                                                                                          | Type                                                                                                                                                                                                               | Required                                                                                                                                                                                                           | Description                                                                                                                                                                                                        | Example                                                                                                                                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `AccountId`                                                                                                                                                                                                        | *string*                                                                                                                                                                                                           | :heavy_check_mark:                                                                                                                                                                                                 | The account_id the workspace sends with its assessments, as one path segment (percent-encode '\|' and ':' if the client requires it). A value that does not match the account_id shape answers 400 invalid_request. | acct_7f3a9c                                                                                                                                                                                                        |
+| `Limit`                                                                                                                                                                                                            | *long*                                                                                                                                                                                                             | :heavy_minus_sign:                                                                                                                                                                                                 | Items per page.                                                                                                                                                                                                    |                                                                                                                                                                                                                    |
+| `Cursor`                                                                                                                                                                                                           | *string*                                                                                                                                                                                                           | :heavy_minus_sign:                                                                                                                                                                                                 | next_cursor from the previous page, unchanged.                                                                                                                                                                     |                                                                                                                                                                                                                    |
+
+### Response
+
+**[ListAccountEnforcementsResponse](../../Models/Operations/ListAccountEnforcementsResponse.md)**
+
+### Errors
+
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
+
 ## RecordOutcome
 
 Record a factual report, not an enforcement action. A known outcome replaces the effective report. unknown alone records uncertainty without changing it; unknown with supersedes explicitly retracts it. supersedes must name the current effective report or the request answers 409 outcome_conflict. Reports remain append-only. Idempotency-Key is required. observed_at defaults to receipt time and cannot be over five minutes ahead.
@@ -383,17 +437,23 @@ List retained account reports, newest first. The page-level effective outcome id
 <!-- UsageSnippet language="csharp" operationID="listAccountOutcomes" method="get" path="/v1/accounts/{account_id}/outcomes" -->
 ```csharp
 using NoResponse;
+using NoResponse.Models.Operations;
 using NoResponse.Models.Shared;
 using System;
 
 var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
-var res = await sdk.Accounts.ListOutcomesAsync(
+ListAccountOutcomesResponse? res = await sdk.Accounts.ListOutcomesAsync(
     accountId: "acct_7f3a9c",
     limit: 20
 );
 
-// handle response
+while(res != null)
+{
+    // handle items
+
+    res = await res.Next!();
+}
 ```
 
 ### Parameters
@@ -521,17 +581,23 @@ Retained credential associations, ordered by id. Page with the authenticated cur
 <!-- UsageSnippet language="csharp" operationID="listAccountCredentials" method="get" path="/v1/accounts/{account_id}/credentials" -->
 ```csharp
 using NoResponse;
+using NoResponse.Models.Operations;
 using NoResponse.Models.Shared;
 using System;
 
 var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
-var res = await sdk.Accounts.ListCredentialsAsync(
+ListAccountCredentialsResponse? res = await sdk.Accounts.ListCredentialsAsync(
     accountId: "acct_7f3a9c",
     limit: 20
 );
 
-// handle response
+while(res != null)
+{
+    // handle items
+
+    res = await res.Next!();
+}
 ```
 
 ### Parameters
@@ -632,6 +698,58 @@ var res = await sdk.Accounts.ExportAsync(accountId: "acct_7f3a9c");
 ### Response
 
 **[ExportAccountResponse](../../Models/Operations/ExportAccountResponse.md)**
+
+### Errors
+
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
+
+## ListDecisions
+
+List retained immutable risk decisions for one account with an authenticated cursor.
+
+### Example Usage
+
+<!-- UsageSnippet language="csharp" operationID="listAccountDecisions" method="get" path="/v1/accounts/{account_id}/decisions" example="page" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Operations;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+ListAccountDecisionsResponse? res = await sdk.Accounts.ListDecisionsAsync(
+    accountId: "acct_7f3a9c",
+    limit: 20
+);
+
+while(res != null)
+{
+    // handle items
+
+    res = await res.Next!();
+}
+```
+
+### Parameters
+
+| Parameter                                                                                                                                                                                                          | Type                                                                                                                                                                                                               | Required                                                                                                                                                                                                           | Description                                                                                                                                                                                                        | Example                                                                                                                                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `AccountId`                                                                                                                                                                                                        | *string*                                                                                                                                                                                                           | :heavy_check_mark:                                                                                                                                                                                                 | The account_id the workspace sends with its assessments, as one path segment (percent-encode '\|' and ':' if the client requires it). A value that does not match the account_id shape answers 400 invalid_request. | acct_7f3a9c                                                                                                                                                                                                        |
+| `Limit`                                                                                                                                                                                                            | *long*                                                                                                                                                                                                             | :heavy_minus_sign:                                                                                                                                                                                                 | Items per page.                                                                                                                                                                                                    |                                                                                                                                                                                                                    |
+| `Cursor`                                                                                                                                                                                                           | *string*                                                                                                                                                                                                           | :heavy_minus_sign:                                                                                                                                                                                                 | next_cursor from the previous page, unchanged.                                                                                                                                                                     |                                                                                                                                                                                                                    |
+
+### Response
+
+**[ListAccountDecisionsResponse](../../Models/Operations/ListAccountDecisionsResponse.md)**
 
 ### Errors
 

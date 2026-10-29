@@ -60,7 +60,7 @@ namespace NoResponse.Models.Shared
         public string? CreatedBy { get; set; }
 
         /// <summary>
-        /// When a rotated key stops authenticating (POST /v1/keys/rotate). Absent for a key with no end.
+        /// The earlier of the explicit lifetime and any rotation overlap. Rotation preserves the original lifetime.
         /// </summary>
         [JsonProperty("expires_at", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? ExpiresAt { get; set; }
@@ -79,5 +79,38 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("key", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? KeyValue { get; set; }
+
+        /// <summary>
+        /// The optional display name supplied for this API key. Preserved on rotation.
+        /// </summary>
+        [JsonProperty("name", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? Name { get; set; }
+
+        /// <summary>
+        /// Optional operational purpose, at most 200 printable characters without leading or trailing whitespace. Do not put secrets or personal data here. Preserved on rotation and included in the creation request fingerprint; omitted for older credentials.
+        /// </summary>
+        [JsonProperty("purpose", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? Purpose { get; set; }
+
+        [JsonProperty("kind", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public KeyKind? Kind { get; set; }
+
+        /// <summary>
+        /// The issuing member's external identity for a personal key. Personal ownership is fixed and the key is revoked when that member loses authority. Service keys belong to the workspace and omit this field.
+        /// </summary>
+        [JsonProperty("owner_user_id", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? OwnerUserId { get; set; }
+
+        /// <summary>
+        /// Replacement public key identifier, or legacy when the successor predates recorded lineage. This field excludes the secret.
+        /// </summary>
+        [JsonProperty("rotated_to", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? RotatedTo { get; set; }
+
+        /// <summary>
+        /// Latest recorded authenticated request observation, updated at most once per minute. Capture is best effort after the response and includes authenticated requests refused by authorization or rate limits. Absence means unknown and does not prove the key was unused. It is independent of diagnostic retention and resets on the replacement key after rotation. This field retains no raw IP or user-agent.
+        /// </summary>
+        [JsonProperty("last_used_at", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? LastUsedAt { get; set; }
     }
 }

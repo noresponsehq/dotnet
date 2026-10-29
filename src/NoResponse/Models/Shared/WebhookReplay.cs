@@ -22,7 +22,7 @@ namespace NoResponse.Models.Shared
         public string EventId { get; set; } = default!;
 
         /// <summary>
-        /// The event's type, as its body's type: assessment.updated, endpoint.verification, account.deleted, workspace.deleted, webhook_endpoint.disabled, account.risk_changed, or a type added later.
+        /// The event's type, as its body's type: assessment.updated, endpoint.verification, account.deleted, workspace.deleted, webhook_endpoint.disabled, account.risk_changed, audit.event, or a type added later.
         /// </summary>
         [JsonProperty("event_type", Required = Newtonsoft.Json.Required.Always)]
         public string EventType { get; set; } = default!;

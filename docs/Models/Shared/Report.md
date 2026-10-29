@@ -1,0 +1,13 @@
+# Report
+
+
+## Fields
+
+| Field                                                            | Type                                                             | Required                                                         | Description                                                      | Example                                                          |
+| ---------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `EvaluatorVersion`                                               | *string*                                                         | :heavy_check_mark:                                               | N/A                                                              |                                                                  |
+| `InputSha256`                                                    | *string*                                                         | :heavy_check_mark:                                               | N/A                                                              | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
+| `CohortSha256`                                                   | *string*                                                         | :heavy_check_mark:                                               | N/A                                                              | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
+| `Status`                                                         | [ResultStatus](../../Models/Shared/ResultStatus.md)              | :heavy_check_mark:                                               | N/A                                                              |                                                                  |
+| `Candidate`                                                      | [Thresholds](../../Models/Shared/Thresholds.md)                  | :heavy_check_mark:                                               | N/A                                                              |                                                                  |
+| `Scope`                                                          | [ReportScope](../../Models/Shared/ReportScope.md)                | :heavy_check_mark:                                               | N/A                                                              |                                                                  |

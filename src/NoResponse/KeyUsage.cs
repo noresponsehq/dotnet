@@ -15,6 +15,9 @@ namespace NoResponse
     using System.Threading;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// Usage of keys issued to your accounts.
+    /// </summary>
     public interface IKeyUsage
     {
         /// <summary>
@@ -47,6 +50,9 @@ namespace NoResponse
         );
     }
 
+    /// <summary>
+    /// Usage of keys issued to your accounts.
+    /// </summary>
     public class KeyUsage : IKeyUsage
     {
         /// <summary>

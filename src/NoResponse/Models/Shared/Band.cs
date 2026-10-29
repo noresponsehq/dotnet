@@ -8,9 +8,6 @@ namespace NoResponse.Models.Shared
     using System.Collections.Generic;
     using System.Linq;
 
-    /// <summary>
-    /// low 0-29, medium 30-59, high 60-84, critical 85-100.
-    /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class Band : IEquatable<Band>, IOpenEnum<string>
     {

@@ -17,6 +17,7 @@ namespace NoResponse.Models.Shared
         public static readonly Exclusion CrossCustomerData = new Exclusion("cross_customer_data");
         public static readonly Exclusion LegacyOutcomeNotes = new Exclusion("legacy_outcome_notes");
         public static readonly Exclusion UncapturedHistoricalDecisions = new Exclusion("uncaptured_historical_decisions");
+        public static readonly Exclusion InvestigatorReviewsRequireReviewExport = new Exclusion("investigator_reviews_require_review_export");
 
         private static readonly Dictionary<string, Exclusion> _knownValues =
             new Dictionary<string, Exclusion>() {
@@ -25,7 +26,8 @@ namespace NoResponse.Models.Shared
                 ["private_source_and_work_payloads"] = PrivateSourceAndWorkPayloads,
                 ["cross_customer_data"] = CrossCustomerData,
                 ["legacy_outcome_notes"] = LegacyOutcomeNotes,
-                ["uncaptured_historical_decisions"] = UncapturedHistoricalDecisions
+                ["uncaptured_historical_decisions"] = UncapturedHistoricalDecisions,
+                ["investigator_reviews_require_review_export"] = InvestigatorReviewsRequireReviewExport
             };
 
         private static readonly ConcurrentDictionary<string, Exclusion> _values =

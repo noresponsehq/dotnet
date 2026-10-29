@@ -32,17 +32,14 @@ namespace NoResponse.Models.Shared
         [JsonProperty("recommendation", Required = Newtonsoft.Json.Required.DisallowNull)]
         public Recommendation? Recommendation { get; set; }
 
-        /// <summary>
-        /// low 0-29, medium 30-59, high 60-84, critical 85-100.
-        /// </summary>
         [JsonProperty("band", Required = Newtonsoft.Json.Required.DisallowNull)]
         public Band? Band { get; set; }
 
         /// <summary>
-        /// The action of the list entry that decided the account.
+        /// The list action captured with the first answer. none means no matching entry was found. For retained_first_answers an absent field means the older assessment did not capture list state; this remains a separate group.
         /// </summary>
         [JsonProperty("list_match", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public ListMatch? ListMatch { get; set; }
+        public AggregateGroupListMatch? ListMatch { get; set; }
 
         /// <summary>
         /// A stable reason code. New codes may appear; ignore any you do not know.
@@ -50,6 +47,9 @@ namespace NoResponse.Models.Shared
         [JsonProperty("reason", Required = Newtonsoft.Json.Required.DisallowNull)]
         public ReasonCode? Reason { get; set; }
 
+        /// <summary>
+        /// The selected reason's served impact band. Requires reason.
+        /// </summary>
         [JsonProperty("impact", Required = Newtonsoft.Json.Required.DisallowNull)]
         public Impact? Impact { get; set; }
 

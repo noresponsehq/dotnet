@@ -34,7 +34,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
-        Flow = Flow.Purchase,
+        Flow = Flow.AccountCreation,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new.user",
@@ -72,7 +72,7 @@ var res = await sdk.Assessments.CreateAsync(
             SessionCreatedAt = "2026-10-14T08:57:00.000Z",
             AuthTime = "2026-10-14T08:55:00.000Z",
             AccountCreatedAt = "2026-10-14T08:56:00.000Z",
-            Verified = true,
+            Verified = false,
             Mfa = new AuthContextMfa() {
                 Methods = new List<string>() {
                     "totp",
@@ -108,7 +108,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
-        Flow = Flow.Purchase,
+        Flow = Flow.AccountCreation,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new.user",
@@ -146,7 +146,7 @@ var res = await sdk.Assessments.CreateAsync(
             SessionCreatedAt = "2026-10-14T08:57:00.000Z",
             AuthTime = "2026-10-14T08:55:00.000Z",
             AccountCreatedAt = "2026-10-14T08:56:00.000Z",
-            Verified = true,
+            Verified = false,
             Mfa = new AuthContextMfa() {
                 Methods = new List<string>() {
                     "totp",
@@ -212,7 +212,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
-        Flow = Flow.Purchase,
+        Flow = Flow.AccountCreation,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new.user",
@@ -250,7 +250,7 @@ var res = await sdk.Assessments.CreateAsync(
             SessionCreatedAt = "2026-10-14T08:57:00.000Z",
             AuthTime = "2026-10-14T08:55:00.000Z",
             AccountCreatedAt = "2026-10-14T08:56:00.000Z",
-            Verified = true,
+            Verified = false,
             Mfa = new AuthContextMfa() {
                 Methods = new List<string>() {
                     "totp",
@@ -342,7 +342,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.CreateAsync(
     body: new AssessmentRequest() {
         AccountId = "acct_7f3a9c",
-        Flow = Flow.Purchase,
+        Flow = Flow.AccountCreation,
         Identifiers = new AssessmentRequestIdentifiers() {
             Email = "new.user@example.com",
             Username = "new.user",
@@ -380,7 +380,7 @@ var res = await sdk.Assessments.CreateAsync(
             SessionCreatedAt = "2026-10-14T08:57:00.000Z",
             AuthTime = "2026-10-14T08:55:00.000Z",
             AccountCreatedAt = "2026-10-14T08:56:00.000Z",
-            Verified = true,
+            Verified = false,
             Mfa = new AuthContextMfa() {
                 Methods = new List<string>() {
                     "totp",
@@ -633,7 +633,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Assessments.RecordOutcomeAsync(
     assessmentId: "asm_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
     body: new AssessmentOutcomeRequest() {
-        Outcome = Outcome.AccountTakeover,
+        Outcome = Outcome.Unknown,
         ObservedAt = "2026-10-14T09:04:30.000Z",
         ExternalRef = "case-48213",
         Notes = "Chargeback filed two days after account creation.",
@@ -782,6 +782,7 @@ AssessmentAggregateRequest req = new AssessmentAggregateRequest() {
     From = "2026-10-19T00:00:00Z",
     To = "2026-10-26T00:00:00Z",
     Bucket = Bucket.Week,
+    Country = "GB",
 };
 
 var res = await sdk.Assessments.AggregateAsync(req);
@@ -830,6 +831,7 @@ AssessmentSearchRequest req = new AssessmentSearchRequest() {
     To = "2026-01-02T00:00:00Z",
     AccountId = "acct_7f3a9c",
     Cursor = "eyJ0IjoxNzY3MjI1NjAwMDAwMDAwLCJpIjoiYXNtX2V4YW1wbGUiLCJlIjoxNzY3MjI5MjAwfQ",
+    Country = "GB",
 };
 
 var res = await sdk.Assessments.SearchAsync(req);

@@ -28,6 +28,16 @@ namespace NoResponse.Models.Shared
         public static readonly ConflictErrorCode ListEntryExists = new ConflictErrorCode("list_entry_exists");
         public static readonly ConflictErrorCode ListLimitReached = new ConflictErrorCode("list_limit_reached");
         public static readonly ConflictErrorCode ListEntryTooBroad = new ConflictErrorCode("list_entry_too_broad");
+        public static readonly ConflictErrorCode PolicyVersionConflict = new ConflictErrorCode("policy_version_conflict");
+        public static readonly ConflictErrorCode ReviewVersionConflict = new ConflictErrorCode("review_version_conflict");
+        public static readonly ConflictErrorCode ReviewExists = new ConflictErrorCode("review_exists");
+        public static readonly ConflictErrorCode ReviewLimitReached = new ConflictErrorCode("review_limit_reached");
+        public static readonly ConflictErrorCode ExportConflict = new ConflictErrorCode("export_conflict");
+        public static readonly ConflictErrorCode EvaluationConflict = new ConflictErrorCode("evaluation_conflict");
+        public static readonly ConflictErrorCode EvaluationNoProposal = new ConflictErrorCode("evaluation_no_proposal");
+        public static readonly ConflictErrorCode EvaluationLimitReached = new ConflictErrorCode("evaluation_limit_reached");
+        public static readonly ConflictErrorCode AlreadyMember = new ConflictErrorCode("already_member");
+        public static readonly ConflictErrorCode MemberLimitReached = new ConflictErrorCode("member_limit_reached");
 
         private static readonly Dictionary<string, ConflictErrorCode> _knownValues =
             new Dictionary<string, ConflictErrorCode>() {
@@ -44,7 +54,17 @@ namespace NoResponse.Models.Shared
                 ["binding_conflict"] = BindingConflict,
                 ["list_entry_exists"] = ListEntryExists,
                 ["list_limit_reached"] = ListLimitReached,
-                ["list_entry_too_broad"] = ListEntryTooBroad
+                ["list_entry_too_broad"] = ListEntryTooBroad,
+                ["policy_version_conflict"] = PolicyVersionConflict,
+                ["review_version_conflict"] = ReviewVersionConflict,
+                ["review_exists"] = ReviewExists,
+                ["review_limit_reached"] = ReviewLimitReached,
+                ["export_conflict"] = ExportConflict,
+                ["evaluation_conflict"] = EvaluationConflict,
+                ["evaluation_no_proposal"] = EvaluationNoProposal,
+                ["evaluation_limit_reached"] = EvaluationLimitReached,
+                ["already_member"] = AlreadyMember,
+                ["member_limit_reached"] = MemberLimitReached
             };
 
         private static readonly ConcurrentDictionary<string, ConflictErrorCode> _values =

@@ -37,5 +37,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("note", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? Note { get; set; }
+
+        /// <summary>
+        /// Optional expiry. An expired entry stops matching immediately; bounded maintenance removes it and propagates account risk changes.
+        /// </summary>
+        [JsonProperty("expires_at", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? ExpiresAt { get; set; }
     }
 }

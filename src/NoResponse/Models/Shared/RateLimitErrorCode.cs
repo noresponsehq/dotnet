@@ -15,10 +15,14 @@ namespace NoResponse.Models.Shared
     public class RateLimitErrorCode : IEquatable<RateLimitErrorCode>, IOpenEnum<string>
     {
         public static readonly RateLimitErrorCode RateLimited = new RateLimitErrorCode("rate_limited");
+        public static readonly RateLimitErrorCode AssessmentBudgetExhausted = new RateLimitErrorCode("assessment_budget_exhausted");
+        public static readonly RateLimitErrorCode ExportLimitReached = new RateLimitErrorCode("export_limit_reached");
 
         private static readonly Dictionary<string, RateLimitErrorCode> _knownValues =
             new Dictionary<string, RateLimitErrorCode>() {
-                ["rate_limited"] = RateLimited
+                ["rate_limited"] = RateLimited,
+                ["assessment_budget_exhausted"] = AssessmentBudgetExhausted,
+                ["export_limit_reached"] = ExportLimitReached
             };
 
         private static readonly ConcurrentDictionary<string, RateLimitErrorCode> _values =

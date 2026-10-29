@@ -1,0 +1,13 @@
+# AuditSettings
+
+Read audit retention and available history.
+
+
+## Fields
+
+| Field                                                                       | Type                                                                        | Required                                                                    | Description                                                                 | Example                                                                     |
+| --------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `Environment`                                                               | [AuditSettingsEnvironment](../../Models/Shared/AuditSettingsEnvironment.md) | :heavy_check_mark:                                                          | N/A                                                                         |                                                                             |
+| `RetentionDays`                                                             | *long*                                                                      | :heavy_check_mark:                                                          | N/A                                                                         |                                                                             |
+| `OldestAvailableAt`                                                         | *string*                                                                    | :heavy_minus_sign:                                                          | N/A                                                                         | 2026-01-01T00:00:00Z                                                        |
+| `Capture`                                                                   | *string*                                                                    | :heavy_check_mark:                                                          | N/A                                                                         |                                                                             |

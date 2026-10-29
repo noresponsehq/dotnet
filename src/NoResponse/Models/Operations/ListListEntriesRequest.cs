@@ -22,5 +22,11 @@ namespace NoResponse.Models.Operations
         /// </summary>
         [NoResponseMetadata("pathParam:style=simple,explode=false,name=environment")]
         public KeyEnvironment Environment { get; set; } = default!;
+
+        [NoResponseMetadata("queryParam:style=form,explode=true,name=limit")]
+        public long? Limit { get; set; }
+
+        [NoResponseMetadata("queryParam:style=form,explode=true,name=cursor")]
+        public string? Cursor { get; set; }
     }
 }

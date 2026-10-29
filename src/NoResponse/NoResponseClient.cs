@@ -30,6 +30,9 @@ namespace NoResponse
         /// </summary>
         public IAccounts Accounts { get; }
 
+        /// <summary>
+        /// Usage of keys issued to your accounts.
+        /// </summary>
         public IKeyUsage KeyUsage { get; }
 
         /// <summary>
@@ -47,11 +50,65 @@ namespace NoResponse
         /// </summary>
         public IWebhookEndpoints WebhookEndpoints { get; }
 
+        /// <summary>
+        /// Scoped workspace membership automation.
+        /// </summary>
+        public IMembers Members { get; }
+
+        /// <summary>
+        /// Durable audit history, retention and delivery.
+        /// </summary>
+        public IAudit Audit { get; }
+
+        /// <summary>
+        /// Recorded usage for your environment.
+        /// </summary>
+        public IUsage Usage { get; }
+
+        /// <summary>
+        /// Workspace-bound invitation lifecycle.
+        /// </summary>
+        public IInvites Invites { get; }
+
+        /// <summary>
+        /// Environment policy, history and previews.
+        /// </summary>
         public ISettings Settings { get; }
 
+        /// <summary>
+        /// Retained request diagnostics and operational summaries.
+        /// </summary>
         public IRequests Requests { get; }
 
+        /// <summary>
+        /// List entries, previews and durable changes.
+        /// </summary>
         public ILists Lists { get; }
+
+        /// <summary>
+        /// Collaborative review cases, comments and linked subjects.
+        /// </summary>
+        public IReviews Reviews { get; }
+
+        /// <summary>
+        /// Durable deletion receipts.
+        /// </summary>
+        public IErasures Erasures { get; }
+
+        /// <summary>
+        /// Bounded customer export jobs and encrypted artifacts.
+        /// </summary>
+        public IExports Exports { get; }
+
+        /// <summary>
+        /// Frozen policy evaluation evidence and reviewed publication.
+        /// </summary>
+        public IEvaluations Evaluations { get; }
+
+        /// <summary>
+        /// Retained outcomes, enforcement reports and review populations.
+        /// </summary>
+        public IOperations Operations { get; }
     }
 
     /// <summary>
@@ -91,6 +148,22 @@ namespace NoResponse
         /// </summary>
         public IWebhookEndpoints WebhookEndpoints { get; private set; }
         /// <summary>
+        /// The Members sub-SDK.
+        /// </summary>
+        public IMembers Members { get; private set; }
+        /// <summary>
+        /// The Audit sub-SDK.
+        /// </summary>
+        public IAudit Audit { get; private set; }
+        /// <summary>
+        /// The Usage sub-SDK.
+        /// </summary>
+        public IUsage Usage { get; private set; }
+        /// <summary>
+        /// The Invites sub-SDK.
+        /// </summary>
+        public IInvites Invites { get; private set; }
+        /// <summary>
         /// The Settings sub-SDK.
         /// </summary>
         public ISettings Settings { get; private set; }
@@ -102,6 +175,26 @@ namespace NoResponse
         /// The Lists sub-SDK.
         /// </summary>
         public ILists Lists { get; private set; }
+        /// <summary>
+        /// The Reviews sub-SDK.
+        /// </summary>
+        public IReviews Reviews { get; private set; }
+        /// <summary>
+        /// The Erasures sub-SDK.
+        /// </summary>
+        public IErasures Erasures { get; private set; }
+        /// <summary>
+        /// The Exports sub-SDK.
+        /// </summary>
+        public IExports Exports { get; private set; }
+        /// <summary>
+        /// The Evaluations sub-SDK.
+        /// </summary>
+        public IEvaluations Evaluations { get; private set; }
+        /// <summary>
+        /// The Operations sub-SDK.
+        /// </summary>
+        public IOperations Operations { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the SDK based on a <see cref="SDKConfig"/> configuration object.
@@ -124,11 +217,29 @@ namespace NoResponse
 
             WebhookEndpoints = new WebhookEndpoints(SDKConfiguration);
 
+            Members = new Members(SDKConfiguration);
+
+            Audit = new Audit(SDKConfiguration);
+
+            Usage = new Usage(SDKConfiguration);
+
+            Invites = new Invites(SDKConfiguration);
+
             Settings = new Settings(SDKConfiguration);
 
             Requests = new Requests(SDKConfiguration);
 
             Lists = new Lists(SDKConfiguration);
+
+            Reviews = new Reviews(SDKConfiguration);
+
+            Erasures = new Erasures(SDKConfiguration);
+
+            Exports = new Exports(SDKConfiguration);
+
+            Evaluations = new Evaluations(SDKConfiguration);
+
+            Operations = new Operations(SDKConfiguration);
         }
 
         /// <summary>
@@ -209,11 +320,29 @@ namespace NoResponse
 
             WebhookEndpoints = new WebhookEndpoints(SDKConfiguration);
 
+            Members = new Members(SDKConfiguration);
+
+            Audit = new Audit(SDKConfiguration);
+
+            Usage = new Usage(SDKConfiguration);
+
+            Invites = new Invites(SDKConfiguration);
+
             Settings = new Settings(SDKConfiguration);
 
             Requests = new Requests(SDKConfiguration);
 
             Lists = new Lists(SDKConfiguration);
+
+            Reviews = new Reviews(SDKConfiguration);
+
+            Erasures = new Erasures(SDKConfiguration);
+
+            Exports = new Exports(SDKConfiguration);
+
+            Evaluations = new Evaluations(SDKConfiguration);
+
+            Operations = new Operations(SDKConfiguration);
         }
 
         private void InitHooks()

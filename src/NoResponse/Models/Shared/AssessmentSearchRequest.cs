@@ -70,5 +70,50 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("revision", Required = Newtonsoft.Json.Required.DisallowNull)]
         public AnswerRevision? Revision { get; set; }
+
+        [JsonProperty("band", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public Band? Band { get; set; }
+
+        /// <summary>
+        /// A stable reason code. New codes may appear; ignore any you do not know.
+        /// </summary>
+        [JsonProperty("reason", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public ReasonCode? Reason { get; set; }
+
+        /// <summary>
+        /// The selected reason's served impact band. Requires reason.
+        /// </summary>
+        [JsonProperty("impact", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public Impact? Impact { get; set; }
+
+        /// <summary>
+        /// An evidence lane: accounts (account presence for email and username), phone, breach, domain (the email domain's registration) and ip.
+        /// </summary>
+        [JsonProperty("lane", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public Lane? Lane { get; set; }
+
+        [JsonProperty("country", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? Country { get; set; }
+
+        [JsonProperty("asn", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? Asn { get; set; }
+
+        /// <summary>
+        /// Inclusive lower score bound. Pending answers without a score do not match.
+        /// </summary>
+        [JsonProperty("score_min", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? ScoreMin { get; set; }
+
+        /// <summary>
+        /// Inclusive upper score bound, at least score_min when both are supplied.
+        /// </summary>
+        [JsonProperty("score_max", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? ScoreMax { get; set; }
+
+        /// <summary>
+        /// The list action captured at the first answer. Requires revision first. Older answers without captured list state do not match, including none.
+        /// </summary>
+        [JsonProperty("list_match", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public ListMatch? ListMatch { get; set; }
     }
 }

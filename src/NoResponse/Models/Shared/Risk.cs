@@ -17,9 +17,6 @@ namespace NoResponse.Models.Shared
         [JsonProperty("score", Required = Newtonsoft.Json.Required.Always)]
         public long Score { get; set; } = default!;
 
-        /// <summary>
-        /// low 0-29, medium 30-59, high 60-84, critical 85-100.
-        /// </summary>
         [JsonProperty("band", Required = Newtonsoft.Json.Required.Always)]
         public Band Band { get; set; } = default!;
 

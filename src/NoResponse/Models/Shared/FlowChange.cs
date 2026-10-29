@@ -28,10 +28,10 @@ namespace NoResponse.Models.Shared
         public bool ShouldSerializeBlock() => Block.IsSet;
 
         /// <summary>
-        /// The depth a request for this flow that names none is served at. Defaults: full for account_creation and purchase, quick for login.
+        /// assessments only.
         /// </summary>
         [JsonProperty("default_depth", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public DefaultDepth? DefaultDepth { get; set; }
+        public UsageCountDepth? DefaultDepth { get; set; }
 
         /// <summary>
         /// Login or purchase only: drop the flow's own thresholds so it uses account_creation's again. Not combined with step_up, review or block. Send true; false is refused.

@@ -8,6 +8,9 @@ namespace NoResponse.Models.Shared
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    /// The selected reason's served impact band. Requires reason.
+    /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class Impact : IEquatable<Impact>, IOpenEnum<string>
     {

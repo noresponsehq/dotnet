@@ -4,46 +4,65 @@ namespace NoResponse.Models.Shared
     using Newtonsoft.Json;
     using NoResponse.Utils;
     using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
 
-    /// <summary>
-    /// The environment whose endpoints receive this event: live, or test for the workspace's test environment.
-    /// </summary>
-    public enum Environment
+    [JsonConverter(typeof(OpenEnumConverter))]
+    public class Environment : IEquatable<Environment>, IOpenEnum<string>
     {
-        [JsonProperty("live")] Live,
-        [JsonProperty("test")] Test,
-    }
+        public static readonly Environment Live = new Environment("live");
+        public static readonly Environment Test = new Environment("test");
+        public static readonly Environment Workspace = new Environment("workspace");
 
-    public static class EnvironmentExtension
-    {
-        public static string Value(this Environment value)
+        private static readonly Dictionary<string, Environment> _knownValues =
+            new Dictionary<string, Environment>() {
+                ["live"] = Live,
+                ["test"] = Test,
+                ["workspace"] = Workspace
+            };
+
+        private static readonly ConcurrentDictionary<string, Environment> _values =
+            new ConcurrentDictionary<string, Environment>(_knownValues);
+
+        private Environment(string value)
         {
-            return ((JsonPropertyAttribute)value.GetType().GetMember(value.ToString()) [0].GetCustomAttributes(typeof(JsonPropertyAttribute), false)[0]).PropertyName ?? value.ToString();
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            Value = value;
         }
 
-        public static Environment ToEnum(this string value)
+        public string Value { get; }
+
+        public static Environment Of(string value)
         {
-            foreach (var field in typeof(Environment).GetFields())
-            {
-                var attributes = field.GetCustomAttributes(typeof(JsonPropertyAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    continue;
-                }
-
-                var attribute = attributes[0] as JsonPropertyAttribute;
-                if (attribute != null && attribute.PropertyName == value)
-                {
-                    var enumVal = field.GetValue(null);
-
-                    if (enumVal is Environment)
-                    {
-                        return (Environment)enumVal;
-                    }
-                }
-            }
-
-            throw new Exception($"Unknown value {value} for enum Environment");
+            return _values.GetOrAdd(value,
+                                    _ => new Environment(value));
         }
+
+        public static implicit operator Environment(string value) => Of(value);
+        public static implicit operator string(Environment environment) => environment.Value;
+
+        public static Environment[] Values()
+        {
+            return _values.Values.ToArray();
+        }
+
+        public override string ToString() => Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        public bool IsKnown()
+        {
+            return _knownValues.ContainsKey(Value);
+        }
+
+        public override bool Equals(object? obj) => Equals(obj as Environment);
+
+        public bool Equals(Environment? other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other is null) return false;
+            return string.Equals(Value, other.Value);
+        }
+
+        public override int GetHashCode() => Value.GetHashCode();
     }
 }

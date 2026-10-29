@@ -46,5 +46,11 @@ namespace NoResponse.Models.Operations
         /// </summary>
         [NoResponseMetadata("queryParam:style=form,explode=true,name=cursor")]
         public string? Cursor { get; set; }
+
+        /// <summary>
+        /// Filter by the public authenticated API key identifier; older unattributed rows do not match.
+        /// </summary>
+        [NoResponseMetadata("queryParam:style=form,explode=true,name=api_key_id")]
+        public string? ApiKeyId { get; set; }
     }
 }

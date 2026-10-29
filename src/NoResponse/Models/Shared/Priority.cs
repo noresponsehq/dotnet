@@ -1,0 +1,70 @@
+#nullable enable
+namespace NoResponse.Models.Shared
+{
+    using Newtonsoft.Json;
+    using NoResponse.Utils;
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    [JsonConverter(typeof(OpenEnumConverter))]
+    public class Priority : IEquatable<Priority>, IOpenEnum<string>
+    {
+        public static readonly Priority Low = new Priority("low");
+        public static readonly Priority Normal = new Priority("normal");
+        public static readonly Priority High = new Priority("high");
+        public static readonly Priority Urgent = new Priority("urgent");
+
+        private static readonly Dictionary<string, Priority> _knownValues =
+            new Dictionary<string, Priority>() {
+                ["low"] = Low,
+                ["normal"] = Normal,
+                ["high"] = High,
+                ["urgent"] = Urgent
+            };
+
+        private static readonly ConcurrentDictionary<string, Priority> _values =
+            new ConcurrentDictionary<string, Priority>(_knownValues);
+
+        private Priority(string value)
+        {
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            Value = value;
+        }
+
+        public string Value { get; }
+
+        public static Priority Of(string value)
+        {
+            return _values.GetOrAdd(value,
+                                    _ => new Priority(value));
+        }
+
+        public static implicit operator Priority(string value) => Of(value);
+        public static implicit operator string(Priority priority) => priority.Value;
+
+        public static Priority[] Values()
+        {
+            return _values.Values.ToArray();
+        }
+
+        public override string ToString() => Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        public bool IsKnown()
+        {
+            return _knownValues.ContainsKey(Value);
+        }
+
+        public override bool Equals(object? obj) => Equals(obj as Priority);
+
+        public bool Equals(Priority? other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other is null) return false;
+            return string.Equals(Value, other.Value);
+        }
+
+        public override int GetHashCode() => Value.GetHashCode();
+    }
+}

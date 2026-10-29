@@ -87,6 +87,7 @@ namespace NoResponse.Tests
                 ["workspace.deleted"] = webhookEvent.WorkspaceDeletedEvent,
                 ["webhook_endpoint.disabled"] = webhookEvent.WebhookEndpointDisabledEvent,
                 ["account.risk_changed"] = webhookEvent.AccountRiskChangedEvent,
+                ["audit.event"] = webhookEvent.AuditEventEvent,
             };
             var member = Assert.Single(members, m => m.Value is not null);
             Assert.Equal((string)body["type"]!, member.Key);

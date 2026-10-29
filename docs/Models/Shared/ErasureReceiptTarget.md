@@ -1,0 +1,10 @@
+# ErasureReceiptTarget
+
+
+## Fields
+
+| Field                                                                           | Type                                                                            | Required                                                                        | Description                                                                     | Example                                                                         |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `Name`                                                                          | [ErasureReceiptTargetName](../../Models/Shared/ErasureReceiptTargetName.md)     | :heavy_check_mark:                                                              | N/A                                                                             |                                                                                 |
+| `Status`                                                                        | [ErasureReceiptTargetStatus](../../Models/Shared/ErasureReceiptTargetStatus.md) | :heavy_check_mark:                                                              | N/A                                                                             |                                                                                 |
+| `CompletedAt`                                                                   | *string*                                                                        | :heavy_minus_sign:                                                              | N/A                                                                             | 2026-01-01T00:00:00Z                                                            |

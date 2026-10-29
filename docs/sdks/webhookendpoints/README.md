@@ -13,6 +13,7 @@ Your webhook endpoints: register, list, rotate signing keys, send test events an
 * [SendTestEvent](#sendtestevent) - Send a test event to an endpoint.
 * [ListDeliveries](#listdeliveries) - List an endpoint's delivery attempts.
 * [ReplayDelivery](#replaydelivery) - Send one delivery again.
+* [Aggregate](#aggregate) - Summarise retained webhook attempts and delivery queue
 
 ## List
 
@@ -404,6 +405,53 @@ var res = await sdk.WebhookEndpoints.ReplayDeliveryAsync(
 ### Response
 
 **[ReplayWebhookDeliveryResponse](../../Models/Operations/ReplayWebhookDeliveryResponse.md)**
+
+### Errors
+
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
+
+## Aggregate
+
+Count retained webhook delivery attempts within thirty days and report current retained queue state.
+
+### Example Usage
+
+<!-- UsageSnippet language="csharp" operationID="aggregateWebhooks" method="post" path="/v1/webhooks/aggregate" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+WebhookAggregateRequest req = new WebhookAggregateRequest() {
+    From = "2026-01-01T00:00:00Z",
+    To = "2026-01-01T00:00:00Z",
+    EndpointId = "whe_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
+};
+
+var res = await sdk.WebhookEndpoints.AggregateAsync(req);
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                                 | Type                                                                      | Required                                                                  | Description                                                               |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `request`                                                                 | [WebhookAggregateRequest](../../Models/Shared/WebhookAggregateRequest.md) | :heavy_check_mark:                                                        | The request object to use for the request.                                |
+
+### Response
+
+**[AggregateWebhooksResponse](../../Models/Operations/AggregateWebhooksResponse.md)**
 
 ### Errors
 

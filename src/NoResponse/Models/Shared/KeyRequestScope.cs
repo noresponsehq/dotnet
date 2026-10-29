@@ -14,6 +14,16 @@ namespace NoResponse.Models.Shared
         [JsonProperty("detailed")] Detailed,
         [JsonProperty("integrations")] Integrations,
         [JsonProperty("management")] Management,
+        [JsonProperty("audit")] Audit,
+        [JsonProperty("usage")] Usage,
+        [JsonProperty("investigate")] Investigate,
+        [JsonProperty("evidence")] Evidence,
+        [JsonProperty("exports")] Exports,
+        [JsonProperty("audit_manage")] AuditManage,
+        [JsonProperty("settings")] Settings,
+        [JsonProperty("policy_publish")] PolicyPublish,
+        [JsonProperty("members")] Members,
+        [JsonProperty("members_manage")] MembersManage,
     }
 
     public static class KeyRequestScopeExtension

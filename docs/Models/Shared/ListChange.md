@@ -1,0 +1,16 @@
+# ListChange
+
+A committed bulk list change and bounded notification progress, available while propagation is pending and for 24 hours after all propagation completes. References count an account once per changed list entry and are not unique accounts. No endpoint delivery or customer enforcement is implied by completed.
+
+
+## Fields
+
+| Field                                                     | Type                                                      | Required                                                  | Description                                               | Example                                                   |
+| --------------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------- |
+| `Id`                                                      | *string*                                                  | :heavy_check_mark:                                        | N/A                                                       | lch_01JA2Z8K6Q4V7W9XBCDEFGHJKM                            |
+| `CreatedAt`                                               | *string*                                                  | :heavy_check_mark:                                        | N/A                                                       | 2026-01-01T00:00:00Z                                      |
+| `State`                                                   | [ListChangeState](../../Models/Shared/ListChangeState.md) | :heavy_check_mark:                                        | N/A                                                       |                                                           |
+| `Added`                                                   | List<[ListEntry](../../Models/Shared/ListEntry.md)>       | :heavy_check_mark:                                        | N/A                                                       |                                                           |
+| `Removed`                                                 | List<*string*>                                            | :heavy_check_mark:                                        | N/A                                                       |                                                           |
+| `PendingPropagations`                                     | *long*                                                    | :heavy_check_mark:                                        | N/A                                                       |                                                           |
+| `ProcessedAccountReferences`                              | *long*                                                    | :heavy_check_mark:                                        | N/A                                                       |                                                           |

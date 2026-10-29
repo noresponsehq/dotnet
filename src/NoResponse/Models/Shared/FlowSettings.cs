@@ -27,10 +27,10 @@ namespace NoResponse.Models.Shared
         public long? Block { get; set; }
 
         /// <summary>
-        /// The depth a request for this flow that names none is served at. Defaults: full for account_creation and purchase, quick for login.
+        /// assessments only.
         /// </summary>
         [JsonProperty("default_depth", Required = Newtonsoft.Json.Required.Always)]
-        public DefaultDepth DefaultDepth { get; set; } = default!;
+        public UsageCountDepth DefaultDepth { get; set; } = default!;
 
         /// <summary>
         /// true while this flow has no thresholds of its own and uses account_creation's, the default for login and purchase. Always false for signup.

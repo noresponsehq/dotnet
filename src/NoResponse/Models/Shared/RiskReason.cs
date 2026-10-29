@@ -23,6 +23,9 @@ namespace NoResponse.Models.Shared
         [JsonProperty("direction", Required = Newtonsoft.Json.Required.Always)]
         public Direction Direction { get; set; } = default!;
 
+        /// <summary>
+        /// The selected reason's served impact band. Requires reason.
+        /// </summary>
         [JsonProperty("impact", Required = Newtonsoft.Json.Required.Always)]
         public Impact Impact { get; set; } = default!;
 

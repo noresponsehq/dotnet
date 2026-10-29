@@ -1,16 +1,13 @@
 # ListMatch
 
-The action of the list entry that decided the account.
+The list action captured at the first answer. Requires revision first. Older answers without captured list state do not match, including none.
 
 ## Example Usage
 
 ```csharp
 using NoResponse.Models.Shared;
 
-var value = ListMatch.Block;
-
-// Open enum: use .Of() to create instances from custom string values
-var custom = ListMatch.Of("custom_value");
+var value = ListMatch.Allow;
 ```
 
 
@@ -18,5 +15,6 @@ var custom = ListMatch.Of("custom_value");
 
 | Name    | Value   |
 | ------- | ------- |
-| `Block` | block   |
 | `Allow` | allow   |
+| `Block` | block   |
+| `None`  | none    |

@@ -35,5 +35,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("deleted_at", Required = Newtonsoft.Json.Required.Always)]
         public string DeletedAt { get; set; } = default!;
+
+        /// <summary>
+        /// Receipt for GET /v1/erasures/{erasure_id}, when durable storage issued one.
+        /// </summary>
+        [JsonProperty("erasure_id", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? ErasureId { get; set; }
     }
 }

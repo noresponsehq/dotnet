@@ -64,5 +64,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("created_by", Required = Newtonsoft.Json.Required.Always)]
         public string CreatedBy { get; set; } = default!;
+
+        /// <summary>
+        /// Optional expiry. An expired entry stops matching immediately; bounded maintenance removes it and propagates account risk changes.
+        /// </summary>
+        [JsonProperty("expires_at", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? ExpiresAt { get; set; }
     }
 }

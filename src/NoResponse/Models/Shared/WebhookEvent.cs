@@ -61,6 +61,13 @@ namespace NoResponse.Models.Shared
             }
         }
 
+        public static WebhookEventType AuditEvent
+        {
+            get {
+                return new WebhookEventType("audit.event");
+            }
+        }
+
         public override string ToString()
         {
             return Value;
@@ -85,6 +92,8 @@ namespace NoResponse.Models.Shared
                     return WebhookEndpointDisabled;
                 case "account.risk_changed":
                     return AccountRiskChanged;
+                case "audit.event":
+                    return AuditEvent;
                 default:
                     throw new ArgumentException("Invalid value for WebhookEventType");
             }
@@ -139,6 +148,10 @@ namespace NoResponse.Models.Shared
         [NoResponseMetadata("form:explode=true")]
         public AccountRiskChangedEvent? AccountRiskChangedEvent { get; set; }
 
+        [UnionVariant]
+        [NoResponseMetadata("form:explode=true")]
+        public AuditEventEvent? AuditEventEvent { get; set; }
+
         public WebhookEventType Type { get; set; }
 
         public static WebhookEvent CreateAssessmentUpdated(AssessmentUpdatedEvent assessmentUpdated)
@@ -189,6 +202,14 @@ namespace NoResponse.Models.Shared
             return res;
         }
 
+        public static WebhookEvent CreateAuditEvent(AuditEventEvent auditEvent)
+        {
+            WebhookEventType typ = WebhookEventType.AuditEvent;
+            WebhookEvent res = new WebhookEvent(typ);
+            res.AuditEventEvent = auditEvent;
+            return res;
+        }
+
         public class WebhookEventConverter : JsonConverter
         {
             public override bool CanConvert(System.Type objectType) => objectType == typeof(WebhookEvent);
@@ -234,6 +255,11 @@ namespace NoResponse.Models.Shared
                 {
                     AccountRiskChangedEvent accountRiskChangedEvent = ResponseBodyDeserializer.DeserializeNotNull<AccountRiskChangedEvent>(jo.ToString());
                     return CreateAccountRiskChanged(accountRiskChangedEvent);
+                }
+                if (discriminator == WebhookEventType.AuditEvent.ToString())
+                {
+                    AuditEventEvent auditEventEvent = ResponseBodyDeserializer.DeserializeNotNull<AuditEventEvent>(jo.ToString());
+                    return CreateAuditEvent(auditEventEvent);
                 }
 
                 throw new InvalidOperationException("Could not deserialize into any supported types.");
@@ -281,6 +307,12 @@ namespace NoResponse.Models.Shared
                 if (res.AccountRiskChangedEvent != null)
                 {
                     writer.WriteRawValue(Utilities.SerializeJSON(res.AccountRiskChangedEvent));
+                    return;
+                }
+
+                if (res.AuditEventEvent != null)
+                {
+                    writer.WriteRawValue(Utilities.SerializeJSON(res.AuditEventEvent));
                     return;
                 }
 

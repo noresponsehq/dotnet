@@ -4,66 +4,47 @@ namespace NoResponse.Models.Shared
     using Newtonsoft.Json;
     using NoResponse.Utils;
     using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
-    /// The action of the list entry that decided the account.
+    /// The list action captured at the first answer. Requires revision first. Older answers without captured list state do not match, including none.
     /// </summary>
-    [JsonConverter(typeof(OpenEnumConverter))]
-    public class ListMatch : IEquatable<ListMatch>, IOpenEnum<string>
+    public enum ListMatch
     {
-        public static readonly ListMatch Block = new ListMatch("block");
-        public static readonly ListMatch Allow = new ListMatch("allow");
+        [JsonProperty("allow")] Allow,
+        [JsonProperty("block")] Block,
+        [JsonProperty("none")] None,
+    }
 
-        private static readonly Dictionary<string, ListMatch> _knownValues =
-            new Dictionary<string, ListMatch>() {
-                ["block"] = Block,
-                ["allow"] = Allow
-            };
-
-        private static readonly ConcurrentDictionary<string, ListMatch> _values =
-            new ConcurrentDictionary<string, ListMatch>(_knownValues);
-
-        private ListMatch(string value)
+    public static class ListMatchExtension
+    {
+        public static string Value(this ListMatch value)
         {
-            if (value == null) throw new ArgumentNullException(nameof(value));
-            Value = value;
+            return ((JsonPropertyAttribute)value.GetType().GetMember(value.ToString()) [0].GetCustomAttributes(typeof(JsonPropertyAttribute), false)[0]).PropertyName ?? value.ToString();
         }
 
-        public string Value { get; }
-
-        public static ListMatch Of(string value)
+        public static ListMatch ToEnum(this string value)
         {
-            return _values.GetOrAdd(value,
-                                    _ => new ListMatch(value));
+            foreach (var field in typeof(ListMatch).GetFields())
+            {
+                var attributes = field.GetCustomAttributes(typeof(JsonPropertyAttribute), false);
+                if (attributes.Length == 0)
+                {
+                    continue;
+                }
+
+                var attribute = attributes[0] as JsonPropertyAttribute;
+                if (attribute != null && attribute.PropertyName == value)
+                {
+                    var enumVal = field.GetValue(null);
+
+                    if (enumVal is ListMatch)
+                    {
+                        return (ListMatch)enumVal;
+                    }
+                }
+            }
+
+            throw new Exception($"Unknown value {value} for enum ListMatch");
         }
-
-        public static implicit operator ListMatch(string value) => Of(value);
-        public static implicit operator string(ListMatch listmatch) => listmatch.Value;
-
-        public static ListMatch[] Values()
-        {
-            return _values.Values.ToArray();
-        }
-
-        public override string ToString() => Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
-
-        public bool IsKnown()
-        {
-            return _knownValues.ContainsKey(Value);
-        }
-
-        public override bool Equals(object? obj) => Equals(obj as ListMatch);
-
-        public bool Equals(ListMatch? other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other is null) return false;
-            return string.Equals(Value, other.Value);
-        }
-
-        public override int GetHashCode() => Value.GetHashCode();
     }
 }

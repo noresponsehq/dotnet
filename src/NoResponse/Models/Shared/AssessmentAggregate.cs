@@ -50,6 +50,12 @@ namespace NoResponse.Models.Shared
         [JsonProperty("groups_truncated", Required = Newtonsoft.Json.Required.Always)]
         public bool GroupsTruncated { get; set; } = default!;
 
+        /// <summary>
+        /// Captured in the same database snapshot as the counts. Capture start times describe when counting began, not the earliest creation time counted: an older assessment may first answer later. Older outcomes are not inferred to be absent. Erased detail cannot be returned by drill-down even while its anonymous count remains.
+        /// </summary>
+        [JsonProperty("coverage", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public AssessmentAggregateCoverage? Coverage { get; set; }
+
         [JsonProperty("buckets", Required = Newtonsoft.Json.Required.Always)]
         public List<AggregateBucket> Buckets { get; set; } = default!;
     }

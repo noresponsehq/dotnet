@@ -11,12 +11,22 @@ var value = KeyRequestScope.Assess;
 
 ## Values
 
-| Name           | Value          |
-| -------------- | -------------- |
-| `Assess`       | assess         |
-| `History`      | history        |
-| `Delete`       | delete         |
-| `Webhooks`     | webhooks       |
-| `Detailed`     | detailed       |
-| `Integrations` | integrations   |
-| `Management`   | management     |
+| Name            | Value           |
+| --------------- | --------------- |
+| `Assess`        | assess          |
+| `History`       | history         |
+| `Delete`        | delete          |
+| `Webhooks`      | webhooks        |
+| `Detailed`      | detailed        |
+| `Integrations`  | integrations    |
+| `Management`    | management      |
+| `Audit`         | audit           |
+| `Usage`         | usage           |
+| `Investigate`   | investigate     |
+| `Evidence`      | evidence        |
+| `Exports`       | exports         |
+| `AuditManage`   | audit_manage    |
+| `Settings`      | settings        |
+| `PolicyPublish` | policy_publish  |
+| `Members`       | members         |
+| `MembersManage` | members_manage  |

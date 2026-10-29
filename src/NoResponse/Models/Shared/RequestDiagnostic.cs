@@ -48,5 +48,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("decision", Required = Newtonsoft.Json.Required.DisallowNull)]
         public DecisionReceipt? Decision { get; set; }
+
+        /// <summary>
+        /// Public authenticated API key identifier. Absent for member requests and older unattributed diagnostics.
+        /// </summary>
+        [JsonProperty("api_key_id", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? ApiKeyId { get; set; }
     }
 }

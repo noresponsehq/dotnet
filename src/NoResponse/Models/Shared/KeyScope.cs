@@ -18,6 +18,16 @@ namespace NoResponse.Models.Shared
         public static readonly KeyScope Detailed = new KeyScope("detailed");
         public static readonly KeyScope Integrations = new KeyScope("integrations");
         public static readonly KeyScope Management = new KeyScope("management");
+        public static readonly KeyScope Audit = new KeyScope("audit");
+        public static readonly KeyScope Usage = new KeyScope("usage");
+        public static readonly KeyScope Investigate = new KeyScope("investigate");
+        public static readonly KeyScope Evidence = new KeyScope("evidence");
+        public static readonly KeyScope Exports = new KeyScope("exports");
+        public static readonly KeyScope AuditManage = new KeyScope("audit_manage");
+        public static readonly KeyScope Settings = new KeyScope("settings");
+        public static readonly KeyScope PolicyPublish = new KeyScope("policy_publish");
+        public static readonly KeyScope Members = new KeyScope("members");
+        public static readonly KeyScope MembersManage = new KeyScope("members_manage");
 
         private static readonly Dictionary<string, KeyScope> _knownValues =
             new Dictionary<string, KeyScope>() {
@@ -27,7 +37,17 @@ namespace NoResponse.Models.Shared
                 ["webhooks"] = Webhooks,
                 ["detailed"] = Detailed,
                 ["integrations"] = Integrations,
-                ["management"] = Management
+                ["management"] = Management,
+                ["audit"] = Audit,
+                ["usage"] = Usage,
+                ["investigate"] = Investigate,
+                ["evidence"] = Evidence,
+                ["exports"] = Exports,
+                ["audit_manage"] = AuditManage,
+                ["settings"] = Settings,
+                ["policy_publish"] = PolicyPublish,
+                ["members"] = Members,
+                ["members_manage"] = MembersManage
             };
 
         private static readonly ConcurrentDictionary<string, KeyScope> _values =

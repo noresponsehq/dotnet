@@ -11,7 +11,7 @@ namespace NoResponse.Hooks
     /// </summary>
     public sealed class IdempotencyKeyHook : IBeforeRequestHook
     {
-        private static readonly string[] Operations = { "createAssessment", "recordAssessmentOutcome" };
+        private static readonly string[] Operations = { "createAssessment", "recordAssessmentOutcome", "recordKeyUsage", "recordAccountOutcome", "changeLists", "createPolicyEvaluation" };
 
         public Task<HttpRequestMessage> BeforeRequestAsync(BeforeRequestContext hookCtx, HttpRequestMessage request)
         {
