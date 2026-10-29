@@ -24,7 +24,7 @@ namespace NoResponse
         /// Read a workspace's usage.
         /// </summary>
         /// <remarks>
-        /// Read daily usage units for the environments you can access. These counts are unpriced.
+        /// Read daily usage units for the environments you can access. These counts are unpriced. With live access it also returns the daily console lookup cap: used, limit and resets_at.
         /// </remarks>
         /// <param name="workspaceId">Your workspace id, as each key lists it in workspace_id. Another workspace, a malformed id and a test environment's id answer 404.</param>
         /// <param name="fromP">The first UTC day, as YYYY-MM-DD.</param>
@@ -72,7 +72,7 @@ namespace NoResponse
         /// Read a workspace's usage.
         /// </summary>
         /// <remarks>
-        /// Read daily usage units for the environments you can access. These counts are unpriced.
+        /// Read daily usage units for the environments you can access. These counts are unpriced. With live access it also returns the daily console lookup cap: used, limit and resets_at.
         /// </remarks>
         /// <param name="workspaceId">Your workspace id, as each key lists it in workspace_id. Another workspace, a malformed id and a test environment's id answer 404.</param>
         /// <param name="fromP">The first UTC day, as YYYY-MM-DD.</param>

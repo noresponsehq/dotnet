@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 70bd5ecd-d923-41ca-9a42-6e3360b4ce2f
 management:
-  docChecksum: f70af54f5237f62ddfe181113daad8ad
+  docChecksum: 7190ac8676aceb7b20395a07e022f1b3
   docVersion: "1"
   speakeasyVersion: internal
   generationVersion: internal
-  releaseVersion: 9.0.0
-  configChecksum: ab3f5900d771ab1d175f22edec1f8935
+  releaseVersion: 9.1.0
+  configChecksum: 221fb10ab2f5be4eeb109b7325bf8556
 features:
   csharp:
     additionalDependencies: 0.1.0
@@ -610,6 +610,8 @@ trackedFiles:
     last_write_checksum: sha1:df82d54cf2df568cae0fb6796d517d3be8158d9c
   docs/Models/Shared/ConsistencyValue.md:
     last_write_checksum: sha1:ef5bf5b9e5a5d150aa0439df48fd1a3f000988df
+  docs/Models/Shared/ConsoleLookups.md:
+    last_write_checksum: sha1:11f1a3737bc365b5a67b488433bfed474d863ab8
   docs/Models/Shared/Cost.md:
     last_write_checksum: sha1:b087370f6e764b6edf648244a4fd3e0e4ce564da
   docs/Models/Shared/Country.md:
@@ -1063,7 +1065,7 @@ trackedFiles:
   docs/Models/Shared/Transport.md:
     last_write_checksum: sha1:1032732a9eddddb14e931ef7ed41294773d94f6d
   docs/Models/Shared/Usage.md:
-    last_write_checksum: sha1:89570a908a999a757f552c5a006eaf67162fe27e
+    last_write_checksum: sha1:d6163307c263b165be34c015e5ffeb9ec50aeca5
   docs/Models/Shared/UsageCount.md:
     last_write_checksum: sha1:126ab69106ee86c4f0963f6db571dc8011e4b68b
   docs/Models/Shared/UsageCountDepth.md:
@@ -1157,7 +1159,7 @@ trackedFiles:
   docs/sdks/settings/README.md:
     last_write_checksum: sha1:881d7d5b738ae9741e5e94bcdd8b05fdf9cc7eb4
   docs/sdks/usage/README.md:
-    last_write_checksum: sha1:714e0b41f517bdc899b77bad7af0b9d36631bbbd
+    last_write_checksum: sha1:54ffbd31f9b99750228f1cd6165bff55d8056c86
   docs/sdks/webhookendpoints/README.md:
     last_write_checksum: sha1:745baf5c5e02f89ba4d4376b5137be215d331d18
   global.json:
@@ -1768,6 +1770,8 @@ trackedFiles:
     last_write_checksum: sha1:484e5876d26b9221442a17063a4f1f6ddc1c6def
   src/NoResponse/Models/Shared/ConsistencyValue.cs:
     last_write_checksum: sha1:bc9f7874380f5c11a38daba0456366f4d5ccc836
+  src/NoResponse/Models/Shared/ConsoleLookups.cs:
+    last_write_checksum: sha1:9593f2752f7a7745d4b8c778cd7f170bb335524f
   src/NoResponse/Models/Shared/Cost.cs:
     last_write_checksum: sha1:f468a31b67f1ebfb0537f3a62caf06b63688ba8e
   src/NoResponse/Models/Shared/Country.cs:
@@ -2221,7 +2225,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/Transport.cs:
     last_write_checksum: sha1:ebedd2dc3835d34eb5b84c41a326b8f1594e129c
   src/NoResponse/Models/Shared/Usage.cs:
-    last_write_checksum: sha1:ccc4004941aa2cdb4e17b91ecc966ed0f2b29ddd
+    last_write_checksum: sha1:9e362fd70efde22668b03aceebc4282089495877
   src/NoResponse/Models/Shared/UsageCount.cs:
     last_write_checksum: sha1:dd476755f1049e178f9e1413e4157d07344f33d6
   src/NoResponse/Models/Shared/UsageCountDepth.cs:
@@ -2283,7 +2287,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/WorkspaceOperationsSummaryRequest.cs:
     last_write_checksum: sha1:29c3ef293b3925883936aca2d63cb0cb41988bf2
   src/NoResponse/NoResponse.csproj:
-    last_write_checksum: sha1:4a1ab2bda34c37c73c963e470ec23540194f135f
+    last_write_checksum: sha1:c9bfe7cf47666d7c013c3372639b1fb5e3341232
   src/NoResponse/NoResponseClient.cs:
     last_write_checksum: sha1:6870e6deb19ba04cbc76e80eb7cbb47ec395a43e
   src/NoResponse/Operations.cs:
@@ -2293,17 +2297,17 @@ trackedFiles:
   src/NoResponse/Reviews.cs:
     last_write_checksum: sha1:5ea00d3bf72817eac669a17dc2b2e36c550a6019
   src/NoResponse/SDKConfig.cs:
-    last_write_checksum: sha1:8d846526972f2502e0afe014c257bb6b7560deea
+    last_write_checksum: sha1:8c49d575a530d40a5752820bb687807366403c5f
   src/NoResponse/Settings.cs:
     last_write_checksum: sha1:bf725236fad278a8690a82e6114d82c22fe974a4
   src/NoResponse/Usage.cs:
-    last_write_checksum: sha1:9451562102490c3a734adfda4694c88ec8429c41
+    last_write_checksum: sha1:bfb253a68679111b641a7d571ac4bed880da26d0
   src/NoResponse/Utils/AnyDeserializer.cs:
     last_write_checksum: sha1:2fc4560840c33ca0a329e2c1a4122510eecf6aec
   src/NoResponse/Utils/BigIntStrConverter.cs:
     last_write_checksum: sha1:8803aa46f7bca5595c22751ede125e3c4e993856
   src/NoResponse/Utils/Constants.cs:
-    last_write_checksum: sha1:8715424b880bc865cb2de059874691405299af55
+    last_write_checksum: sha1:ac722ee11819a1a078b6a78b8eaaffc40c9b84ce
   src/NoResponse/Utils/DecimalStrConverter.cs:
     last_write_checksum: sha1:1fa9c1159f476245dfff02718e434accbba46136
   src/NoResponse/Utils/EnumConverter.cs:
@@ -3562,7 +3566,7 @@ examples:
           workspace_id: "tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM"
       responses:
         "200":
-          application/json: {"workspace_id": "tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM", "from": "2026-10-22", "to": "2026-10-23", "items": [{"environment": "live", "day": "2026-10-22", "metric": "assessments", "flow": "login", "depth": "quick", "count": 412}, {"environment": "live", "day": "2026-10-22", "metric": "assessments", "flow": "account_creation", "depth": "full", "count": 96}, {"environment": "live", "day": "2026-10-22", "metric": "webhook_deliveries", "count": 508}, {"environment": "live", "day": "2026-10-23", "metric": "assessments", "flow": "account_creation", "depth": "full", "count": 101}, {"environment": "live", "day": "2026-10-23", "metric": "key_usage_events", "count": 2330}, {"environment": "test", "day": "2026-10-23", "metric": "assessments", "flow": "purchase", "depth": "full", "count": 7}]}
+          application/json: {"workspace_id": "tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM", "from": "2026-10-22", "to": "2026-10-23", "items": [{"environment": "live", "day": "2026-10-22", "metric": "assessments", "flow": "login", "depth": "quick", "count": 412}, {"environment": "live", "day": "2026-10-22", "metric": "assessments", "flow": "account_creation", "depth": "full", "count": 96}, {"environment": "live", "day": "2026-10-22", "metric": "webhook_deliveries", "count": 508}, {"environment": "live", "day": "2026-10-23", "metric": "assessments", "flow": "account_creation", "depth": "full", "count": 101}, {"environment": "live", "day": "2026-10-23", "metric": "key_usage_events", "count": 2330}, {"environment": "test", "day": "2026-10-23", "metric": "assessments", "flow": "purchase", "depth": "full", "count": 7}], "console_lookups": {"used": 12, "limit": 50, "resets_at": "2026-10-24T00:00:00.000Z"}}
   createInvite:
     open:
       parameters:
