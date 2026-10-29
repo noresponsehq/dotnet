@@ -1,5 +1,15 @@
 # Changelog
 
+## 9.4.0
+
+* `Sdk.Assessments.Create()`:  `response.detail.Risk.Details.BreachNames[]` **Changed**
+* `Sdk.Assessments.Get()`:  `response.detail.Risk.Details.BreachNames[]` **Changed**
+* `Sdk.Assessments.Query()`:  `response.items[].Risk.Details.BreachNames[]` **Changed**
+* `Sdk.Assessments.Search()`:  `response.items[].Detail.Risk.Details.BreachNames[]` **Changed**
+* `Sdk.Assessments.RetrieveVersion()`:  `response.detail.Risk.Details.BreachNames[]` **Changed**
+* `Sdk.Accounts.ListAssessments()`:  `response.items[].Risk.Details.BreachNames[]` **Changed**
+* `Sdk.Accounts.Export()`:  `response.assessments[].Detail.Risk.Details.BreachNames[]` **Changed**
+
 ## 9.3.0
 
 * `Sdk.Assessments.Aggregate()`: 

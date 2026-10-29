@@ -21,7 +21,7 @@ namespace NoResponse.Models.Shared
         public List<Breach>? Breaches { get; set; }
 
         /// <summary>
-        /// Names found next to the identifiers in breach records, merged, with the number of distinct tables each was seen in.
+        /// Names found next to the identifiers in breach records, merged, with the number of distinct tables each was seen in and the sites of those tables.
         /// </summary>
         [JsonProperty("breach_names", Required = Newtonsoft.Json.Required.DisallowNull)]
         public List<RiskDetailsBreachName>? BreachNames { get; set; }
