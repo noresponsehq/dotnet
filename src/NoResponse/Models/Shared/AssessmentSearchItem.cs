@@ -55,5 +55,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("first_decision", Required = Newtonsoft.Json.Required.DisallowNull)]
         public Decision? FirstDecision { get; set; }
+
+        /// <summary>
+        /// Why this result matched a typed identifier search. value is the original value submitted in assessment_id. Provenance records a customer submission, not a source discovery or verified ownership. Equality is deterministic and has no inferred confidence score. An account result names its newest retained matching assessment, which can differ from latest.
+        /// </summary>
+        [JsonProperty("matched_identifier", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public IdentifierMatch? MatchedIdentifier { get; set; }
     }
 }

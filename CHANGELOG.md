@@ -1,5 +1,14 @@
 # Changelog
 
+## 9.4.4
+
+* `Sdk.Assessments.Search()`: 
+  *  `request.Identifier` **Added**
+  *  `response.items[].MatchedIdentifier` **Added**
+* `Sdk.Accounts.Search()`: 
+  *  `request.Identifier` **Added**
+  *  `response.items[].MatchedIdentifier` **Added**
+
 ## 9.4.3
 
 * `Sdk.Accounts.Search()`: 
