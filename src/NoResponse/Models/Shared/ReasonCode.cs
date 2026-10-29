@@ -18,6 +18,7 @@ namespace NoResponse.Models.Shared
         public static readonly ReasonCode VoipNumber = new ReasonCode("voip_number");
         public static readonly ReasonCode DisposableEmail = new ReasonCode("disposable_email");
         public static readonly ReasonCode NewEmail = new ReasonCode("new_email");
+        public static readonly ReasonCode NoEmailMatches = new ReasonCode("no_email_matches");
         public static readonly ReasonCode SpamReports = new ReasonCode("spam_reports");
         public static readonly ReasonCode FraudFlag = new ReasonCode("fraud_flag");
         public static readonly ReasonCode IdentityMismatch = new ReasonCode("identity_mismatch");
@@ -71,6 +72,7 @@ namespace NoResponse.Models.Shared
                 ["voip_number"] = VoipNumber,
                 ["disposable_email"] = DisposableEmail,
                 ["new_email"] = NewEmail,
+                ["no_email_matches"] = NoEmailMatches,
                 ["spam_reports"] = SpamReports,
                 ["fraud_flag"] = FraudFlag,
                 ["identity_mismatch"] = IdentityMismatch,

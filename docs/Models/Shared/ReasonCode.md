@@ -22,6 +22,7 @@ var custom = ReasonCode.Of("custom_value");
 | `VoipNumber`                  | voip_number                   |
 | `DisposableEmail`             | disposable_email              |
 | `NewEmail`                    | new_email                     |
+| `NoEmailMatches`              | no_email_matches              |
 | `SpamReports`                 | spam_reports                  |
 | `FraudFlag`                   | fraud_flag                    |
 | `IdentityMismatch`            | identity_mismatch             |

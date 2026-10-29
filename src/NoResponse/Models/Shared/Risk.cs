@@ -69,7 +69,7 @@ namespace NoResponse.Models.Shared
         public RiskSummary? Summary { get; set; }
 
         /// <summary>
-        /// Sources counted by state, not named.
+        /// Counts of planned source-identifier pairs by evidence outcome, deduplicated across signals and incomplete entries. These counts do not measure identity agreement or prove that processing is still running. A lane that was not searched is not an answered source.
         /// </summary>
         [JsonProperty("coverage", Required = Newtonsoft.Json.Required.Always)]
         public RiskCoverage Coverage { get; set; } = new();
