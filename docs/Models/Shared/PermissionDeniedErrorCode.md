@@ -20,3 +20,6 @@ var custom = PermissionDeniedErrorCode.Of("custom_value");
 | -------------------- | -------------------- |
 | `WorkspaceForbidden` | workspace_forbidden  |
 | `RoleForbidden`      | role_forbidden       |
+| `EmailUnverified`    | email_unverified     |
+| `OnboardingInReview` | onboarding_in_review |
+| `OnboardingRefused`  | onboarding_refused   |

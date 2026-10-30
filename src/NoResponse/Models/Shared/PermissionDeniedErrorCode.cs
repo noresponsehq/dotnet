@@ -16,11 +16,17 @@ namespace NoResponse.Models.Shared
     {
         public static readonly PermissionDeniedErrorCode WorkspaceForbidden = new PermissionDeniedErrorCode("workspace_forbidden");
         public static readonly PermissionDeniedErrorCode RoleForbidden = new PermissionDeniedErrorCode("role_forbidden");
+        public static readonly PermissionDeniedErrorCode EmailUnverified = new PermissionDeniedErrorCode("email_unverified");
+        public static readonly PermissionDeniedErrorCode OnboardingInReview = new PermissionDeniedErrorCode("onboarding_in_review");
+        public static readonly PermissionDeniedErrorCode OnboardingRefused = new PermissionDeniedErrorCode("onboarding_refused");
 
         private static readonly Dictionary<string, PermissionDeniedErrorCode> _knownValues =
             new Dictionary<string, PermissionDeniedErrorCode>() {
                 ["workspace_forbidden"] = WorkspaceForbidden,
-                ["role_forbidden"] = RoleForbidden
+                ["role_forbidden"] = RoleForbidden,
+                ["email_unverified"] = EmailUnverified,
+                ["onboarding_in_review"] = OnboardingInReview,
+                ["onboarding_refused"] = OnboardingRefused
             };
 
         private static readonly ConcurrentDictionary<string, PermissionDeniedErrorCode> _values =
