@@ -60,6 +60,14 @@ var custom = ReasonCode.Of("custom_value");
 | `YoungEmailDomain`            | young_email_domain            |
 | `EmailDomainNoMx`             | email_domain_no_mx            |
 | `EmailDomainNonexistent`      | email_domain_nonexistent      |
+| `GoogleAccountMissing`        | google_account_missing        |
+| `GoogleEmptyAccount`          | google_empty_account          |
+| `GoogleActiveProfile`         | google_active_profile         |
+| `GoogleAgedAccount`           | google_aged_account           |
+| `GoogleNameMatch`             | google_name_match             |
+| `GoogleNameMismatch`          | google_name_mismatch          |
+| `GoogleCountryMatch`          | google_country_match          |
+| `GoogleCountryMismatch`       | google_country_mismatch       |
 | `ForumSanctioned`             | forum_sanctioned              |
 | `PriorPaymentAbuse`           | prior_payment_abuse           |
 | `IpHistoryMatch`              | ip_history_match              |
