@@ -1,0 +1,69 @@
+#nullable enable
+namespace NoResponse.Models.Shared
+{
+    using Newtonsoft.Json;
+    using NoResponse.Utils;
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    /// <summary>
+    /// personal, or business: an account a company or school manages.
+    /// </summary>
+    [JsonConverter(typeof(OpenEnumConverter))]
+    public class AccountType : IEquatable<AccountType>, IOpenEnum<string>
+    {
+        public static readonly AccountType Personal = new AccountType("personal");
+        public static readonly AccountType Business = new AccountType("business");
+
+        private static readonly Dictionary<string, AccountType> _knownValues =
+            new Dictionary<string, AccountType>() {
+                ["personal"] = Personal,
+                ["business"] = Business
+            };
+
+        private static readonly ConcurrentDictionary<string, AccountType> _values =
+            new ConcurrentDictionary<string, AccountType>(_knownValues);
+
+        private AccountType(string value)
+        {
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            Value = value;
+        }
+
+        public string Value { get; }
+
+        public static AccountType Of(string value)
+        {
+            return _values.GetOrAdd(value,
+                                    _ => new AccountType(value));
+        }
+
+        public static implicit operator AccountType(string value) => Of(value);
+        public static implicit operator string(AccountType accounttype) => accounttype.Value;
+
+        public static AccountType[] Values()
+        {
+            return _values.Values.ToArray();
+        }
+
+        public override string ToString() => Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        public bool IsKnown()
+        {
+            return _knownValues.ContainsKey(Value);
+        }
+
+        public override bool Equals(object? obj) => Equals(obj as AccountType);
+
+        public bool Equals(AccountType? other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other is null) return false;
+            return string.Equals(Value, other.Value);
+        }
+
+        public override int GetHashCode() => Value.GetHashCode();
+    }
+}

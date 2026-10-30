@@ -1,5 +1,16 @@
 # Changelog
 
+## 9.5.4
+
+* `Sdk.Assessments.Create()`:  `response.detail.Risk.Details.Accounts` **Added**
+* `Sdk.Assessments.Get()`:  `response.detail.Risk.Details.Accounts` **Added**
+* `Sdk.Assessments.Query()`:  `response.items[].Risk.Details.Accounts` **Added**
+* `Sdk.Assessments.Search()`:  `response.items[].Detail.Risk.Details.Accounts` **Added**
+* `Sdk.Assessments.RetrieveVersion()`:  `response.detail.Risk.Details.Accounts` **Added**
+* `Sdk.Accounts.ListAssessments()`:  `response.items[].Risk.Details.Accounts` **Added**
+* `Sdk.Accounts.Export()`:  `response.assessments[].Detail.Risk.Details.Accounts` **Added**
+* `Sdk.Accounts.Search()`:  `response.items[].Latest.Detail.Risk.Details.Accounts` **Added**
+
 ## 9.5.3
 
 * `Sdk.Settings.Get()`:  `response.refusedSources[]` **Changed**

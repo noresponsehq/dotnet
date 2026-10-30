@@ -31,5 +31,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("events", Required = Newtonsoft.Json.Required.DisallowNull)]
         public List<RiskDetailsEvent>? Events { get; set; }
+
+        /// <summary>
+        /// Every online-account search of the email or username: the platform, what the search came to and, for an account found, what the platform returned beside it. Found first, then not found, then searches that failed or are still running, each by platform name; at most 64. A failed or running search keeps its own outcome and is not reported as not_found.
+        /// </summary>
+        [JsonProperty("accounts", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<OnlineAccount>? Accounts { get; set; }
     }
 }
