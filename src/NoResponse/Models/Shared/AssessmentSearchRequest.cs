@@ -10,7 +10,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// Search retained assessments created in [from,to), at most 366 days. identifier matches the submitted value of each returned assessment directly. The legacy email filter keeps its account-wide mailbox semantics and cannot be combined with identifier. Other filters combine using AND and describe assessment decisions, separate from current account decisions. Results use newest-created order with an assessment-ID tie break and are live, not a snapshot across pages. Requires history or investigate authority; identifier/email filtering also requires identifier-read permission. Detailed response mode additionally requires detailed permission. No Idempotency-Key.
+    /// Search retained assessments created in [from,to), at most 366 days. identifier matches the submitted value of each returned assessment directly. The legacy email filter keeps its account-wide mailbox semantics and cannot be combined with identifier. Other filters combine using AND and describe assessment decisions, separate from current account decisions. Results use newest-created order with an assessment-ID tie break and are live, not a snapshot across pages. Requires history or investigate authority; identifier, identifier_expression and email filtering also require identifier-read permission. Detailed response mode additionally requires detailed permission. No Idempotency-Key. identifier_expression requires scope assessment and matches the complete expression within each returned submission; account scope returns 400 invalid_request. At most 8 raw terms and 3 group levels. Mutually exclusive with identifier and email.
     /// </summary>
     public class AssessmentSearchRequest
     {
@@ -54,7 +54,7 @@ namespace NoResponse.Models.Shared
         public long? Limit { get; set; } = 20;
 
         /// <summary>
-        /// Opaque, expiring cursor bound to this environment, operation and every filter. Keep the filters unchanged.
+        /// Opaque, expiring cursor bound to workspace, environment, operation and all filters, including expression scope, ordered structure and original term values. Keep grouping, operand order, matching modes and values unchanged; an omitted match is equivalent to exact. The page limit may change.
         /// </summary>
         [JsonProperty("cursor", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? Cursor { get; set; }
@@ -133,5 +133,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("identifier", Required = Newtonsoft.Json.Required.DisallowNull)]
         public IdentifierSearch? Identifier { get; set; }
+
+        /// <summary>
+        /// A bounded AND/OR expression over submitted identifiers. Required scope assessment means the entire expression must match one retained assessment. Scope account permits each term to match a different retained assessment of the same account and is accepted only by account search. Exactly one of term, and or or is allowed at every node. Groups contain 2 to 8 operands, with at most 3 nested group levels and 8 raw term occurrences over the entire expression. A root term is allowed. Duplicate terms with the same kind, match rule, namespace and normalized comparison are idempotent, but count toward the raw limit. Match rules default to exact and preserve the existing identifier contract. Only retained submitted identifiers can satisfy a term. Unknown fields, unsupported scopes and malformed or oversized expressions return 400 invalid_request.
+        /// </summary>
+        [JsonProperty("identifier_expression", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public IdentifierExpression? IdentifierExpression { get; set; }
     }
 }

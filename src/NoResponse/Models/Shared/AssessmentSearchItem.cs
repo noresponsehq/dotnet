@@ -61,5 +61,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("matched_identifier", Required = Newtonsoft.Json.Required.DisallowNull)]
         public IdentifierMatch? MatchedIdentifier { get; set; }
+
+        /// <summary>
+        /// Present only for identifier_expression. All satisfied unique terms, ordered by term_index, with original submitted values and retained assessment witnesses. A duplicate normalized term appears once at its first raw leaf index. The legacy single identifier filter instead returns matched_identifier.
+        /// </summary>
+        [JsonProperty("matched_identifiers", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<IdentifierTermMatch>? MatchedIdentifiers { get; set; }
     }
 }

@@ -14,7 +14,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v9.4.4 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v9.5.0 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -25,7 +25,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v9.4.4
+git -C third_party/noresponse-dotnet checkout v9.5.0
 git add third_party/noresponse-dotnet
 ```
 
@@ -279,6 +279,23 @@ Names that changed:
 The `[Obsolete]` copies of the payload fields on each exception are gone: read `Payload`. The error code enums (`BadRequestErrorCode` and the rest) keep their names.
 
 </details>
+
+## Combine submitted identifiers
+
+Search accounts and assessments with explicit AND/OR combinations of submitted
+email, phone and customer-namespace username terms. Use `IdentifierExpression`
+and its required `scope`: `assessment` requires one submission to satisfy the
+whole expression; `account` can combine different retained submissions of the
+same account and is accepted only by account search. Pass the expression through the generated search request `IdentifierExpression` field.
+
+Expressions have at most eight raw terms and three group levels. The original
+exact, canonical and explicit mailbox matching rules still apply to each term.
+Expression results contain indexed `IdentifierTermMatch` records with the
+original submitted value and originating assessment, separate from current
+account risk. Single-identifier and legacy email filters retain their behavior.
+
+See the [combined-search contract and examples](https://docs.noresponse.org/reference/investigation#combine-submitted-identifiers)
+for the expression shape, scope differences, permissions and pagination.
 
 ## Support
 
