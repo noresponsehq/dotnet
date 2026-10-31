@@ -55,5 +55,11 @@ namespace NoResponse.Models.Shared
 
         [JsonProperty("exposed", Required = Newtonsoft.Json.Required.DisallowNull)]
         public List<BreachExposed>? Exposed { get; set; }
+
+        /// <summary>
+        /// What this table's rows record against the matched email or username: the tables behind the forum_sanctioned and prior_payment_abuse reasons. Absent when the rows record none, for a table matched on an IP address, and from an answer stored before it was recorded.
+        /// </summary>
+        [JsonProperty("conduct", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<BreachConduct>? Conduct { get; set; }
     }
 }

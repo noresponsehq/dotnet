@@ -1,5 +1,16 @@
 # Changelog
 
+## 10.0.3
+
+* `Sdk.Assessments.Create()`:  `response.detail.Risk.Details.Breaches[].Conduct` **Added**
+* `Sdk.Assessments.Get()`:  `response.detail.Risk.Details.Breaches[].Conduct` **Added**
+* `Sdk.Assessments.Query()`:  `response.items[].Risk.Details.Breaches[].Conduct` **Added**
+* `Sdk.Assessments.Search()`:  `response.items[].Detail.Risk.Details.Breaches[].Conduct` **Added**
+* `Sdk.Assessments.RetrieveVersion()`:  `response.detail.Risk.Details.Breaches[].Conduct` **Added**
+* `Sdk.Accounts.ListAssessments()`:  `response.items[].Risk.Details.Breaches[].Conduct` **Added**
+* `Sdk.Accounts.Export()`:  `response.assessments[].Detail.Risk.Details.Breaches[].Conduct` **Added**
+* `Sdk.Accounts.Search()`:  `response.items[].Latest.Detail.Risk.Details.Breaches[].Conduct` **Added**
+
 ## 10.0.2
 
 * `Sdk.Assessments.Create()`:  `response.detail.Risk` **Changed**
