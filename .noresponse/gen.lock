@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 70bd5ecd-d923-41ca-9a42-6e3360b4ce2f
 management:
-  docChecksum: b72568b9e8e0ea5b670d13e290a20d51
+  docChecksum: 15209ec76fb61b81ddb010a7a3e277db
   docVersion: "1"
   speakeasyVersion: internal
   generationVersion: internal
-  releaseVersion: 10.0.7
-  configChecksum: ee682703724564325bdf59309d0e82d6
+  releaseVersion: 10.0.8
+  configChecksum: 5edf6082f9f92206c295ac273c1df6ae
 features:
   csharp:
     additionalDependencies: 0.1.0
@@ -577,7 +577,7 @@ trackedFiles:
   docs/Models/Shared/AttributeAgreement.md:
     last_write_checksum: sha1:1a2c526a728878f932e7f5c15e40ef6569a7e26d
   docs/Models/Shared/AuditEvent.md:
-    last_write_checksum: sha1:9acce422b311984bffb8172da478ccbb10883107
+    last_write_checksum: sha1:ac7931663995a3f79df973e2d4be70e16b39973d
   docs/Models/Shared/AuditEventEvent.md:
     last_write_checksum: sha1:5e0a6d4c2b5b0e3268ab3ade7ffe859841cf3bad
   docs/Models/Shared/AuditEventList.md:
@@ -1807,7 +1807,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/AttributeAgreement.cs:
     last_write_checksum: sha1:ecdad45a4af4e89815417b778dea8120f63c22f5
   src/NoResponse/Models/Shared/AuditEvent.cs:
-    last_write_checksum: sha1:cacfc01cd6f101a8509bfbf55f31ccffb7414866
+    last_write_checksum: sha1:56e3f101d66437f070593a6c2cff253b26eab048
   src/NoResponse/Models/Shared/AuditEventEvent.cs:
     last_write_checksum: sha1:d49afafee366c16aa1b68f184256b63c9f9b71db
   src/NoResponse/Models/Shared/AuditEventList.cs:
@@ -2427,7 +2427,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/WorkspaceOperationsSummaryRequest.cs:
     last_write_checksum: sha1:29c3ef293b3925883936aca2d63cb0cb41988bf2
   src/NoResponse/NoResponse.csproj:
-    last_write_checksum: sha1:8052c67e16c2b9361e23c27efce22e972a0bcf67
+    last_write_checksum: sha1:ec03c98a1f339b43605a4a80e94bba41c9a3792d
   src/NoResponse/NoResponseClient.cs:
     last_write_checksum: sha1:6870e6deb19ba04cbc76e80eb7cbb47ec395a43e
   src/NoResponse/Operations.cs:
@@ -2437,7 +2437,7 @@ trackedFiles:
   src/NoResponse/Reviews.cs:
     last_write_checksum: sha1:4f5710d0433a17db7a566f90e631c61faf01c2d2
   src/NoResponse/SDKConfig.cs:
-    last_write_checksum: sha1:1037ad2ea85bc044893d394c84493e26d9f9e0fa
+    last_write_checksum: sha1:4c19bc343a883324725147fcbfd4c4e267c07aaf
   src/NoResponse/Settings.cs:
     last_write_checksum: sha1:bf725236fad278a8690a82e6114d82c22fe974a4
   src/NoResponse/Usage.cs:
@@ -2447,7 +2447,7 @@ trackedFiles:
   src/NoResponse/Utils/BigIntStrConverter.cs:
     last_write_checksum: sha1:8803aa46f7bca5595c22751ede125e3c4e993856
   src/NoResponse/Utils/Constants.cs:
-    last_write_checksum: sha1:268d3d4a3e67135a9784ddca49b3218536f75c82
+    last_write_checksum: sha1:4ac316446f5570c055d20376a96febdbde0a39f1
   src/NoResponse/Utils/DecimalStrConverter.cs:
     last_write_checksum: sha1:1fa9c1159f476245dfff02718e434accbba46136
   src/NoResponse/Utils/EnumConverter.cs:
