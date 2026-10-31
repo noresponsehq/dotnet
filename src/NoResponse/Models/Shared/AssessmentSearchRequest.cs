@@ -45,6 +45,12 @@ namespace NoResponse.Models.Shared
         public Status? Status { get; set; }
 
         /// <summary>
+        /// api (the default) searches the assessments your integration sent. lookup searches the assessments your team ran by hand on the console's Lookup page. The API sets an assessment's origin from the credential that sent it. A lookup is not in any other list, count, webhook event or account.
+        /// </summary>
+        [JsonProperty("origin", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public Origin? Origin { get; set; }
+
+        /// <summary>
         /// The recommended action: allow, step_up or review. Your application applies it.
         /// </summary>
         [JsonProperty("recommendation", Required = Newtonsoft.Json.Required.DisallowNull)]
