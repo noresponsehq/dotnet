@@ -22,10 +22,11 @@ Collaborative review cases, comments and linked subjects.
 * [ListSubjects](#listsubjects) - List retained subjects linked to a review.
 * [AddSubject](#addsubject) - Link retained tenant-local evidence to an investigation.
 * [DeleteSubject](#deletesubject) - Remove a linked subject using the current review version.
+* [Query](#query) - Query retained reviews without identifiers in URLs.
 
 ## List
 
-List retained investigation reviews using filters and an authenticated cursor. Optional account_id selects one exact account in this environment before pagination. All filters are bound into the cursor.
+List retained investigation reviews using filters and an authenticated cursor. Use reviews.query to filter by account_id in a JSON body. All filters are bound into the cursor.
 
 ### Example Usage
 
@@ -834,6 +835,58 @@ var res = await sdk.Reviews.DeleteSubjectAsync(
 ### Response
 
 **[DeleteReviewSubjectResponse](../../Models/Operations/DeleteReviewSubjectResponse.md)**
+
+### Errors
+
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
+
+## Query
+
+Query retained investigation reviews using a JSON body, including an exact account_id filter. All filters are bound into the cursor.
+
+### Example Usage
+
+<!-- UsageSnippet language="csharp" operationID="queryReviews" method="post" path="/v1/workspaces/{workspace_id}/reviews/{environment}/query" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+var res = await sdk.Reviews.QueryAsync(
+    workspaceId: "tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
+    environment: KeyEnvironment.Live,
+    body: new ReviewQueryRequest() {
+        AccountId = "acct_7f3a9c",
+        Assignee = "usr_customer_admin",
+        AssigneePrincipalId = "mem_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
+        Cursor = "eyJvIjoyMH0",
+    }
+);
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                                                                                                                              | Type                                                                                                                                                                   | Required                                                                                                                                                               | Description                                                                                                                                                            | Example                                                                                                                                                                |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `WorkspaceId`                                                                                                                                                          | *string*                                                                                                                                                               | :heavy_check_mark:                                                                                                                                                     | Your workspace id, as each key lists it in workspace_id. Another workspace, a malformed id and a test environment's id answer 404.                                     | tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                                                                                                                         |
+| `Environment`                                                                                                                                                          | [KeyEnvironment](../../Models/Shared/KeyEnvironment.md)                                                                                                                | :heavy_check_mark:                                                                                                                                                     | The environment: live or test. Each has its own settings. Any other value answers 400. An API key reads and changes only its own environment's; the other answers 404. |                                                                                                                                                                        |
+| `Body`                                                                                                                                                                 | [ReviewQueryRequest](../../Models/Shared/ReviewQueryRequest.md)                                                                                                        | :heavy_check_mark:                                                                                                                                                     | N/A                                                                                                                                                                    |                                                                                                                                                                        |
+
+### Response
+
+**[QueryReviewsResponse](../../Models/Operations/QueryReviewsResponse.md)**
 
 ### Errors
 

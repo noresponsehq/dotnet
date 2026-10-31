@@ -42,3 +42,4 @@ var custom = ConflictErrorCode.Of("custom_value");
 | `EvaluationLimitReached`       | evaluation_limit_reached       |
 | `AlreadyMember`                | already_member                 |
 | `MemberLimitReached`           | member_limit_reached           |
+| `AggregateErasedData`          | aggregate_erased_data          |

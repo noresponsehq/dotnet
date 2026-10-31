@@ -38,6 +38,7 @@ namespace NoResponse.Models.Shared
         public static readonly ConflictErrorCode EvaluationLimitReached = new ConflictErrorCode("evaluation_limit_reached");
         public static readonly ConflictErrorCode AlreadyMember = new ConflictErrorCode("already_member");
         public static readonly ConflictErrorCode MemberLimitReached = new ConflictErrorCode("member_limit_reached");
+        public static readonly ConflictErrorCode AggregateErasedData = new ConflictErrorCode("aggregate_erased_data");
 
         private static readonly Dictionary<string, ConflictErrorCode> _knownValues =
             new Dictionary<string, ConflictErrorCode>() {
@@ -64,7 +65,8 @@ namespace NoResponse.Models.Shared
                 ["evaluation_no_proposal"] = EvaluationNoProposal,
                 ["evaluation_limit_reached"] = EvaluationLimitReached,
                 ["already_member"] = AlreadyMember,
-                ["member_limit_reached"] = MemberLimitReached
+                ["member_limit_reached"] = MemberLimitReached,
+                ["aggregate_erased_data"] = AggregateErasedData
             };
 
         private static readonly ConcurrentDictionary<string, ConflictErrorCode> _values =

@@ -46,11 +46,5 @@ namespace NoResponse.Models.Operations
         /// </summary>
         [NoResponseMetadata("queryParam:style=form,explode=true,name=assignee_principal_id")]
         public string? AssigneePrincipalId { get; set; }
-
-        /// <summary>
-        /// Only reviews of this exact account in the authenticated workspace and environment. Applied before pagination and bound into the cursor.
-        /// </summary>
-        [NoResponseMetadata("queryParam:style=form,explode=true,name=account_id")]
-        public string? AccountId { get; set; }
     }
 }
