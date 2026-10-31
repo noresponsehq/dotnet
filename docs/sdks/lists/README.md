@@ -167,7 +167,7 @@ var res = await sdk.Lists.DeleteAsync(
 
 ## Preview
 
-Preview canonical list matches and current override effects with settings or management. The result states its bounded coverage and changes no list entries.
+Preview canonical list matches and current override effects with settings or management, plus legacy history, or investigate with evidence or detailed. The result states its bounded coverage and changes no list entries.
 
 ### Example Usage
 

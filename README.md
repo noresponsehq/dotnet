@@ -14,7 +14,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v10.0.0 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v10.0.1 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -25,7 +25,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v10.0.0
+git -C third_party/noresponse-dotnet checkout v10.0.1
 git add third_party/noresponse-dotnet
 ```
 
@@ -243,6 +243,8 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
 
 
 ### Late results
+
+Deliveries can overlap. Give `WithAccountLock` a lock on the account that all your workers share. Store the result's risk version inside it. Without the lock, an old decision can undo a newer one. [Overlapping deliveries](https://docs.noresponse.org/guides/late-results#overlapping-deliveries) says what the lock must do.
 
 `account.risk_changed` only wakes your handler. `LateResults.HandleRiskChangeAsync` verifies the delivery with `ConstructEvent`, reads the account's current risk with `Accounts.GetAsync` (the event's own decision is ignored), asks your `GetAccountState` where the account is in your flow, and acts on the decision of that state's flow: an `onboarding` or `provisional` account with an `account_creation` decision of `review` or `block` fails onboarding or is refused activation; an `active` account is signed out on a `login` decision of `review`, and restricted and signed out on `block`. A `restricted` account is unrestricted when its `login` decision is `allow` again, only if you set `Flows["login"] = new FlowPolicy(Reinstate: true)`. Each action, or `none`, is recorded with `Accounts.RecordEnforcementAsync` at the risk version read. Nothing is ever deleted: Clerk bans (reversed by unban), Auth0 sets `blocked`, and WorkOS, which has no block on a user, gets `noresponse_state` in the user's metadata and its sessions revoked.
 

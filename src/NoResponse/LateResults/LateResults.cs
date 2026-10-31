@@ -95,6 +95,15 @@ namespace NoResponse.LateResults
 
         /// <summary>The clock, as for Webhook.ConstructEvent.</summary>
         public DateTimeOffset? Now { get; init; }
+
+        /// <summary>
+        /// Serializes enforcement of one account across your workers. Hold an exclusive lock on the account id, await
+        /// the function, store the result's RiskVersion and any state change, then release the lock. An exception must
+        /// propagate. Inside the lock the handler reads the account's risk and your state again, so a stale event or
+        /// listed account cannot undo a newer decision. Without it, overlapping calls can act on an old decision after
+        /// a newer one.
+        /// </summary>
+        public Func<string, Func<Task<EnforcementResult>>, Task>? WithAccountLock { get; init; }
     }
 
     public sealed class IdentityProviderOptions
@@ -150,17 +159,30 @@ namespace NoResponse.LateResults
             {
                 return new EnforcementResult { Event = webhookEvent, Skipped = "not_actionable" };
             }
-            Account account;
-            try
-            {
-                account = (await client.Accounts.GetAsync(changed.Data.Account.Id, cancellationToken: cancellationToken)).Result;
-            }
-            catch (NotFoundException)
-            {
-                return new EnforcementResult { Event = webhookEvent, Skipped = "account_gone" };
-            }
-            var result = await EnforceAccountAsync(client, account, options, cancellationToken);
+            var result = await UnderAccountLockAsync(client, changed.Data.Account.Id, options, cancellationToken);
             return result with { Event = webhookEvent };
+        }
+
+        /// <summary>Read the account's current risk and enforce it, inside WithAccountLock when you gave one.</summary>
+        private static async Task<EnforcementResult> UnderAccountLockAsync(NoResponseClient client, string accountId, EnforcementOptions options, CancellationToken cancellationToken)
+        {
+            async Task<EnforcementResult> Enforce()
+            {
+                Account account;
+                try
+                {
+                    account = (await client.Accounts.GetAsync(accountId, cancellationToken: cancellationToken)).Result;
+                }
+                catch (NotFoundException)
+                {
+                    return new EnforcementResult { Skipped = "account_gone" };
+                }
+                return await EnforceAsReadAsync(client, account, options, cancellationToken);
+            }
+            if (options.WithAccountLock == null) return await Enforce();
+            EnforcementResult? result = null;
+            await options.WithAccountLock(accountId, async () => result = await Enforce());
+            return result ?? throw new InvalidOperationException("WithAccountLock returned without running enforce");
         }
 
         /// <inheritdoc cref="HandleRiskChangeAsync{TValues}"/>
@@ -174,10 +196,16 @@ namespace NoResponse.LateResults
             HandleRiskChangeAsync(client, payload, headers.Select(h => new KeyValuePair<string, string?[]>(h.Key, new string?[] { h.Value })), secrets, options, cancellationToken);
 
         /// <summary>
-        /// Enforce one account as read: the account a handler fetched, or one from
-        /// Accounts.ListChangedAsync with unenforced true when catching up.
+        /// Enforce one account: the account a handler fetched, or one from Accounts.ListChangedAsync with unenforced
+        /// true when catching up. With WithAccountLock the account is read again inside the lock; without it the
+        /// account is enforced as given.
         /// </summary>
-        public static async Task<EnforcementResult> EnforceAccountAsync(NoResponseClient client, Account account, EnforcementOptions options, CancellationToken cancellationToken = default)
+        public static Task<EnforcementResult> EnforceAccountAsync(NoResponseClient client, Account account, EnforcementOptions options, CancellationToken cancellationToken = default) =>
+            options.WithAccountLock != null
+                ? UnderAccountLockAsync(client, account.Id, options, cancellationToken)
+                : EnforceAsReadAsync(client, account, options, cancellationToken);
+
+        private static async Task<EnforcementResult> EnforceAsReadAsync(NoResponseClient client, Account account, EnforcementOptions options, CancellationToken cancellationToken)
         {
             var answer = await options.GetAccountState(account);
             if (answer == null) return new EnforcementResult { Account = account, Skipped = "unknown_user" };

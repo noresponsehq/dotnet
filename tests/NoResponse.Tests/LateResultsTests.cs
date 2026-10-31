@@ -241,5 +241,70 @@ namespace NoResponse.Tests
             Assert.Throws<ArgumentException>(() => LateResults.IdentityProvider("auth0", new IdentityProviderOptions { Token = "t" }));
             Assert.Throws<ArgumentException>(() => LateResults.IdentityProvider("okta", new IdentityProviderOptions { Token = "t" }));
         }
+
+        [Fact]
+        public async Task WithAccountLockCoversTheReadTheProviderChangeAndTheRecord()
+        {
+            var vector = Case("workos_restricted_allow_reinstates_when_opted_in");
+            var (client, http, transcript) = Fake(vector["exchanges"]!.AsArray());
+            var provider = LateResults.IdentityProvider((string)vector["provider"]!, new IdentityProviderOptions { Token = (string)Vectors["provider_token"]!, HttpClient = http });
+            var (raw, headers) = Sign(vector["event"]!);
+            var seen = new List<int>();
+            var result = await LateResults.HandleRiskChangeAsync(client, raw, headers, Secrets, new EnforcementOptions
+            {
+                Provider = provider,
+                Now = Now,
+                Flows = new Dictionary<string, FlowPolicy> { ["login"] = new FlowPolicy(true) },
+                GetAccountState = _ => Task.FromResult<AccountStateAnswer?>(new AccountStateAnswer("restricted", (string?)vector["state"]!["user_id"], null)),
+                WithAccountLock = async (_, enforce) =>
+                {
+                    seen.Add(transcript.Next);
+                    await enforce();
+                    seen.Add(transcript.Next);
+                },
+            });
+            transcript.Done();
+            Assert.Equal(new[] { 0, vector["exchanges"]!.AsArray().Count }, seen);
+            Assert.Equal(new[] { "unrestrict" }, result.Enforcements.Select(e => e.Action));
+            Assert.NotNull(result.Event);
+        }
+
+        [Fact]
+        public async Task UnderWithAccountLockEnforceAccountActsOnTheCurrentRisk()
+        {
+            var vector = Case("restricted_account_records_none");
+            var exchanges = vector["exchanges"]!.DeepClone().AsArray();
+            var first = exchanges[0]!.DeepClone();
+            first["response"]!["body"]!["risk_version"] = 1;
+            first["response"]!["body"]!["decisions_by_flow"]!["login"] = "allow";
+            exchanges.Insert(0, first);
+            var (client, http, transcript) = Fake(exchanges);
+            var stale = (await client.Accounts.GetAsync((string)vector["event"]!["data"]!["account"]!["id"]!)).Result;
+            var provider = LateResults.IdentityProvider((string)vector["provider"]!, new IdentityProviderOptions { Token = (string)Vectors["provider_token"]!, HttpClient = http });
+            var result = await LateResults.EnforceAccountAsync(client, stale, new EnforcementOptions
+            {
+                Provider = provider,
+                Flows = new Dictionary<string, FlowPolicy> { ["login"] = new FlowPolicy(true) },
+                GetAccountState = _ => Task.FromResult<AccountStateAnswer?>(new AccountStateAnswer("restricted", null, null)),
+                WithAccountLock = async (_, enforce) => await enforce(),
+            });
+            transcript.Done();
+            Assert.Equal(new[] { "none" }, result.Enforcements.Select(e => e.Action));
+        }
+
+        [Fact]
+        public async Task AWithAccountLockThatDoesNotRunEnforceFails()
+        {
+            var vector = Case("restricted_account_records_none");
+            var (client, http, _) = Fake(vector["exchanges"]!.DeepClone().AsArray());
+            var account = (await client.Accounts.GetAsync((string)vector["event"]!["data"]!["account"]!["id"]!)).Result;
+            var provider = LateResults.IdentityProvider((string)vector["provider"]!, new IdentityProviderOptions { Token = (string)Vectors["provider_token"]!, HttpClient = http });
+            await Assert.ThrowsAsync<InvalidOperationException>(() => LateResults.EnforceAccountAsync(client, account, new EnforcementOptions
+            {
+                Provider = provider,
+                GetAccountState = _ => Task.FromResult<AccountStateAnswer?>(null),
+                WithAccountLock = (_, _) => Task.CompletedTask,
+            }));
+        }
     }
 }
