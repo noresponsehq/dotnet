@@ -73,6 +73,8 @@ namespace NoResponse.Models.Shared
         public static readonly ReasonCode NationalityMismatch = new ReasonCode("nationality_mismatch");
         public static readonly ReasonCode MinorIdentity = new ReasonCode("minor_identity");
         public static readonly ReasonCode ReportedAccountAbuse = new ReasonCode("reported_account_abuse");
+        public static readonly ReasonCode BreachCityMatch = new ReasonCode("breach_city_match");
+        public static readonly ReasonCode BreachCityMismatch = new ReasonCode("breach_city_mismatch");
 
         private static readonly Dictionary<string, ReasonCode> _knownValues =
             new Dictionary<string, ReasonCode>() {
@@ -134,7 +136,9 @@ namespace NoResponse.Models.Shared
                 ["breach_shared_ip"] = BreachSharedIp,
                 ["nationality_mismatch"] = NationalityMismatch,
                 ["minor_identity"] = MinorIdentity,
-                ["reported_account_abuse"] = ReportedAccountAbuse
+                ["reported_account_abuse"] = ReportedAccountAbuse,
+                ["breach_city_match"] = BreachCityMatch,
+                ["breach_city_mismatch"] = BreachCityMismatch
             };
 
         private static readonly ConcurrentDictionary<string, ReasonCode> _values =

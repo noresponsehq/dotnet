@@ -1,5 +1,26 @@
 # Changelog
 
+## 10.0.4
+
+* `Sdk.Assessments.Create()`:  `response.account.Risk.Reasons[].Code` **Changed**
+* `Sdk.Assessments.Get()`:  `response.account.Risk.Reasons[].Code` **Changed**
+* `Sdk.Assessments.Query()`:  `response.items[].Risk.Reasons[].Code` **Changed**
+* `Sdk.Assessments.Aggregate()`: 
+  *  `request.Reason` **Changed**
+  *  `response.buckets[].Groups[].Reason` **Changed**
+* `Sdk.Assessments.Search()`: 
+  *  `request.Reason` **Changed**
+  *  `response.items[].Detail.Risk.Reasons[].Code` **Changed**
+* `Sdk.Assessments.RetrieveVersion()`:  `response.detail.Risk.Reasons[].Code` **Changed**
+* `Sdk.Accounts.ListChanged()`:  `response.items[].Risk.Reasons[].Code` **Changed**
+* `Sdk.Accounts.Get()`:  `response.risk.Reasons[].Code` **Changed**
+* `Sdk.Accounts.ListAssessments()`:  `response.items[].Risk.Reasons[].Code` **Changed**
+* `Sdk.Accounts.RetrieveDecision()`:  `response.account.Risk.Reasons[].Code` **Changed**
+* `Sdk.Accounts.Export()`:  `response.assessments[].Detail.Risk.Reasons[].Code` **Changed**
+* `Sdk.Accounts.ListDecisions()`:  `response.items[].Account.Risk.Reasons[].Code` **Changed**
+* `Sdk.Accounts.Search()`:  `response.items[].Latest.Detail.Risk.Reasons[].Code` **Changed**
+* `Sdk.Requests.List()`:  `response.items[].Decision.Account.Risk.Reasons[].Code` **Changed**
+
 ## 10.0.3
 
 * `Sdk.Assessments.Create()`:  `response.detail.Risk.Details.Breaches[].Conduct` **Added**
