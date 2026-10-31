@@ -28,6 +28,12 @@ namespace NoResponse.Models.Shared
         [JsonProperty("email", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? Email { get; set; }
 
+        /// <summary>
+        /// Every account that one of its retained admitted assessments sent an email of this domain or its subdomains, matched as lists match an email_domain entry and with the same identifier-read permission as email. A value that is not a registrable domain is refused with 400. Mutually exclusive with email, identifier and identifier_expression.
+        /// </summary>
+        [JsonProperty("email_domain", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? EmailDomain { get; set; }
+
         [JsonProperty("limit", Required = Newtonsoft.Json.Required.DisallowNull)]
         public long? Limit { get; set; } = 25;
 

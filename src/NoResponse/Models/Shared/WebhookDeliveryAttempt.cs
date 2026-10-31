@@ -24,6 +24,18 @@ namespace NoResponse.Models.Shared
         public string EventType { get; set; } = default!;
 
         /// <summary>
+        /// The assessment an assessment.updated event reported, while that assessment is held. Absent on every other event, on a test event and on a notice that the assessment was erased or expired.
+        /// </summary>
+        [JsonProperty("assessment_id", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? AssessmentId { get; set; }
+
+        /// <summary>
+        /// The account an account.risk_changed event reported. Absent on every other event.
+        /// </summary>
+        [JsonProperty("account_id", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? AccountId { get; set; }
+
+        /// <summary>
         /// Which attempt of this delivery this was: 1 for the first send, up to 9 with retries. A replay counts its own attempts from 1.
         /// </summary>
         [JsonProperty("attempt", Required = Newtonsoft.Json.Required.Always)]
