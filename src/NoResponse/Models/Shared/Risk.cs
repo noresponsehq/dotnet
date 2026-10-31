@@ -39,6 +39,18 @@ namespace NoResponse.Models.Shared
         public long? BlockThreshold { get; set; }
 
         /// <summary>
+        /// The score at which this answer's flow starts to recommend step_up. Absent from an answer stored before it was recorded.
+        /// </summary>
+        [JsonProperty("step_up_threshold", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? StepUpThreshold { get; set; }
+
+        /// <summary>
+        /// The score at which this answer's flow starts to recommend review. An answer nothing answered recommends review below it, with confidence unavailable. Absent from an answer stored before it was recorded.
+        /// </summary>
+        [JsonProperty("review_threshold", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? ReviewThreshold { get; set; }
+
+        /// <summary>
         /// How much of the planned evidence answered; it says nothing about risk.
         /// </summary>
         [JsonProperty("confidence", Required = Newtonsoft.Json.Required.Always)]

@@ -72,7 +72,7 @@ var res = await sdk.Assessments.CreateAsync(
             SessionCreatedAt = "2026-10-14T08:57:00.000Z",
             AuthTime = "2026-10-14T08:55:00.000Z",
             AccountCreatedAt = "2026-10-14T08:56:00.000Z",
-            Verified = false,
+            Verified = true,
             Mfa = new AuthContextMfa() {
                 Methods = new List<string>() {
                     "totp",
@@ -146,7 +146,7 @@ var res = await sdk.Assessments.CreateAsync(
             SessionCreatedAt = "2026-10-14T08:57:00.000Z",
             AuthTime = "2026-10-14T08:55:00.000Z",
             AccountCreatedAt = "2026-10-14T08:56:00.000Z",
-            Verified = false,
+            Verified = true,
             Mfa = new AuthContextMfa() {
                 Methods = new List<string>() {
                     "totp",
@@ -250,7 +250,7 @@ var res = await sdk.Assessments.CreateAsync(
             SessionCreatedAt = "2026-10-14T08:57:00.000Z",
             AuthTime = "2026-10-14T08:55:00.000Z",
             AccountCreatedAt = "2026-10-14T08:56:00.000Z",
-            Verified = false,
+            Verified = true,
             Mfa = new AuthContextMfa() {
                 Methods = new List<string>() {
                     "totp",
@@ -380,7 +380,7 @@ var res = await sdk.Assessments.CreateAsync(
             SessionCreatedAt = "2026-10-14T08:57:00.000Z",
             AuthTime = "2026-10-14T08:55:00.000Z",
             AccountCreatedAt = "2026-10-14T08:56:00.000Z",
-            Verified = false,
+            Verified = true,
             Mfa = new AuthContextMfa() {
                 Methods = new List<string>() {
                     "totp",

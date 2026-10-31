@@ -37,5 +37,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("accounts", Required = Newtonsoft.Json.Required.DisallowNull)]
         public List<OnlineAccount>? Accounts { get; set; }
+
+        /// <summary>
+        /// What an identity_attribute_conflict reason weighed: each attribute the records disagree on and the sites reporting it. Absent when the reason did not fire, and on an answer stored before conflicts were recorded. No value is served.
+        /// </summary>
+        [JsonProperty("attribute_conflicts", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<RiskDetailsAttributeConflict>? AttributeConflicts { get; set; }
     }
 }

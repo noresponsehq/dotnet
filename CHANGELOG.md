@@ -1,5 +1,16 @@
 # Changelog
 
+## 10.0.2
+
+* `Sdk.Assessments.Create()`:  `response.detail.Risk` **Changed**
+* `Sdk.Assessments.Get()`:  `response.detail.Risk` **Changed**
+* `Sdk.Assessments.Query()`:  `response.items[].Risk` **Changed**
+* `Sdk.Assessments.Search()`:  `response.items[].Detail.Risk` **Changed**
+* `Sdk.Assessments.RetrieveVersion()`:  `response.detail.Risk` **Changed**
+* `Sdk.Accounts.ListAssessments()`:  `response.items[].Risk` **Changed**
+* `Sdk.Accounts.Export()`:  `response.assessments[].Detail.Risk` **Changed**
+* `Sdk.Accounts.Search()`:  `response.items[].Latest.Detail.Risk` **Changed**
+
 ## 10.0.1
 
 No changes detected.
