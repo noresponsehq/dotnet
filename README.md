@@ -14,7 +14,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v10.0.9 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v10.0.10 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -25,7 +25,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v10.0.9
+git -C third_party/noresponse-dotnet checkout v10.0.10
 git add third_party/noresponse-dotnet
 ```
 
@@ -67,6 +67,7 @@ Every method returns an envelope: `Result` holds the object and `Headers` the re
 | --- | --- |
 | Configure this client and explore its methods | [.NET SDK guide](https://docs.noresponse.org/sdks/csharp) |
 | Act when an account's decision changes | [Late results](https://docs.noresponse.org/guides/late-results) |
+| Screen an event's attendees and record decisions | [Events and screenings](https://docs.noresponse.org/reference/events) |
 | Explore request and response fields | [API reference](https://docs.noresponse.org/api-reference) |
 
 <details>

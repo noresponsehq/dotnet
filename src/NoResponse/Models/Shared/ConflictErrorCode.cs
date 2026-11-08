@@ -40,6 +40,9 @@ namespace NoResponse.Models.Shared
         public static readonly ConflictErrorCode MemberLimitReached = new ConflictErrorCode("member_limit_reached");
         public static readonly ConflictErrorCode OwnerInvitePending = new ConflictErrorCode("owner_invite_pending");
         public static readonly ConflictErrorCode AggregateErasedData = new ConflictErrorCode("aggregate_erased_data");
+        public static readonly ConflictErrorCode EventConflict = new ConflictErrorCode("event_conflict");
+        public static readonly ConflictErrorCode EventLimitReached = new ConflictErrorCode("event_limit_reached");
+        public static readonly ConflictErrorCode ScreeningUnavailable = new ConflictErrorCode("screening_unavailable");
 
         private static readonly Dictionary<string, ConflictErrorCode> _knownValues =
             new Dictionary<string, ConflictErrorCode>() {
@@ -68,7 +71,10 @@ namespace NoResponse.Models.Shared
                 ["already_member"] = AlreadyMember,
                 ["member_limit_reached"] = MemberLimitReached,
                 ["owner_invite_pending"] = OwnerInvitePending,
-                ["aggregate_erased_data"] = AggregateErasedData
+                ["aggregate_erased_data"] = AggregateErasedData,
+                ["event_conflict"] = EventConflict,
+                ["event_limit_reached"] = EventLimitReached,
+                ["screening_unavailable"] = ScreeningUnavailable
             };
 
         private static readonly ConcurrentDictionary<string, ConflictErrorCode> _values =

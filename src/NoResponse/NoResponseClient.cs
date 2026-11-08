@@ -109,6 +109,11 @@ namespace NoResponse
         /// Retained outcomes, enforcement reports and review populations.
         /// </summary>
         public IOperations Operations { get; }
+
+        /// <summary>
+        /// Events, attendee lists, screenings and reviewer decisions.
+        /// </summary>
+        public IEvents Events { get; }
     }
 
     /// <summary>
@@ -195,6 +200,10 @@ namespace NoResponse
         /// The Operations sub-SDK.
         /// </summary>
         public IOperations Operations { get; private set; }
+        /// <summary>
+        /// The Events sub-SDK.
+        /// </summary>
+        public IEvents Events { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the SDK based on a <see cref="SDKConfig"/> configuration object.
@@ -240,6 +249,8 @@ namespace NoResponse
             Evaluations = new Evaluations(SDKConfiguration);
 
             Operations = new Operations(SDKConfiguration);
+
+            Events = new Events(SDKConfiguration);
         }
 
         /// <summary>
@@ -343,6 +354,8 @@ namespace NoResponse
             Evaluations = new Evaluations(SDKConfiguration);
 
             Operations = new Operations(SDKConfiguration);
+
+            Events = new Events(SDKConfiguration);
         }
 
         private void InitHooks()

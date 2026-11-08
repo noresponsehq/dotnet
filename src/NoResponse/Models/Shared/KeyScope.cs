@@ -28,6 +28,7 @@ namespace NoResponse.Models.Shared
         public static readonly KeyScope PolicyPublish = new KeyScope("policy_publish");
         public static readonly KeyScope Members = new KeyScope("members");
         public static readonly KeyScope MembersManage = new KeyScope("members_manage");
+        public static readonly KeyScope Events = new KeyScope("events");
 
         private static readonly Dictionary<string, KeyScope> _knownValues =
             new Dictionary<string, KeyScope>() {
@@ -47,7 +48,8 @@ namespace NoResponse.Models.Shared
                 ["settings"] = Settings,
                 ["policy_publish"] = PolicyPublish,
                 ["members"] = Members,
-                ["members_manage"] = MembersManage
+                ["members_manage"] = MembersManage,
+                ["events"] = Events
             };
 
         private static readonly ConcurrentDictionary<string, KeyScope> _values =

@@ -1,0 +1,23 @@
+# HighestBand
+
+## Example Usage
+
+```csharp
+using NoResponse.Models.Shared;
+
+var value = HighestBand.Critical;
+
+// Open enum: use .Of() to create instances from custom string values
+var custom = HighestBand.Of("custom_value");
+```
+
+
+## Values
+
+| Name       | Value      |
+| ---------- | ---------- |
+| `Critical` | critical   |
+| `High`     | high       |
+| `Moderate` | moderate   |
+| `Low`      | low        |
+| `Info`     | info       |
