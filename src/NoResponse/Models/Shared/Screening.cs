@@ -72,6 +72,18 @@ namespace NoResponse.Models.Shared
         public long AttendeesFailed { get; set; } = default!;
 
         /// <summary>
+        /// What the screening was estimated to cost when it started, in minor units of USD (cents): its attendees at its depth and platforms. Until the screening finishes, what it has not yet spent counts against the environment's screening_daily_cap.
+        /// </summary>
+        [JsonProperty("estimated_spend", Required = Newtonsoft.Json.Required.Always)]
+        public long EstimatedSpend { get; set; } = default!;
+
+        /// <summary>
+        /// What the attendees it has screened recorded, in minor units of USD. Each counts toward the UTC day it was recorded on; a failed attendee records nothing.
+        /// </summary>
+        [JsonProperty("spent", Required = Newtonsoft.Json.Required.Always)]
+        public long Spent { get; set; } = default!;
+
+        /// <summary>
         /// Why a failed or cancelled screening stopped.
         /// </summary>
         [JsonProperty("error_code", Required = Newtonsoft.Json.Required.DisallowNull)]

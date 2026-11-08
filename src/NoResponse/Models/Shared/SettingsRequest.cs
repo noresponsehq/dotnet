@@ -24,6 +24,13 @@ namespace NoResponse.Models.Shared
         public List<SourceId>? RefusedSources { get; set; }
 
         /// <summary>
+        /// Replaces the daily screening cap, in minor units of USD; null removes the cap. Needs settings.write only, like retention_days.
+        /// </summary>
+        [JsonProperty("screening_daily_cap", Required = Newtonsoft.Json.Required.Default, NullValueHandling = NullValueHandling.Include)]
+        public OptionalNullable<long?> ScreeningDailyCap { get; set; }
+        public bool ShouldSerializeScreeningDailyCap() => ScreeningDailyCap.IsSet;
+
+        /// <summary>
         /// Use account_creation or its deprecated alias signup, not both.
         /// </summary>
         [JsonProperty("flows", Required = Newtonsoft.Json.Required.DisallowNull)]

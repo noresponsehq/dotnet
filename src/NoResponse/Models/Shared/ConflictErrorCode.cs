@@ -42,6 +42,7 @@ namespace NoResponse.Models.Shared
         public static readonly ConflictErrorCode AggregateErasedData = new ConflictErrorCode("aggregate_erased_data");
         public static readonly ConflictErrorCode EventConflict = new ConflictErrorCode("event_conflict");
         public static readonly ConflictErrorCode EventLimitReached = new ConflictErrorCode("event_limit_reached");
+        public static readonly ConflictErrorCode ScreeningCapExceeded = new ConflictErrorCode("screening_cap_exceeded");
         public static readonly ConflictErrorCode ScreeningUnavailable = new ConflictErrorCode("screening_unavailable");
 
         private static readonly Dictionary<string, ConflictErrorCode> _knownValues =
@@ -74,6 +75,7 @@ namespace NoResponse.Models.Shared
                 ["aggregate_erased_data"] = AggregateErasedData,
                 ["event_conflict"] = EventConflict,
                 ["event_limit_reached"] = EventLimitReached,
+                ["screening_cap_exceeded"] = ScreeningCapExceeded,
                 ["screening_unavailable"] = ScreeningUnavailable
             };
 

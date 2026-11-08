@@ -1,5 +1,143 @@
 # Changelog
 
+## 10.0.11
+
+* `Sdk.Assessments.Create()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Assessments.Get()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Assessments.Delete()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Assessments.RecordOutcome()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Assessments.Query()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Assessments.Aggregate()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Assessments.Search()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Assessments.RetrieveVersion()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Assessments.BindAccount()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Accounts.ListChanged()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Accounts.Get()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Accounts.Delete()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Accounts.ListAssessments()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Accounts.ListLinked()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Accounts.ListEnforcements()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Accounts.RecordEnforcement()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Accounts.ListOutcomes()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Accounts.RecordOutcome()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Accounts.RetrieveDecision()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Accounts.ListCredentials()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Accounts.AssociateCredential()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Accounts.RetireCredential()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Accounts.Export()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Accounts.ListDecisions()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Accounts.Search()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.KeyUsage.Record()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Keys.Rotate()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Keys.List()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Keys.Create()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Keys.Revoke()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Integrations.List()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Integrations.Create()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Integrations.Delete()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Integrations.Rotate()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.WebhookEndpoints.List()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.WebhookEndpoints.Create()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.WebhookEndpoints.Delete()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.WebhookEndpoints.RotateSigningKey()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.WebhookEndpoints.SendTestEvent()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.WebhookEndpoints.ListDeliveries()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.WebhookEndpoints.ReplayDelivery()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.WebhookEndpoints.Aggregate()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Members.List()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Members.Remove()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Members.Update()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Audit.List()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Audit.GetRetention()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Audit.UpdateRetention()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Audit.ListStreams()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Audit.ConfigureStream()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Audit.RemoveStream()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Audit.ReplayStream()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Usage.Get()`: 
+  *  `response.items[].Metric.Enum(screenings)` **Added**
+  *  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Invites.List()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Invites.Create()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Invites.Revoke()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Invites.Resend()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Settings.Get()`: 
+  *  `response.screeningDailyCap` **Added**
+  *  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Settings.Update()`: 
+  *  `request.body.ScreeningDailyCap` **Added**
+  *  `response.screeningDailyCap` **Added**
+  *  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Settings.ListHistory()`: 
+  *  `response.items[].Settings.ScreeningDailyCap` **Added**
+  *  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Settings.Restore()`: 
+  *  `response.screeningDailyCap` **Added**
+  *  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Settings.Preview()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Requests.List()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Requests.Aggregate()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Lists.List()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Lists.Create()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Lists.Delete()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Lists.Preview()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Lists.Change()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Lists.GetChange()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.List()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.Create()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.Get()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.Update()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.Resolve()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.ListComments()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.Comment()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.ListResolutions()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.ListViews()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.CreateView()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.DeleteView()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.UpdateView()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.Export()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.ListSubjects()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.AddSubject()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.DeleteSubject()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Reviews.Query()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Erasures.Get()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Exports.List()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Exports.Create()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Exports.Get()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Exports.Cancel()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Exports.Retry()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Exports.DownloadChunk()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Evaluations.List()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Evaluations.Create()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Evaluations.Get()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Evaluations.GetResult()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Evaluations.Cancel()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Evaluations.Publish()`: 
+  *  `response.screeningDailyCap` **Added**
+  *  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Operations.Summarize()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Events.List()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Events.Create()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Events.Get()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Events.Delete()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Events.Update()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Events.ListAttendees()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Events.AddAttendees()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Events.GetAttendee()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Events.ReviewAttendee()`:  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Events.ListScreenings()`: 
+  *  `response.items[]` **Changed**
+  *  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Events.StartScreening()`: 
+  *  `response` **Changed**
+  *  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Events.GetScreening()`: 
+  *  `response` **Changed**
+  *  `error.code.Enum(screeningCapExceeded)` **Added**
+* `Sdk.Events.CancelScreening()`: 
+  *  `response` **Changed**
+  *  `error.code.Enum(screeningCapExceeded)` **Added**
+
 ## 10.0.10
 
 * `Sdk.Events.List()`: **Added**

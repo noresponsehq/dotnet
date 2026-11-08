@@ -10,7 +10,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// One environment's settings: how long its assessments are kept, and for each flow the risk thresholds that decide it and the depth a request that names none is served at, and the sources it refuses. Live and test each have their own. A flow without thresholds of its own uses account_creation's (inherits_account_creation). Every change is recorded in the audit log as settings.updated, with who made it.
+    /// One environment's settings: how long its assessments are kept, and for each flow the risk thresholds that decide it and the depth a request that names none is served at, the sources it refuses, and the daily cap on screening spend. Live and test each have their own. A flow without thresholds of its own uses account_creation's (inherits_account_creation). Every change is recorded in the audit log as settings.updated, with who made it.
     /// </summary>
     public class Settings
     {
@@ -58,5 +58,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("refused_sources", Required = Newtonsoft.Json.Required.Always)]
         public List<SourceId> RefusedSources { get; set; } = default!;
+
+        /// <summary>
+        /// The most the environment's screenings may spend in one UTC day, in minor units of USD (cents), 0 to 100000000; null is no cap. Default 50000. A screening whose estimated_spend exceeds the cap less the day's recorded spend and what open screenings may still spend answers 409 screening_cap_exceeded.
+        /// </summary>
+        [JsonProperty("screening_daily_cap", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = NullValueHandling.Include)]
+        public long? ScreeningDailyCap { get; set; }
     }
 }

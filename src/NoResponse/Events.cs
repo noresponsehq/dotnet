@@ -74,7 +74,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, or the environment cannot screen yet. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, the environment cannot screen yet, or the screening's estimate exceeds what the daily screening cap has left. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<CreateEventResponse> CreateAsync(
@@ -136,7 +136,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, or the environment cannot screen yet. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, the environment cannot screen yet, or the screening's estimate exceeds what the daily screening cap has left. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<UpdateEventResponse> UpdateAsync(
@@ -228,7 +228,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, or the environment cannot screen yet. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, the environment cannot screen yet, or the screening's estimate exceeds what the daily screening cap has left. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<AddAttendeesResponse> AddAttendeesAsync(
@@ -295,7 +295,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, or the environment cannot screen yet. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, the environment cannot screen yet, or the screening's estimate exceeds what the daily screening cap has left. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<ReviewAttendeeResponse> ReviewAttendeeAsync(
@@ -346,7 +346,7 @@ namespace NoResponse
         /// Start a screening.
         /// </summary>
         /// <remarks>
-        /// Start a screening of new attendees and everyone on watch or escalated, with an Idempotency-Key. It finishes completed, partial or failed minutes to hours later; poll it. The test environment screens with stand-ins that find no accounts.
+        /// Start a screening of new attendees and everyone on watch or escalated, with an Idempotency-Key. It finishes completed, partial or failed minutes to hours later; poll it. The answer carries estimated_spend; a screening whose estimate exceeds what the daily screening cap has left answers 409 screening_cap_exceeded. The test environment screens with stand-ins that find no accounts.
         /// </remarks>
         /// <param name="workspaceId">Your workspace id, as each key lists it in workspace_id. Another workspace, a malformed id and a test environment's id answer 404.</param>
         /// <param name="environment">The environment: live or test. Each has its own settings. Any other value answers 400. An API key reads and changes only its own environment's; the other answers 404.</param>
@@ -364,7 +364,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, or the environment cannot screen yet. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, the environment cannot screen yet, or the screening's estimate exceeds what the daily screening cap has left. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<StartScreeningResponse> StartScreeningAsync(
@@ -766,7 +766,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, or the environment cannot screen yet. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, the environment cannot screen yet, or the screening's estimate exceeds what the daily screening cap has left. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<CreateEventResponse> CreateAsync(
@@ -1304,7 +1304,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, or the environment cannot screen yet. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, the environment cannot screen yet, or the screening's estimate exceeds what the daily screening cap has left. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<UpdateEventResponse> UpdateAsync(
@@ -2134,7 +2134,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, or the environment cannot screen yet. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, the environment cannot screen yet, or the screening's estimate exceeds what the daily screening cap has left. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<AddAttendeesResponse> AddAttendeesAsync(
@@ -2717,7 +2717,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, or the environment cannot screen yet. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, the environment cannot screen yet, or the screening's estimate exceeds what the daily screening cap has left. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<ReviewAttendeeResponse> ReviewAttendeeAsync(
@@ -3250,7 +3250,7 @@ namespace NoResponse
         /// Start a screening.
         /// </summary>
         /// <remarks>
-        /// Start a screening of new attendees and everyone on watch or escalated, with an Idempotency-Key. It finishes completed, partial or failed minutes to hours later; poll it. The test environment screens with stand-ins that find no accounts.
+        /// Start a screening of new attendees and everyone on watch or escalated, with an Idempotency-Key. It finishes completed, partial or failed minutes to hours later; poll it. The answer carries estimated_spend; a screening whose estimate exceeds what the daily screening cap has left answers 409 screening_cap_exceeded. The test environment screens with stand-ins that find no accounts.
         /// </remarks>
         /// <param name="workspaceId">Your workspace id, as each key lists it in workspace_id. Another workspace, a malformed id and a test environment's id answer 404.</param>
         /// <param name="environment">The environment: live or test. Each has its own settings. Any other value answers 400. An API key reads and changes only its own environment's; the other answers 404.</param>
@@ -3268,7 +3268,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, or the environment cannot screen yet. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">The event or screening's state does not allow the change, a bound is reached, the Idempotency-Key was used for another body, the environment cannot screen yet, or the screening's estimate exceeds what the daily screening cap has left. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<StartScreeningResponse> StartScreeningAsync(

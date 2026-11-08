@@ -14,7 +14,7 @@ Environment policy, history and previews.
 
 ## Get
 
-Read this environment retention, source selection and effective flow policies. A flow without its own thresholds inherits account_creation. Requires settings or management. Another environment answers404. Read-only and safe to retry.
+Read this environment retention, source selection, daily screening cap and effective flow policies. A flow without its own thresholds inherits account_creation. Requires settings or management. Another environment answers404. Read-only and safe to retry.
 
 ### Example Usage
 
@@ -59,7 +59,7 @@ var res = await sdk.Settings.GetAsync(
 
 ## Update
 
-Change named retention, source or flow settings in one transaction. Requires settings or management; changes to active policy also require policy_publish, which legacy management includes. Use expected_policy_version to reject concurrent changes and record a change_reason. Each accepted change creates a fresh version and an atomic audit event. Retention-only edits do not require policy publication authority. Flow thresholds preserve their declared ordering and bounds.
+Change named retention, screening cap, source or flow settings in one transaction. Requires settings or management; changes to active policy also require policy_publish, which legacy management includes. Use expected_policy_version to reject concurrent changes and record a change_reason. Each accepted change creates a fresh version and an atomic audit event. Retention and screening cap edits do not require policy publication authority. Flow thresholds preserve their declared ordering and bounds.
 
 ### Example Usage: changed
 
@@ -73,7 +73,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 
 var res = await sdk.Settings.UpdateAsync(
     workspaceId: "tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
-    environment: KeyEnvironment.Live,
+    environment: KeyEnvironment.Test,
     body: new SettingsRequest() {
         RetentionDays = 30,
         ExpectedPolicyVersion = 1,

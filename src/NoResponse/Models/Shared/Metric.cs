@@ -9,7 +9,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// assessments: assessments admitted. webhook_deliveries: events sent to endpoints, one per event per endpoint. key_usage_events: key-usage events accepted.
+    /// assessments: assessments admitted. webhook_deliveries: events sent to endpoints, one per event per endpoint. key_usage_events: key-usage events accepted. screenings: attendees a screening recorded a final result for, one per attendee per screening; a failed attendee counts nothing.
     /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class Metric : IEquatable<Metric>, IOpenEnum<string>
@@ -17,12 +17,14 @@ namespace NoResponse.Models.Shared
         public static readonly Metric Assessments = new Metric("assessments");
         public static readonly Metric WebhookDeliveries = new Metric("webhook_deliveries");
         public static readonly Metric KeyUsageEvents = new Metric("key_usage_events");
+        public static readonly Metric Screenings = new Metric("screenings");
 
         private static readonly Dictionary<string, Metric> _knownValues =
             new Dictionary<string, Metric>() {
                 ["assessments"] = Assessments,
                 ["webhook_deliveries"] = WebhookDeliveries,
-                ["key_usage_events"] = KeyUsageEvents
+                ["key_usage_events"] = KeyUsageEvents,
+                ["screenings"] = Screenings
             };
 
         private static readonly ConcurrentDictionary<string, Metric> _values =
