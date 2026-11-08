@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 70bd5ecd-d923-41ca-9a42-6e3360b4ce2f
 management:
-  docChecksum: 15209ec76fb61b81ddb010a7a3e277db
+  docChecksum: 3bdf9d59d2df80508843f3c7e0f86539
   docVersion: "1"
   speakeasyVersion: internal
   generationVersion: internal
-  releaseVersion: 10.0.8
-  configChecksum: 5edf6082f9f92206c295ac273c1df6ae
+  releaseVersion: 10.0.9
+  configChecksum: 614637fc104a4bedc701a0c7fb7b7410
 features:
   csharp:
     additionalDependencies: 0.1.0
@@ -1257,7 +1257,7 @@ trackedFiles:
   src/NoResponse/KeyUsage.cs:
     last_write_checksum: sha1:a2962614774ec65b4af65004256b83e9d1fee250
   src/NoResponse/Keys.cs:
-    last_write_checksum: sha1:900bbc3ba5cd36a45df941c1cf454db56dd0ec85
+    last_write_checksum: sha1:3e52893bfe45af999fe18c5d45f644eb6c3c299b
   src/NoResponse/Lists.cs:
     last_write_checksum: sha1:ff0d469ca16977eae004132ef51f332de272ff2e
   src/NoResponse/Members.cs:
@@ -2427,7 +2427,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/WorkspaceOperationsSummaryRequest.cs:
     last_write_checksum: sha1:29c3ef293b3925883936aca2d63cb0cb41988bf2
   src/NoResponse/NoResponse.csproj:
-    last_write_checksum: sha1:ec03c98a1f339b43605a4a80e94bba41c9a3792d
+    last_write_checksum: sha1:64ed01424a9a993f278d8faf20f448377998742d
   src/NoResponse/NoResponseClient.cs:
     last_write_checksum: sha1:6870e6deb19ba04cbc76e80eb7cbb47ec395a43e
   src/NoResponse/Operations.cs:
@@ -2437,7 +2437,7 @@ trackedFiles:
   src/NoResponse/Reviews.cs:
     last_write_checksum: sha1:4f5710d0433a17db7a566f90e631c61faf01c2d2
   src/NoResponse/SDKConfig.cs:
-    last_write_checksum: sha1:4c19bc343a883324725147fcbfd4c4e267c07aaf
+    last_write_checksum: sha1:6646b62e09288eb4ec9340c0030b3609067c81c9
   src/NoResponse/Settings.cs:
     last_write_checksum: sha1:bf725236fad278a8690a82e6114d82c22fe974a4
   src/NoResponse/Usage.cs:
@@ -2447,7 +2447,7 @@ trackedFiles:
   src/NoResponse/Utils/BigIntStrConverter.cs:
     last_write_checksum: sha1:8803aa46f7bca5595c22751ede125e3c4e993856
   src/NoResponse/Utils/Constants.cs:
-    last_write_checksum: sha1:4ac316446f5570c055d20376a96febdbde0a39f1
+    last_write_checksum: sha1:353b039a56943b0a2ef5f10f06dbe37adb4c8e84
   src/NoResponse/Utils/DecimalStrConverter.cs:
     last_write_checksum: sha1:1fa9c1159f476245dfff02718e434accbba46136
   src/NoResponse/Utils/EnumConverter.cs:
