@@ -68,6 +68,27 @@ namespace NoResponse.Models.Shared
             }
         }
 
+        public static WebhookEventType ScreeningCompleted
+        {
+            get {
+                return new WebhookEventType("screening.completed");
+            }
+        }
+
+        public static WebhookEventType AttendeeFlagged
+        {
+            get {
+                return new WebhookEventType("attendee.flagged");
+            }
+        }
+
+        public static WebhookEventType AttendeeDecided
+        {
+            get {
+                return new WebhookEventType("attendee.decided");
+            }
+        }
+
         public override string ToString()
         {
             return Value;
@@ -94,6 +115,12 @@ namespace NoResponse.Models.Shared
                     return AccountRiskChanged;
                 case "audit.event":
                     return AuditEvent;
+                case "screening.completed":
+                    return ScreeningCompleted;
+                case "attendee.flagged":
+                    return AttendeeFlagged;
+                case "attendee.decided":
+                    return AttendeeDecided;
                 default:
                     throw new ArgumentException("Invalid value for WebhookEventType");
             }
@@ -151,6 +178,18 @@ namespace NoResponse.Models.Shared
         [UnionVariant]
         [NoResponseMetadata("form:explode=true")]
         public AuditEventEvent? AuditEventEvent { get; set; }
+
+        [UnionVariant]
+        [NoResponseMetadata("form:explode=true")]
+        public ScreeningCompletedEvent? ScreeningCompletedEvent { get; set; }
+
+        [UnionVariant]
+        [NoResponseMetadata("form:explode=true")]
+        public AttendeeFlaggedEvent? AttendeeFlaggedEvent { get; set; }
+
+        [UnionVariant]
+        [NoResponseMetadata("form:explode=true")]
+        public AttendeeDecidedEvent? AttendeeDecidedEvent { get; set; }
 
         public WebhookEventType Type { get; set; }
 
@@ -210,6 +249,30 @@ namespace NoResponse.Models.Shared
             return res;
         }
 
+        public static WebhookEvent CreateScreeningCompleted(ScreeningCompletedEvent screeningCompleted)
+        {
+            WebhookEventType typ = WebhookEventType.ScreeningCompleted;
+            WebhookEvent res = new WebhookEvent(typ);
+            res.ScreeningCompletedEvent = screeningCompleted;
+            return res;
+        }
+
+        public static WebhookEvent CreateAttendeeFlagged(AttendeeFlaggedEvent attendeeFlagged)
+        {
+            WebhookEventType typ = WebhookEventType.AttendeeFlagged;
+            WebhookEvent res = new WebhookEvent(typ);
+            res.AttendeeFlaggedEvent = attendeeFlagged;
+            return res;
+        }
+
+        public static WebhookEvent CreateAttendeeDecided(AttendeeDecidedEvent attendeeDecided)
+        {
+            WebhookEventType typ = WebhookEventType.AttendeeDecided;
+            WebhookEvent res = new WebhookEvent(typ);
+            res.AttendeeDecidedEvent = attendeeDecided;
+            return res;
+        }
+
         public class WebhookEventConverter : JsonConverter
         {
             public override bool CanConvert(System.Type objectType) => objectType == typeof(WebhookEvent);
@@ -260,6 +323,21 @@ namespace NoResponse.Models.Shared
                 {
                     AuditEventEvent auditEventEvent = ResponseBodyDeserializer.DeserializeNotNull<AuditEventEvent>(jo.ToString());
                     return CreateAuditEvent(auditEventEvent);
+                }
+                if (discriminator == WebhookEventType.ScreeningCompleted.ToString())
+                {
+                    ScreeningCompletedEvent screeningCompletedEvent = ResponseBodyDeserializer.DeserializeNotNull<ScreeningCompletedEvent>(jo.ToString());
+                    return CreateScreeningCompleted(screeningCompletedEvent);
+                }
+                if (discriminator == WebhookEventType.AttendeeFlagged.ToString())
+                {
+                    AttendeeFlaggedEvent attendeeFlaggedEvent = ResponseBodyDeserializer.DeserializeNotNull<AttendeeFlaggedEvent>(jo.ToString());
+                    return CreateAttendeeFlagged(attendeeFlaggedEvent);
+                }
+                if (discriminator == WebhookEventType.AttendeeDecided.ToString())
+                {
+                    AttendeeDecidedEvent attendeeDecidedEvent = ResponseBodyDeserializer.DeserializeNotNull<AttendeeDecidedEvent>(jo.ToString());
+                    return CreateAttendeeDecided(attendeeDecidedEvent);
                 }
 
                 throw new InvalidOperationException("Could not deserialize into any supported types.");
@@ -313,6 +391,24 @@ namespace NoResponse.Models.Shared
                 if (res.AuditEventEvent != null)
                 {
                     writer.WriteRawValue(Utilities.SerializeJSON(res.AuditEventEvent));
+                    return;
+                }
+
+                if (res.ScreeningCompletedEvent != null)
+                {
+                    writer.WriteRawValue(Utilities.SerializeJSON(res.ScreeningCompletedEvent));
+                    return;
+                }
+
+                if (res.AttendeeFlaggedEvent != null)
+                {
+                    writer.WriteRawValue(Utilities.SerializeJSON(res.AttendeeFlaggedEvent));
+                    return;
+                }
+
+                if (res.AttendeeDecidedEvent != null)
+                {
+                    writer.WriteRawValue(Utilities.SerializeJSON(res.AttendeeDecidedEvent));
                     return;
                 }
 

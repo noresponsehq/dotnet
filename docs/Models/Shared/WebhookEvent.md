@@ -46,3 +46,21 @@ WebhookEvent.CreateAccountRiskChanged(/* values here */);
 ```csharp
 WebhookEvent.CreateAuditEvent(/* values here */);
 ```
+
+### ScreeningCompleted
+
+```csharp
+WebhookEvent.CreateScreeningCompleted(/* values here */);
+```
+
+### AttendeeFlagged
+
+```csharp
+WebhookEvent.CreateAttendeeFlagged(/* values here */);
+```
+
+### AttendeeDecided
+
+```csharp
+WebhookEvent.CreateAttendeeDecided(/* values here */);
+```

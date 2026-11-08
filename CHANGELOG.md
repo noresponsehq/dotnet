@@ -1,5 +1,9 @@
 # Changelog
 
+## 10.0.12
+
+No changes detected.
+
 ## 10.0.11
 
 * `Sdk.Assessments.Create()`:  `error.code.Enum(screeningCapExceeded)` **Added**
