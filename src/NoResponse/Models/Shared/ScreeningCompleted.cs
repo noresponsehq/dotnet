@@ -6,7 +6,7 @@ namespace NoResponse.Models.Shared
     using NoResponse.Utils;
 
     /// <summary>
-    /// A screening of an event finished. It counts only the attendees this screening set out to reach, not who they are: read the roster with GET /v1/workspaces/{workspace_id}/events/{environment}/{event_id}/attendees, filtered by band, to act on them. attendees_screened + partial_coverage = attendees_total, attendees_flagged is the sum of by_band, and no_footprint counts screened attendees with no flag whose accounts were not found. A cancelled screening sends no event.
+    /// A screening of an event finished. It counts only the attendees this screening set out to reach, not who they are: read the roster with GET /v1/workspaces/{workspace_id}/events/{environment}/{event_id}/attendees, filtered by band, to act on them. attendees_screened + partial_coverage = attendees_total, attendees_flagged is the sum of by_band, no_footprint counts screened attendees with no flag whose accounts were not found, and no_profile_to_check those the screening had nothing to look up for on any requested platform. A cancelled screening sends no event.
     /// </summary>
     public class ScreeningCompleted
     {
@@ -63,6 +63,12 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("no_footprint", Required = Newtonsoft.Json.Required.Always)]
         public long NoFootprint { get; set; } = default!;
+
+        /// <summary>
+        /// Screened attendees with no profile to check: the list gave nothing to look up on any requested platform, such as no handle, so nobody looked for a profile (no_profile_to_check on the attendee). Not in no_footprint, and not partial: nothing failed. Their lookups are on their reports.
+        /// </summary>
+        [JsonProperty("no_profile_to_check", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? NoProfileToCheck { get; set; }
 
         /// <summary>
         /// Attendees the screening did not fully cover. Read each one's coverage on its attendee.

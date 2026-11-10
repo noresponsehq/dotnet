@@ -36,10 +36,16 @@ namespace NoResponse.Models.Shared
         public List<MatchedOn> MatchedOn { get; set; } = default!;
 
         /// <summary>
-        /// How sure the latest screening is that it found the attendee's accounts. unscreened until a screening reaches the attendee.
+        /// How sure the latest screening is that it found the attendee's accounts. unscreened until a screening reaches the attendee, and after one that had no profile to check (no_profile_to_check).
         /// </summary>
         [JsonProperty("match_state", Required = Newtonsoft.Json.Required.Always)]
         public MatchState MatchState { get; set; } = default!;
+
+        /// <summary>
+        /// true when that attendee's latest screening had no profile to check (see the attendee's no_profile_to_check). Left out otherwise.
+        /// </summary>
+        [JsonProperty("no_profile_to_check", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public bool? NoProfileToCheck { get; set; }
 
         /// <summary>
         /// That attendee's most severe band at that event, or null.

@@ -18,7 +18,7 @@ namespace NoResponse.Models.Shared
         public string Day { get; set; } = default!;
 
         /// <summary>
-        /// assessments: assessments admitted. webhook_deliveries: events sent to endpoints, one per event per endpoint. key_usage_events: key-usage events accepted. screenings: attendees a screening recorded a final result for, one per attendee per screening; a failed attendee counts nothing.
+        /// assessments: assessments admitted. webhook_deliveries: events sent to endpoints, one per event per endpoint. key_usage_events: key-usage events accepted. screenings: attendees a screening recorded a final result for, one per attendee per screening; a failed attendee counts only when its lookups were kept.
         /// </summary>
         [JsonProperty("metric", Required = Newtonsoft.Json.Required.Always)]
         public Metric Metric { get; set; } = default!;

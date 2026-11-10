@@ -69,10 +69,16 @@ namespace NoResponse.Models.Shared
         public AttendeeRole? Role { get; set; }
 
         /// <summary>
-        /// How sure the latest screening is that it found the attendee's accounts. unscreened until a screening reaches the attendee.
+        /// How sure the latest screening is that it found the attendee's accounts. unscreened until a screening reaches the attendee, and after one that had no profile to check (no_profile_to_check).
         /// </summary>
         [JsonProperty("match_state", Required = Newtonsoft.Json.Required.Always)]
         public MatchState MatchState { get; set; } = default!;
+
+        /// <summary>
+        /// true when the latest screening reached the attendee but the list gave nothing to look up on any requested platform, such as no handle for a platform that reads supplied handles only: nobody looked for a profile. match_state stays unscreened, every platform is in coverage.not_searched, and the attendee is neither none_found nor failed and does not make the screening partial. Its lookups are on its report. Left out otherwise.
+        /// </summary>
+        [JsonProperty("no_profile_to_check", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public bool? NoProfileToCheck { get; set; }
 
         /// <summary>
         /// The most severe finding's band, or null when nothing was flagged.
