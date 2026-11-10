@@ -7,7 +7,7 @@ namespace NoResponse.Models.Shared
     using System.Collections.Generic;
 
     /// <summary>
-    /// Everything known about one attendee.
+    /// Everything known about one attendee, and where else in the environment they appear.
     /// </summary>
     public class AttendeeReport
     {
@@ -46,5 +46,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("reviews", Required = Newtonsoft.Json.Required.Always)]
         public List<AttendeeReview> Reviews { get; set; } = default!;
+
+        /// <summary>
+        /// Where else in the environment the attendee appears, read live from those events: deleting one removes it here.
+        /// </summary>
+        [JsonProperty("other_events", Required = Newtonsoft.Json.Required.Always)]
+        public OtherEvents OtherEvents { get; set; } = new();
     }
 }
