@@ -30,6 +30,12 @@ namespace NoResponse.Models.Shared
         public long? ItemsNotAnalysed { get; set; }
 
         /// <summary>
+        /// items_not_analysed split by reason, each reason once with at least one item.
+        /// </summary>
+        [JsonProperty("not_analysed_by_reason", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<ScreeningNotAnalysedCount>? NotAnalysedByReason { get; set; }
+
+        /// <summary>
         /// The oldest item read on any platform.
         /// </summary>
         [JsonProperty("period_from", Required = Newtonsoft.Json.Required.DisallowNull)]

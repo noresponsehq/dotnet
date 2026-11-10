@@ -54,6 +54,12 @@ namespace NoResponse.Models.Shared
         public List<string> Evidence { get; set; } = default!;
 
         /// <summary>
+        /// What the analyser saw in each image among evidence that the finding rests on. Unlike quote, an observation cannot be checked against the record: judge it against the image at the media item's permalink.
+        /// </summary>
+        [JsonProperty("media_observations", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<ScreeningMediaObservation>? MediaObservations { get; set; }
+
+        /// <summary>
         /// The resolver, collector or analyser that produced a record, by its catalogue name.
         /// </summary>
         [JsonProperty("analyser", Required = Newtonsoft.Json.Required.Always)]
