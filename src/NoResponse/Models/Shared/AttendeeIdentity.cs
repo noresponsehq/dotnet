@@ -4,7 +4,10 @@ namespace NoResponse.Models.Shared
     using Newtonsoft.Json;
     using NoResponse.Models.Shared;
     using NoResponse.Utils;
+    using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// What you know about an attendee. Stored encrypted under the workspace's key.
@@ -52,5 +55,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("handles", Required = Newtonsoft.Json.Required.DisallowNull)]
         public List<Handle>? Handles { get; set; }
+
+        /// <summary>
+        /// The attendee's role at the event: guest (a ticket holder), crew, vendor or press. Leave it out when you do not know it: an attendee without one has no role, not guest. A later row naming the same attendee replaces it, and a change of role alone keeps the attendee's screening results.
+        /// </summary>
+        [JsonProperty("role", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public AttendeeRole? Role { get; set; }
     }
 }

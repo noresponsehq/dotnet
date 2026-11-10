@@ -49,5 +49,11 @@ namespace NoResponse.Models.Operations
         /// </summary>
         [NoResponseMetadata("queryParam:style=form,explode=true,name=decision")]
         public ListAttendeesDecision? Decision { get; set; }
+
+        /// <summary>
+        /// Only attendees with this role; unstated for attendees whose role was not given.
+        /// </summary>
+        [NoResponseMetadata("queryParam:style=form,explode=true,name=role")]
+        public ListAttendeesRole? Role { get; set; }
     }
 }
