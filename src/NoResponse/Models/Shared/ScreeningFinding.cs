@@ -42,6 +42,12 @@ namespace NoResponse.Models.Shared
         public string Rationale { get; set; } = default!;
 
         /// <summary>
+        /// The exact words of the first evidence item that the finding rests on, as the analyser quoted them.
+        /// </summary>
+        [JsonProperty("quote", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? Quote { get; set; }
+
+        /// <summary>
         /// The posts and media that support the finding.
         /// </summary>
         [JsonProperty("evidence", Required = Newtonsoft.Json.Required.Always)]

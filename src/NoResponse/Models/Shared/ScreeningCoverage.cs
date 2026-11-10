@@ -21,6 +21,12 @@ namespace NoResponse.Models.Shared
         public long ItemsRead { get; set; } = default!;
 
         /// <summary>
+        /// Items read that the analyser could not analyse. Above zero, the attendee is partial: a finding may be missing from them.
+        /// </summary>
+        [JsonProperty("items_not_analysed", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? ItemsNotAnalysed { get; set; }
+
+        /// <summary>
         /// The oldest item read on any platform.
         /// </summary>
         [JsonProperty("period_from", Required = Newtonsoft.Json.Required.DisallowNull)]
