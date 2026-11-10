@@ -48,6 +48,12 @@ namespace NoResponse.Models.Shared
         public List<AttendeeReview> Reviews { get; set; } = default!;
 
         /// <summary>
+        /// What the signup check's lookups found for an attendee: account presence for the email, phone and usernames (the attendee's handles), the phone lookup, the email domain's registration and the breach search. Context and coverage for the reviewer, not a finding: nothing here sets a band or a match state.
+        /// </summary>
+        [JsonProperty("lookup", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public ScreeningLookup? Lookup { get; set; }
+
+        /// <summary>
         /// Where else in the environment the attendee appears, read live from those events: deleting one removes it here.
         /// </summary>
         [JsonProperty("other_events", Required = Newtonsoft.Json.Required.Always)]

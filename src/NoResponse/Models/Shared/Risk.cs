@@ -75,7 +75,7 @@ namespace NoResponse.Models.Shared
         public List<RiskReason> Reasons { get; set; } = default!;
 
         /// <summary>
-        /// A few typed facts per identifier. Every fact is optional: absent means the evidence did not answer and makes no claim, while false or 0 is a definite answer. Lanes that do not exist yet leave their members absent.
+        /// A few typed facts per identifier: an assessment's risk.summary, and an event screening attendee's lookup summary. Every fact is optional: absent means the evidence did not answer and makes no claim, while false or 0 is a definite answer.
         /// </summary>
         [JsonProperty("summary", Required = Newtonsoft.Json.Required.DisallowNull)]
         public RiskSummary? Summary { get; set; }
@@ -87,7 +87,7 @@ namespace NoResponse.Models.Shared
         public RiskCoverage Coverage { get; set; } = new();
 
         /// <summary>
-        /// Detailed view only (response_mode=detailed, which needs the detailed scope); a standard answer leaves it out. Merged observations without provider, source, origin, raw breach record, value or score.
+        /// Merged observations behind the summary, served only to a caller who may read evidence: no provider, source, origin, raw breach record or score.
         /// </summary>
         [JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull)]
         public RiskDetails? Details { get; set; }
