@@ -14,6 +14,9 @@ namespace NoResponse.Models.Shared
     /// </summary>
     public class Handle
     {
+        /// <summary>
+        /// A platform a screening can cover. synthetic is the deterministic connector's own platform, for exercising the product end to end with no network.
+        /// </summary>
         [JsonProperty("platform", Required = Newtonsoft.Json.Required.Always)]
         public HandlePlatform Platform { get; set; } = default!;
 

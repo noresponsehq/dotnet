@@ -1,5 +1,7 @@
 # HandlePlatform
 
+A platform a screening can cover. synthetic is the deterministic connector's own platform, for exercising the product end to end with no network.
+
 ## Example Usage
 
 ```csharp
@@ -26,3 +28,4 @@ var custom = HandlePlatform.Of("custom_value");
 | `Reddit`    | reddit      |
 | `Telegram`  | telegram    |
 | `Linkedin`  | linkedin    |
+| `Synthetic` | synthetic   |

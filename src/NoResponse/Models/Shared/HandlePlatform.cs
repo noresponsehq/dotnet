@@ -8,6 +8,9 @@ namespace NoResponse.Models.Shared
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    /// A platform a screening can cover. synthetic is the deterministic connector's own platform, for exercising the product end to end with no network.
+    /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class HandlePlatform : IEquatable<HandlePlatform>, IOpenEnum<string>
     {
@@ -21,6 +24,7 @@ namespace NoResponse.Models.Shared
         public static readonly HandlePlatform Reddit = new HandlePlatform("reddit");
         public static readonly HandlePlatform Telegram = new HandlePlatform("telegram");
         public static readonly HandlePlatform Linkedin = new HandlePlatform("linkedin");
+        public static readonly HandlePlatform Synthetic = new HandlePlatform("synthetic");
 
         private static readonly Dictionary<string, HandlePlatform> _knownValues =
             new Dictionary<string, HandlePlatform>() {
@@ -33,7 +37,8 @@ namespace NoResponse.Models.Shared
                 ["threads"] = Threads,
                 ["reddit"] = Reddit,
                 ["telegram"] = Telegram,
-                ["linkedin"] = Linkedin
+                ["linkedin"] = Linkedin,
+                ["synthetic"] = Synthetic
             };
 
         private static readonly ConcurrentDictionary<string, HandlePlatform> _values =

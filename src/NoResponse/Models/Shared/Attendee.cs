@@ -90,10 +90,10 @@ namespace NoResponse.Models.Shared
         public string? DecidedAt { get; set; }
 
         /// <summary>
-        /// What the latest screening read, per platform.
+        /// The denominator of a screening: accounts found, how many could be read, items read and the period they span, so a clean result is distinct from a person nobody could see.
         /// </summary>
         [JsonProperty("coverage", Required = Newtonsoft.Json.Required.Always)]
-        public AttendeeCoverage Coverage { get; set; } = new();
+        public ScreeningCoverage Coverage { get; set; } = new();
 
         [JsonProperty("last_screening_id", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? LastScreeningId { get; set; }
@@ -106,5 +106,11 @@ namespace NoResponse.Models.Shared
 
         [JsonProperty("updated_at", Required = Newtonsoft.Json.Required.Always)]
         public string UpdatedAt { get; set; } = default!;
+
+        /// <summary>
+        /// What screening cost, in US cents, in total and per implementation.
+        /// </summary>
+        [JsonProperty("spend", Required = Newtonsoft.Json.Required.Always)]
+        public ScreeningSpend Spend { get; set; } = new();
     }
 }

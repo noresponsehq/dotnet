@@ -9,7 +9,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// partial finished with some attendees not covered; attendees_failed counts them.
+    /// partial finished with some attendees or platforms not covered; attendees_failed and attendees_partial count them.
     /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class ScreeningStatus : IEquatable<ScreeningStatus>, IOpenEnum<string>

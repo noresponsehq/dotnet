@@ -24,7 +24,7 @@ namespace NoResponse.Models.Shared
         public AuditSettingsEnvironment Environment { get; set; } = default!;
 
         /// <summary>
-        /// partial finished with some attendees not covered; attendees_failed counts them.
+        /// partial finished with some attendees or platforms not covered; attendees_failed and attendees_partial count them.
         /// </summary>
         [JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         public ScreeningStatus Status { get; set; } = default!;
@@ -33,7 +33,7 @@ namespace NoResponse.Models.Shared
         public ScreeningDepth Depth { get; set; } = default!;
 
         [JsonProperty("platforms", Required = Newtonsoft.Json.Required.Always)]
-        public List<ScreeningPlatform> Platforms { get; set; } = default!;
+        public List<HandlePlatform> Platforms { get; set; } = default!;
 
         [JsonProperty("requested_by", Required = Newtonsoft.Json.Required.Always)]
         public string RequestedBy { get; set; } = default!;
@@ -72,6 +72,12 @@ namespace NoResponse.Models.Shared
         public long AttendeesFailed { get; set; } = default!;
 
         /// <summary>
+        /// Attendees screened with some requested platform not covered; their coverage names which.
+        /// </summary>
+        [JsonProperty("attendees_partial", Required = Newtonsoft.Json.Required.Always)]
+        public long AttendeesPartial { get; set; } = default!;
+
+        /// <summary>
         /// What the screening was estimated to cost when it started, in minor units of USD (cents): its attendees at its depth and platforms. Until the screening finishes, what it has not yet spent counts against the environment's screening_daily_cap.
         /// </summary>
         [JsonProperty("estimated_spend", Required = Newtonsoft.Json.Required.Always)]
@@ -82,6 +88,12 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("spent", Required = Newtonsoft.Json.Required.Always)]
         public long Spent { get; set; } = default!;
+
+        /// <summary>
+        /// What screening cost, in US cents, in total and per implementation.
+        /// </summary>
+        [JsonProperty("spend", Required = Newtonsoft.Json.Required.Always)]
+        public ScreeningSpend Spend { get; set; } = new();
 
         /// <summary>
         /// Why a failed or cancelled screening stopped.

@@ -18,16 +18,28 @@ namespace NoResponse.Models.Shared
         public Attendee Attendee { get; set; } = new();
 
         /// <summary>
-        /// The accounts the screening matched, with how each was matched.
+        /// The accounts the latest screening matched, with how each was matched.
         /// </summary>
         [JsonProperty("profiles", Required = Newtonsoft.Json.Required.Always)]
-        public List<Profile> Profiles { get; set; } = default!;
+        public List<ScreeningProfile> Profiles { get; set; } = default!;
 
         /// <summary>
-        /// What the screening flagged, with its evidence.
+        /// What the latest screening flagged, most severe first, each citing its evidence.
         /// </summary>
         [JsonProperty("findings", Required = Newtonsoft.Json.Required.Always)]
-        public List<Finding> Findings { get; set; } = default!;
+        public List<ScreeningFinding> Findings { get; set; } = default!;
+
+        /// <summary>
+        /// The posts the findings cite.
+        /// </summary>
+        [JsonProperty("posts", Required = Newtonsoft.Json.Required.Always)]
+        public List<ScreeningPost> Posts { get; set; } = default!;
+
+        /// <summary>
+        /// The images and videos the findings cite.
+        /// </summary>
+        [JsonProperty("media", Required = Newtonsoft.Json.Required.Always)]
+        public List<ScreeningMedia> Media { get; set; } = default!;
 
         /// <summary>
         /// Every recorded decision, oldest first.
