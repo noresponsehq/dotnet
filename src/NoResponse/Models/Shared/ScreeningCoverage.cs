@@ -4,7 +4,10 @@ namespace NoResponse.Models.Shared
     using Newtonsoft.Json;
     using NoResponse.Models.Shared;
     using NoResponse.Utils;
+    using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// The denominator of a screening: accounts found, how many could be read, items read and the period they span, so a clean result is distinct from a person nobody could see.
@@ -40,5 +43,11 @@ namespace NoResponse.Models.Shared
 
         [JsonProperty("platforms", Required = Newtonsoft.Json.Required.Always)]
         public List<ScreeningPlatformCoverage> Platforms { get; set; } = default!;
+
+        /// <summary>
+        /// Requested platforms where the attendee gave the screening nothing to look up, such as no handle for a platform that reads supplied handles only. Nothing looked and nothing failed: such a platform is not in platforms, is not none_found and does not make the attendee partial.
+        /// </summary>
+        [JsonProperty("not_searched", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<HandlePlatform>? NotSearched { get; set; }
     }
 }
