@@ -1,5 +1,9 @@
 # Changelog
 
+## 12.0.2
+
+* `Sdk.Groups.GetPerson()`:  `response.profiles[].Record.Fields[].Distinctive` **Added**
+
 ## 12.0.1
 
 * `Sdk.Groups.GetPerson()`:  `response` **Changed**
