@@ -2,7 +2,9 @@
 namespace NoResponse.Models.Shared
 {
     using Newtonsoft.Json;
+    using NoResponse.Models.Shared;
     using NoResponse.Utils;
+    using System.Collections.Generic;
 
     /// <summary>
     /// One post a collector read, with its permalink and time.
@@ -32,6 +34,36 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("quote_of", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? QuoteOf { get; set; }
+
+        /// <summary>
+        /// A place a post names, as the platform shows it.
+        /// </summary>
+        [JsonProperty("place", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public PostPlace? Place { get; set; }
+
+        /// <summary>
+        /// The handles of the accounts the post tags, on its own platform.
+        /// </summary>
+        [JsonProperty("tagged", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<string>? Tagged { get; set; }
+
+        /// <summary>
+        /// How many likes the platform shows for the post.
+        /// </summary>
+        [JsonProperty("likes", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? Likes { get; set; }
+
+        /// <summary>
+        /// How many comments the platform shows for the post.
+        /// </summary>
+        [JsonProperty("comments", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? Comments { get; set; }
+
+        /// <summary>
+        /// How many views or plays the platform shows for the post.
+        /// </summary>
+        [JsonProperty("views", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? Views { get; set; }
 
         [JsonProperty("profile_id", Required = Newtonsoft.Json.Required.Always)]
         public string ProfileId { get; set; } = default!;
