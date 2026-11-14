@@ -10,7 +10,7 @@ namespace NoResponse.Models.Shared
     public class RecordMatch
     {
         /// <summary>
-        /// The kind of searched value: email, phone, username, name, or handle for a profile read of a handle.
+        /// The kind of searched value: email, phone, username, ip, name, or handle for a profile read of a handle.
         /// </summary>
         [JsonProperty("by", Required = Newtonsoft.Json.Required.Always)]
         public string By { get; set; } = default!;

@@ -1,5 +1,9 @@
 # Changelog
 
+## 11.1.2
+
+* `Sdk.Groups.GetPerson()`:  `response.lookup.Remaining` **Added**
+
 ## 11.1.1
 
 * `Sdk.Groups.GetPerson()`:  `response` **Changed**

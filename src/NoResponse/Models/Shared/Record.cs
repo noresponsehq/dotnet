@@ -30,7 +30,7 @@ namespace NoResponse.Models.Shared
         public List<RecordMatch> Matched { get; set; } = default!;
 
         /// <summary>
-        /// Every field the source returned, in the order the source's connector lists them.
+        /// Every field the source returned, in the order the source's connector lists them; a breach row's columns in name order. Nothing is withheld: a breach row's passwords, hashes and salts are fields like any other.
         /// </summary>
         [JsonProperty("fields", Required = Newtonsoft.Json.Required.Always)]
         public List<RecordField> Fields { get; set; } = default!;
