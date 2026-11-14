@@ -28,7 +28,9 @@ var custom = RecordRole.Of("custom_value");
 | `Born`            | born              |
 | `Bot`             | bot               |
 | `CallerCategory`  | caller_category   |
+| `Chargebacks`     | chargebacks       |
 | `CoverPicture`    | cover_picture     |
+| `Declines`        | declines          |
 | `Deleted`         | deleted           |
 | `DeletedOn`       | deleted_on        |
 | `Department`      | department        |
@@ -64,6 +66,7 @@ var custom = RecordRole.Of("custom_value");
 | `OtherIp`         | other_ip          |
 | `Paid`            | paid              |
 | `PasswordChanged` | password_changed  |
+| `PaymentMethod`   | payment_method    |
 | `Picture`         | picture           |
 | `Points`          | points            |
 | `Posts`           | posts             |
@@ -84,6 +87,7 @@ var custom = RecordRole.Of("custom_value");
 | `SiteRole`        | site_role         |
 | `SpamScore`       | spam_score        |
 | `Street`          | street            |
+| `Trades`          | trades            |
 | `Verified`        | verified          |
 | `Warnings`        | warnings          |
 | `Website`         | website           |

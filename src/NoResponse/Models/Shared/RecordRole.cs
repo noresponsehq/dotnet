@@ -24,7 +24,9 @@ namespace NoResponse.Models.Shared
         public static readonly RecordRole Born = new RecordRole("born");
         public static readonly RecordRole Bot = new RecordRole("bot");
         public static readonly RecordRole CallerCategory = new RecordRole("caller_category");
+        public static readonly RecordRole Chargebacks = new RecordRole("chargebacks");
         public static readonly RecordRole CoverPicture = new RecordRole("cover_picture");
+        public static readonly RecordRole Declines = new RecordRole("declines");
         public static readonly RecordRole Deleted = new RecordRole("deleted");
         public static readonly RecordRole DeletedOn = new RecordRole("deleted_on");
         public static readonly RecordRole Department = new RecordRole("department");
@@ -60,6 +62,7 @@ namespace NoResponse.Models.Shared
         public static readonly RecordRole OtherIp = new RecordRole("other_ip");
         public static readonly RecordRole Paid = new RecordRole("paid");
         public static readonly RecordRole PasswordChanged = new RecordRole("password_changed");
+        public static readonly RecordRole PaymentMethod = new RecordRole("payment_method");
         public static readonly RecordRole Picture = new RecordRole("picture");
         public static readonly RecordRole Points = new RecordRole("points");
         public static readonly RecordRole Posts = new RecordRole("posts");
@@ -80,6 +83,7 @@ namespace NoResponse.Models.Shared
         public static readonly RecordRole SiteRole = new RecordRole("site_role");
         public static readonly RecordRole SpamScore = new RecordRole("spam_score");
         public static readonly RecordRole Street = new RecordRole("street");
+        public static readonly RecordRole Trades = new RecordRole("trades");
         public static readonly RecordRole Verified = new RecordRole("verified");
         public static readonly RecordRole Warnings = new RecordRole("warnings");
         public static readonly RecordRole Website = new RecordRole("website");
@@ -96,7 +100,9 @@ namespace NoResponse.Models.Shared
                 ["born"] = Born,
                 ["bot"] = Bot,
                 ["caller_category"] = CallerCategory,
+                ["chargebacks"] = Chargebacks,
                 ["cover_picture"] = CoverPicture,
+                ["declines"] = Declines,
                 ["deleted"] = Deleted,
                 ["deleted_on"] = DeletedOn,
                 ["department"] = Department,
@@ -132,6 +138,7 @@ namespace NoResponse.Models.Shared
                 ["other_ip"] = OtherIp,
                 ["paid"] = Paid,
                 ["password_changed"] = PasswordChanged,
+                ["payment_method"] = PaymentMethod,
                 ["picture"] = Picture,
                 ["points"] = Points,
                 ["posts"] = Posts,
@@ -152,6 +159,7 @@ namespace NoResponse.Models.Shared
                 ["site_role"] = SiteRole,
                 ["spam_score"] = SpamScore,
                 ["street"] = Street,
+                ["trades"] = Trades,
                 ["verified"] = Verified,
                 ["warnings"] = Warnings,
                 ["website"] = Website
