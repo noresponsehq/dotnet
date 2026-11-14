@@ -15,6 +15,7 @@ Groups, lists of people, screenings and reviewer decisions.
 * [AddPeople](#addpeople) - Add or update a batch of people.
 * [GetPerson](#getperson) - Read a person's report.
 * [ReviewPerson](#reviewperson) - Record a decision on a person.
+* [JudgeRecord](#judgerecord) - Join one of a person's records to them, or reject it.
 * [ListScreenings](#listscreenings) - List a group's screenings.
 * [StartScreening](#startscreening) - Start a screening.
 * [GetScreening](#getscreening) - Read a screening.
@@ -486,6 +487,60 @@ var res = await sdk.Groups.ReviewPersonAsync(
 ### Response
 
 **[ReviewPersonResponse](../../Models/Operations/ReviewPersonResponse.md)**
+
+### Errors
+
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
+
+## JudgeRecord
+
+Join one of a person's lookup records to them whatever its likelihood, or reject it so it stays a lead. The verdict sticks while lookups find the same record.
+
+### Example Usage
+
+<!-- UsageSnippet language="csharp" operationID="judgeRecord" method="post" path="/v1/workspaces/{workspace_id}/groups/{environment}/{group_id}/people/{person_id}/records" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+var res = await sdk.Groups.JudgeRecordAsync(
+    workspaceId: "tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
+    environment: KeyEnvironment.Test,
+    groupId: "grp_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
+    personId: "per_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
+    body: new RecordVerdictRequest() {
+        RecordId = "rec_3f9a1c22d4e5b6a73f9a1c22d4e5b6a7",
+        Verdict = Verdict.Rejected,
+    }
+);
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                                                                                                                              | Type                                                                                                                                                                   | Required                                                                                                                                                               | Description                                                                                                                                                            | Example                                                                                                                                                                |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `WorkspaceId`                                                                                                                                                          | *string*                                                                                                                                                               | :heavy_check_mark:                                                                                                                                                     | Your workspace id, as each key lists it in workspace_id. Another workspace, a malformed id and a test environment's id answer 404.                                     | tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                                                                                                                         |
+| `Environment`                                                                                                                                                          | [KeyEnvironment](../../Models/Shared/KeyEnvironment.md)                                                                                                                | :heavy_check_mark:                                                                                                                                                     | The environment: live or test. Each has its own settings. Any other value answers 400. An API key reads and changes only its own environment's; the other answers 404. |                                                                                                                                                                        |
+| `GroupId`                                                                                                                                                              | *string*                                                                                                                                                               | :heavy_check_mark:                                                                                                                                                     | N/A                                                                                                                                                                    | grp_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                                                                                                                         |
+| `PersonId`                                                                                                                                                             | *string*                                                                                                                                                               | :heavy_check_mark:                                                                                                                                                     | N/A                                                                                                                                                                    | per_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                                                                                                                         |
+| `Body`                                                                                                                                                                 | [RecordVerdictRequest](../../Models/Shared/RecordVerdictRequest.md)                                                                                                    | :heavy_check_mark:                                                                                                                                                     | N/A                                                                                                                                                                    |                                                                                                                                                                        |
+
+### Response
+
+**[JudgeRecordResponse](../../Models/Operations/JudgeRecordResponse.md)**
 
 ### Errors
 
