@@ -1,5 +1,9 @@
 # Changelog
 
+## 12.0.0
+
+* `Sdk.Groups.GetPerson()`:  `response.profiles[].Record.Fields[]` **Changed** (Breaking ⚠️)
+
 ## 11.1.2
 
 * `Sdk.Groups.GetPerson()`:  `response.lookup.Remaining` **Added**
