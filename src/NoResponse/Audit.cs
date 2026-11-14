@@ -279,7 +279,7 @@ namespace NoResponse
             if (request == null) throw new ArgumentNullException(nameof(request));
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
-            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/audit_events", request, null);
+            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/audit", request, null);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, urlString);
             httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
@@ -595,7 +595,7 @@ namespace NoResponse
             };
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
-            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/audit_settings/{environment}", request, null);
+            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/retention/{environment}", request, null);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, urlString);
             httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
@@ -878,7 +878,7 @@ namespace NoResponse
             };
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
-            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/audit_settings/{environment}", request, null);
+            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/retention/{environment}", request, null);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Patch, urlString);
             httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
@@ -1163,7 +1163,7 @@ namespace NoResponse
             };
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
-            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/audit_streams/{environment}", request, null);
+            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/streams/{environment}", request, null);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, urlString);
             httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
@@ -1446,7 +1446,7 @@ namespace NoResponse
             };
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
-            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/audit_streams/{environment}", request, null);
+            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/streams/{environment}", request, null);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, urlString);
             httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
@@ -1735,7 +1735,7 @@ namespace NoResponse
             };
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
-            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/audit_streams/{environment}/{endpoint_id}", request, null);
+            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/streams/{environment}/{endpoint_id}", request, null);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Delete, urlString);
             httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
@@ -2020,7 +2020,7 @@ namespace NoResponse
             };
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
-            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/audit_streams/{environment}/{endpoint_id}/replay", request, null);
+            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/streams/{environment}/{endpoint_id}/replay", request, null);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, urlString);
             httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);

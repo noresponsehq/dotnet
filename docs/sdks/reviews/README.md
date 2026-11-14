@@ -443,7 +443,7 @@ List private and shared saved review filters visible to you.
 
 ### Example Usage
 
-<!-- UsageSnippet language="csharp" operationID="listReviewViews" method="get" path="/v1/workspaces/{workspace_id}/review_views/{environment}" -->
+<!-- UsageSnippet language="csharp" operationID="listReviewViews" method="get" path="/v1/workspaces/{workspace_id}/views/{environment}" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
@@ -488,7 +488,7 @@ Save a private or shared review filter.
 
 ### Example Usage
 
-<!-- UsageSnippet language="csharp" operationID="createReviewView" method="post" path="/v1/workspaces/{workspace_id}/review_views/{environment}" -->
+<!-- UsageSnippet language="csharp" operationID="createReviewView" method="post" path="/v1/workspaces/{workspace_id}/views/{environment}" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
@@ -543,7 +543,7 @@ Update your saved review filter after checking its expected version.
 
 ### Example Usage
 
-<!-- UsageSnippet language="csharp" operationID="updateReviewView" method="patch" path="/v1/workspaces/{workspace_id}/review_views/{environment}/{view_id}" -->
+<!-- UsageSnippet language="csharp" operationID="updateReviewView" method="patch" path="/v1/workspaces/{workspace_id}/views/{environment}/{view_id}" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
@@ -600,7 +600,7 @@ Delete your saved review filter after checking its expected version.
 
 ### Example Usage
 
-<!-- UsageSnippet language="csharp" operationID="deleteReviewView" method="delete" path="/v1/workspaces/{workspace_id}/review_views/{environment}/{view_id}" -->
+<!-- UsageSnippet language="csharp" operationID="deleteReviewView" method="delete" path="/v1/workspaces/{workspace_id}/views/{environment}/{view_id}" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;

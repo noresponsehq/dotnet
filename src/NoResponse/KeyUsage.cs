@@ -103,7 +103,7 @@ namespace NoResponse
             };
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
-            var urlString = baseUrl + "/v1/key_usage/batches";
+            var urlString = baseUrl + "/v1/keys/usage";
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, urlString);
             httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);

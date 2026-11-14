@@ -287,7 +287,7 @@ Read retained propagation progress for a list change with settings or management
 
 ### Example Usage
 
-<!-- UsageSnippet language="csharp" operationID="getListChange" method="get" path="/v1/workspaces/{workspace_id}/list_changes/{environment}/{change_id}" -->
+<!-- UsageSnippet language="csharp" operationID="getListChange" method="get" path="/v1/workspaces/{workspace_id}/changes/{environment}/{change_id}" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;

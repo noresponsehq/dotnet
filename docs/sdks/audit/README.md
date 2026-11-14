@@ -20,7 +20,7 @@ Read audit events within your current environment permissions. Filters apply bef
 
 ### Example Usage
 
-<!-- UsageSnippet language="csharp" operationID="listAuditEvents" method="get" path="/v1/workspaces/{workspace_id}/audit_events" example="page" -->
+<!-- UsageSnippet language="csharp" operationID="listAuditEvents" method="get" path="/v1/workspaces/{workspace_id}/audit" example="page" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Operations;
@@ -71,7 +71,7 @@ Read audit retention for the environment. The default is 365 days. Oldest availa
 
 ### Example Usage
 
-<!-- UsageSnippet language="csharp" operationID="getAuditRetention" method="get" path="/v1/workspaces/{workspace_id}/audit_settings/{environment}" -->
+<!-- UsageSnippet language="csharp" operationID="getAuditRetention" method="get" path="/v1/workspaces/{workspace_id}/retention/{environment}" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
@@ -116,7 +116,7 @@ Set test-environment audit retention from 1 to 365 days with audit_manage scope.
 
 ### Example Usage
 
-<!-- UsageSnippet language="csharp" operationID="updateAuditRetention" method="patch" path="/v1/workspaces/{workspace_id}/audit_settings/{environment}" -->
+<!-- UsageSnippet language="csharp" operationID="updateAuditRetention" method="patch" path="/v1/workspaces/{workspace_id}/retention/{environment}" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
@@ -165,7 +165,7 @@ List audit subscriptions and their endpoint state and latest delivery attempt. S
 
 ### Example Usage
 
-<!-- UsageSnippet language="csharp" operationID="listAuditStreams" method="get" path="/v1/workspaces/{workspace_id}/audit_streams/{environment}" -->
+<!-- UsageSnippet language="csharp" operationID="listAuditStreams" method="get" path="/v1/workspaces/{workspace_id}/streams/{environment}" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
@@ -210,7 +210,7 @@ Configure the action filter for one verified webhook endpoint. Requires audit_ma
 
 ### Example Usage
 
-<!-- UsageSnippet language="csharp" operationID="configureAuditStream" method="post" path="/v1/workspaces/{workspace_id}/audit_streams/{environment}" -->
+<!-- UsageSnippet language="csharp" operationID="configureAuditStream" method="post" path="/v1/workspaces/{workspace_id}/streams/{environment}" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
@@ -264,7 +264,7 @@ Remove an audit subscription and cancel queued deliveries. Requires audit_manage
 
 ### Example Usage
 
-<!-- UsageSnippet language="csharp" operationID="removeAuditStream" method="delete" path="/v1/workspaces/{workspace_id}/audit_streams/{environment}/{endpoint_id}" -->
+<!-- UsageSnippet language="csharp" operationID="removeAuditStream" method="delete" path="/v1/workspaces/{workspace_id}/streams/{environment}/{endpoint_id}" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
@@ -311,7 +311,7 @@ Replay a recorded delivery for the current audit subscription. Requires audit_ma
 
 ### Example Usage
 
-<!-- UsageSnippet language="csharp" operationID="replayAuditStream" method="post" path="/v1/workspaces/{workspace_id}/audit_streams/{environment}/{endpoint_id}/replay" -->
+<!-- UsageSnippet language="csharp" operationID="replayAuditStream" method="post" path="/v1/workspaces/{workspace_id}/streams/{environment}/{endpoint_id}/replay" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;

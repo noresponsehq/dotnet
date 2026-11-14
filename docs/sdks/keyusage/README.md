@@ -14,7 +14,7 @@ Records requests made with API keys your platform issued to your accounts, one e
 
 ### Example Usage: batch
 
-<!-- UsageSnippet language="csharp" operationID="recordKeyUsage" method="post" path="/v1/key_usage/batches" example="batch" -->
+<!-- UsageSnippet language="csharp" operationID="recordKeyUsage" method="post" path="/v1/keys/usage" example="batch" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
@@ -50,7 +50,7 @@ var res = await sdk.KeyUsage.RecordAsync(
 ```
 ### Example Usage: recorded
 
-<!-- UsageSnippet language="csharp" operationID="recordKeyUsage" method="post" path="/v1/key_usage/batches" example="recorded" -->
+<!-- UsageSnippet language="csharp" operationID="recordKeyUsage" method="post" path="/v1/keys/usage" example="recorded" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;

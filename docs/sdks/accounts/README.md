@@ -255,7 +255,7 @@ Lists the other accounts in this environment whose retained assessments submitte
 
 ### Example Usage
 
-<!-- UsageSnippet language="csharp" operationID="listLinkedAccounts" method="get" path="/v1/accounts/{account_id}/linked_accounts" -->
+<!-- UsageSnippet language="csharp" operationID="listLinkedAccounts" method="get" path="/v1/accounts/{account_id}/links" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Operations;

@@ -2827,7 +2827,7 @@ namespace NoResponse
             };
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
-            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/review_views/{environment}", request, null);
+            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/views/{environment}", request, null);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, urlString);
             httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
@@ -3108,7 +3108,7 @@ namespace NoResponse
             };
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
-            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/review_views/{environment}", request, null);
+            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/views/{environment}", request, null);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, urlString);
             httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
@@ -3365,7 +3365,7 @@ namespace NoResponse
             };
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
-            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/review_views/{environment}/{view_id}", request, null);
+            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/views/{environment}/{view_id}", request, null);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Patch, urlString);
             httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
@@ -3624,7 +3624,7 @@ namespace NoResponse
             };
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
-            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/review_views/{environment}/{view_id}", request, null);
+            var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/views/{environment}/{view_id}", request, null);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Delete, urlString);
             httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
