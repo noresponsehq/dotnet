@@ -45,7 +45,7 @@ namespace NoResponse.Models.Shared
         public string? ExternalUserId { get; set; }
 
         /// <summary>
-        /// The stable member id that issued this invite, or the authenticated live API key prefix for members_manage automation. Reissuing preserves the original creator; the audit event names the reissuing actor.
+        /// The stable member id that issued this invite, the authenticated live API key prefix for members_manage automation, or, for an invite NoResponse issued for the workspace, NoResponse's own id (adm_ or nrc_). Reissuing preserves the original creator; the audit event names the reissuing actor.
         /// </summary>
         [JsonProperty("created_by", Required = Newtonsoft.Json.Required.Always)]
         public string CreatedBy { get; set; } = default!;
