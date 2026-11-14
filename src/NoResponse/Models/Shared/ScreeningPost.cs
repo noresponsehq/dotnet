@@ -21,6 +21,18 @@ namespace NoResponse.Models.Shared
         [JsonProperty("reply_to", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? ReplyTo { get; set; }
 
+        /// <summary>
+        /// The permalink of the post this one reposts. text then holds that post's author's words, not the person's.
+        /// </summary>
+        [JsonProperty("repost_of", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? RepostOf { get; set; }
+
+        /// <summary>
+        /// The permalink of the post this one quotes. text holds the person's own words alone.
+        /// </summary>
+        [JsonProperty("quote_of", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? QuoteOf { get; set; }
+
         [JsonProperty("profile_id", Required = Newtonsoft.Json.Required.Always)]
         public string ProfileId { get; set; } = default!;
 

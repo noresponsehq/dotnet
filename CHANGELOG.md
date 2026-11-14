@@ -1,5 +1,9 @@
 # Changelog
 
+## 12.0.1
+
+* `Sdk.Groups.GetPerson()`:  `response` **Changed**
+
 ## 12.0.0
 
 * `Sdk.Groups.GetPerson()`:  `response.profiles[].Record.Fields[]` **Changed** (Breaking ⚠️)
