@@ -403,7 +403,7 @@ Read a person's report: matched profiles, findings with their evidence, every re
 
 ### Example Usage
 
-<!-- UsageSnippet language="csharp" operationID="getPerson" method="get" path="/v1/workspaces/{workspace_id}/groups/{environment}/{group_id}/people/{person_id}" -->
+<!-- UsageSnippet language="csharp" operationID="getPerson" method="get" path="/v1/workspaces/{workspace_id}/groups/{environment}/{group_id}/people/{person_id}" example="records" -->
 ```csharp
 using NoResponse;
 using NoResponse.Models.Shared;
