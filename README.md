@@ -14,7 +14,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v10.0.21 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v11.0.0 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -25,7 +25,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v10.0.21
+git -C third_party/noresponse-dotnet checkout v11.0.0
 git add third_party/noresponse-dotnet
 ```
 
@@ -67,7 +67,7 @@ Every method returns an envelope: `Result` holds the object and `Headers` the re
 | --- | --- |
 | Configure this client and explore its methods | [.NET SDK guide](https://docs.noresponse.org/sdks/csharp) |
 | Act when an account's decision changes | [Late results](https://docs.noresponse.org/guides/late-results) |
-| Screen an event's attendees and record decisions | [Events and screenings](https://docs.noresponse.org/reference/events) |
+| Screen a group's people and record decisions | [Groups and screenings](https://docs.noresponse.org/reference/groups) |
 | Explore request and response fields | [API reference](https://docs.noresponse.org/api-reference) |
 
 <details>
@@ -228,9 +228,9 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
         if (webhookEvent.AccountDeletedEvent is { } erased) { /* account.deleted: you erased erased.Data.AccountId with Accounts.DeleteAsync */ }
         else if (webhookEvent.WorkspaceDeletedEvent is { } gone) { /* workspace.deleted: the workspace is deleted; the last event for gone.Data.Environment */ }
         else if (webhookEvent.WebhookEndpointDisabledEvent is { } disabled) { /* disabled.Data.EndpointId failed for 72 hours: fix it, verify it again */ }
-        else if (webhookEvent.ScreeningCompletedEvent is { } screened) { /* screening.completed: counts by band, no footprint and partial coverage; it names no attendee */ }
-        else if (webhookEvent.AttendeeFlaggedEvent is { } flagged) { /* attendee.flagged: the attendee's highest band and match state, never what was posted */ }
-        else if (webhookEvent.AttendeeDecidedEvent is { } decided) { /* attendee.decided: cleared, watch or escalated; keep the latest DecidedAt per attendee */ }
+        else if (webhookEvent.ScreeningCompletedEvent is { } screened) { /* screening.completed: counts by band, no footprint and partial coverage; it names no person */ }
+        else if (webhookEvent.PersonFlaggedEvent is { } flagged) { /* person.flagged: the person's highest band and match state, never what was posted */ }
+        else if (webhookEvent.PersonDecidedEvent is { } decided) { /* person.decided: cleared, watch or escalated; keep the latest DecidedAt per person */ }
         else if (webhookEvent.AccountRiskChangedEvent is { } changed) { /* account.risk_changed, the one event to act on: this verifier alone does not enforce it: use LateResults.HandleRiskChangeAsync (below) as this endpoint's receiver */ }
         else if (webhookEvent.AssessmentUpdatedEvent?.Data.AssessmentExpired is { } expired) { /* forget expired.AssessmentId: GET now answers 404 */ }
         else if (webhookEvent.AssessmentUpdatedEvent?.Data.Assessment is { } assessment) { /* progress only: apply nothing */ }
@@ -243,7 +243,7 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
 });
 ```
 
-`Webhook.ConstructEvent` is generated from the API document. It refuses a missing, empty or repeated header (in any letter case), a delivery more than 300 seconds from now (`tolerance:` changes it), an unknown key id, a bad signature or a body that is not a known event, and `WebhookVerificationException.Code` says which: `"missing_header"`, `"duplicate_header"`, `"invalid_timestamp"`, `"unknown_key"`, `"invalid_signature"` or `"invalid_payload"`, also available as constants on the exception class. It returns a `WebhookEvent` union: `Type.Value` is the wire type, and exactly one of `AssessmentUpdatedEvent`, `EndpointVerificationEvent`, `AccountDeletedEvent`, `WorkspaceDeletedEvent`, `WebhookEndpointDisabledEvent`, `AccountRiskChangedEvent`, `AuditEventEvent`, `ScreeningCompletedEvent`, `AttendeeFlaggedEvent` and `AttendeeDecidedEvent` is set, each with `Id`, `CreatedAt`, `Test` and `Data`. Deliveries are at least once: deduplicate on the event's `Id`.
+`Webhook.ConstructEvent` is generated from the API document. It refuses a missing, empty or repeated header (in any letter case), a delivery more than 300 seconds from now (`tolerance:` changes it), an unknown key id, a bad signature or a body that is not a known event, and `WebhookVerificationException.Code` says which: `"missing_header"`, `"duplicate_header"`, `"invalid_timestamp"`, `"unknown_key"`, `"invalid_signature"` or `"invalid_payload"`, also available as constants on the exception class. It returns a `WebhookEvent` union: `Type.Value` is the wire type, and exactly one of `AssessmentUpdatedEvent`, `EndpointVerificationEvent`, `AccountDeletedEvent`, `WorkspaceDeletedEvent`, `WebhookEndpointDisabledEvent`, `AccountRiskChangedEvent`, `AuditEventEvent`, `ScreeningCompletedEvent`, `PersonFlaggedEvent` and `PersonDecidedEvent` is set, each with `Id`, `CreatedAt`, `Test` and `Data`. Deliveries are at least once: deduplicate on the event's `Id`.
 
 
 ### Late results

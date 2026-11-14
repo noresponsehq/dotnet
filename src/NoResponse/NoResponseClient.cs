@@ -111,9 +111,9 @@ namespace NoResponse
         public IOperations Operations { get; }
 
         /// <summary>
-        /// Events, attendee lists, screenings and reviewer decisions.
+        /// Groups, lists of people, screenings and reviewer decisions.
         /// </summary>
-        public IEvents Events { get; }
+        public IGroups Groups { get; }
     }
 
     /// <summary>
@@ -201,9 +201,9 @@ namespace NoResponse
         /// </summary>
         public IOperations Operations { get; private set; }
         /// <summary>
-        /// The Events sub-SDK.
+        /// The Groups sub-SDK.
         /// </summary>
-        public IEvents Events { get; private set; }
+        public IGroups Groups { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the SDK based on a <see cref="SDKConfig"/> configuration object.
@@ -250,7 +250,7 @@ namespace NoResponse
 
             Operations = new Operations(SDKConfiguration);
 
-            Events = new Events(SDKConfiguration);
+            Groups = new Groups(SDKConfiguration);
         }
 
         /// <summary>
@@ -355,7 +355,7 @@ namespace NoResponse
 
             Operations = new Operations(SDKConfiguration);
 
-            Events = new Events(SDKConfiguration);
+            Groups = new Groups(SDKConfiguration);
         }
 
         private void InitHooks()

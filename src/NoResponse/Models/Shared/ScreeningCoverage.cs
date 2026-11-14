@@ -24,7 +24,7 @@ namespace NoResponse.Models.Shared
         public long ItemsRead { get; set; } = default!;
 
         /// <summary>
-        /// Items read that the analyser could not analyse. Above zero, the attendee is partial: a finding may be missing from them.
+        /// Items read that the analyser could not analyse. Above zero, the person is partial: a finding may be missing from them.
         /// </summary>
         [JsonProperty("items_not_analysed", Required = Newtonsoft.Json.Required.DisallowNull)]
         public long? ItemsNotAnalysed { get; set; }
@@ -51,7 +51,7 @@ namespace NoResponse.Models.Shared
         public List<ScreeningPlatformCoverage> Platforms { get; set; } = default!;
 
         /// <summary>
-        /// Requested platforms where the attendee gave the screening nothing to look up, such as no handle for a platform that reads supplied handles only. Nothing looked and nothing failed: such a platform is not in platforms, is not none_found and does not make the attendee partial.
+        /// Requested platforms where the person gave the screening nothing to look up, such as no handle for a platform that reads supplied handles only. Nothing looked and nothing failed: such a platform is not in platforms, is not none_found and does not make the person partial.
         /// </summary>
         [JsonProperty("not_searched", Required = Newtonsoft.Json.Required.DisallowNull)]
         public List<HandlePlatform>? NotSearched { get; set; }

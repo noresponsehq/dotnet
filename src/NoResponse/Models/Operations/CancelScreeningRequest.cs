@@ -23,8 +23,8 @@ namespace NoResponse.Models.Operations
         [NoResponseMetadata("pathParam:style=simple,explode=false,name=environment")]
         public KeyEnvironment Environment { get; set; } = default!;
 
-        [NoResponseMetadata("pathParam:style=simple,explode=false,name=event_id")]
-        public string EventId { get; set; } = default!;
+        [NoResponseMetadata("pathParam:style=simple,explode=false,name=group_id")]
+        public string GroupId { get; set; } = default!;
 
         [NoResponseMetadata("pathParam:style=simple,explode=false,name=screening_id")]
         public string ScreeningId { get; set; } = default!;

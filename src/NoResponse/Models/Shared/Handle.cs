@@ -10,7 +10,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// An account the attendee is known to hold.
+    /// An account the person is known to hold.
     /// </summary>
     public class Handle
     {

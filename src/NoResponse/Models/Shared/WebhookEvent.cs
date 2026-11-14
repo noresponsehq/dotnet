@@ -75,17 +75,17 @@ namespace NoResponse.Models.Shared
             }
         }
 
-        public static WebhookEventType AttendeeFlagged
+        public static WebhookEventType PersonFlagged
         {
             get {
-                return new WebhookEventType("attendee.flagged");
+                return new WebhookEventType("person.flagged");
             }
         }
 
-        public static WebhookEventType AttendeeDecided
+        public static WebhookEventType PersonDecided
         {
             get {
-                return new WebhookEventType("attendee.decided");
+                return new WebhookEventType("person.decided");
             }
         }
 
@@ -117,10 +117,10 @@ namespace NoResponse.Models.Shared
                     return AuditEvent;
                 case "screening.completed":
                     return ScreeningCompleted;
-                case "attendee.flagged":
-                    return AttendeeFlagged;
-                case "attendee.decided":
-                    return AttendeeDecided;
+                case "person.flagged":
+                    return PersonFlagged;
+                case "person.decided":
+                    return PersonDecided;
                 default:
                     throw new ArgumentException("Invalid value for WebhookEventType");
             }
@@ -185,11 +185,11 @@ namespace NoResponse.Models.Shared
 
         [UnionVariant]
         [NoResponseMetadata("form:explode=true")]
-        public AttendeeFlaggedEvent? AttendeeFlaggedEvent { get; set; }
+        public PersonFlaggedEvent? PersonFlaggedEvent { get; set; }
 
         [UnionVariant]
         [NoResponseMetadata("form:explode=true")]
-        public AttendeeDecidedEvent? AttendeeDecidedEvent { get; set; }
+        public PersonDecidedEvent? PersonDecidedEvent { get; set; }
 
         public WebhookEventType Type { get; set; }
 
@@ -257,19 +257,19 @@ namespace NoResponse.Models.Shared
             return res;
         }
 
-        public static WebhookEvent CreateAttendeeFlagged(AttendeeFlaggedEvent attendeeFlagged)
+        public static WebhookEvent CreatePersonFlagged(PersonFlaggedEvent personFlagged)
         {
-            WebhookEventType typ = WebhookEventType.AttendeeFlagged;
+            WebhookEventType typ = WebhookEventType.PersonFlagged;
             WebhookEvent res = new WebhookEvent(typ);
-            res.AttendeeFlaggedEvent = attendeeFlagged;
+            res.PersonFlaggedEvent = personFlagged;
             return res;
         }
 
-        public static WebhookEvent CreateAttendeeDecided(AttendeeDecidedEvent attendeeDecided)
+        public static WebhookEvent CreatePersonDecided(PersonDecidedEvent personDecided)
         {
-            WebhookEventType typ = WebhookEventType.AttendeeDecided;
+            WebhookEventType typ = WebhookEventType.PersonDecided;
             WebhookEvent res = new WebhookEvent(typ);
-            res.AttendeeDecidedEvent = attendeeDecided;
+            res.PersonDecidedEvent = personDecided;
             return res;
         }
 
@@ -329,15 +329,15 @@ namespace NoResponse.Models.Shared
                     ScreeningCompletedEvent screeningCompletedEvent = ResponseBodyDeserializer.DeserializeNotNull<ScreeningCompletedEvent>(jo.ToString());
                     return CreateScreeningCompleted(screeningCompletedEvent);
                 }
-                if (discriminator == WebhookEventType.AttendeeFlagged.ToString())
+                if (discriminator == WebhookEventType.PersonFlagged.ToString())
                 {
-                    AttendeeFlaggedEvent attendeeFlaggedEvent = ResponseBodyDeserializer.DeserializeNotNull<AttendeeFlaggedEvent>(jo.ToString());
-                    return CreateAttendeeFlagged(attendeeFlaggedEvent);
+                    PersonFlaggedEvent personFlaggedEvent = ResponseBodyDeserializer.DeserializeNotNull<PersonFlaggedEvent>(jo.ToString());
+                    return CreatePersonFlagged(personFlaggedEvent);
                 }
-                if (discriminator == WebhookEventType.AttendeeDecided.ToString())
+                if (discriminator == WebhookEventType.PersonDecided.ToString())
                 {
-                    AttendeeDecidedEvent attendeeDecidedEvent = ResponseBodyDeserializer.DeserializeNotNull<AttendeeDecidedEvent>(jo.ToString());
-                    return CreateAttendeeDecided(attendeeDecidedEvent);
+                    PersonDecidedEvent personDecidedEvent = ResponseBodyDeserializer.DeserializeNotNull<PersonDecidedEvent>(jo.ToString());
+                    return CreatePersonDecided(personDecidedEvent);
                 }
 
                 throw new InvalidOperationException("Could not deserialize into any supported types.");
@@ -400,15 +400,15 @@ namespace NoResponse.Models.Shared
                     return;
                 }
 
-                if (res.AttendeeFlaggedEvent != null)
+                if (res.PersonFlaggedEvent != null)
                 {
-                    writer.WriteRawValue(Utilities.SerializeJSON(res.AttendeeFlaggedEvent));
+                    writer.WriteRawValue(Utilities.SerializeJSON(res.PersonFlaggedEvent));
                     return;
                 }
 
-                if (res.AttendeeDecidedEvent != null)
+                if (res.PersonDecidedEvent != null)
                 {
-                    writer.WriteRawValue(Utilities.SerializeJSON(res.AttendeeDecidedEvent));
+                    writer.WriteRawValue(Utilities.SerializeJSON(res.PersonDecidedEvent));
                     return;
                 }
 

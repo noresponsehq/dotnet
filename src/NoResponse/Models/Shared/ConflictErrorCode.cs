@@ -40,8 +40,8 @@ namespace NoResponse.Models.Shared
         public static readonly ConflictErrorCode MemberLimitReached = new ConflictErrorCode("member_limit_reached");
         public static readonly ConflictErrorCode OwnerInvitePending = new ConflictErrorCode("owner_invite_pending");
         public static readonly ConflictErrorCode AggregateErasedData = new ConflictErrorCode("aggregate_erased_data");
-        public static readonly ConflictErrorCode EventConflict = new ConflictErrorCode("event_conflict");
-        public static readonly ConflictErrorCode EventLimitReached = new ConflictErrorCode("event_limit_reached");
+        public static readonly ConflictErrorCode GroupConflict = new ConflictErrorCode("group_conflict");
+        public static readonly ConflictErrorCode GroupLimitReached = new ConflictErrorCode("group_limit_reached");
         public static readonly ConflictErrorCode ScreeningCapExceeded = new ConflictErrorCode("screening_cap_exceeded");
         public static readonly ConflictErrorCode ScreeningUnavailable = new ConflictErrorCode("screening_unavailable");
 
@@ -73,8 +73,8 @@ namespace NoResponse.Models.Shared
                 ["member_limit_reached"] = MemberLimitReached,
                 ["owner_invite_pending"] = OwnerInvitePending,
                 ["aggregate_erased_data"] = AggregateErasedData,
-                ["event_conflict"] = EventConflict,
-                ["event_limit_reached"] = EventLimitReached,
+                ["group_conflict"] = GroupConflict,
+                ["group_limit_reached"] = GroupLimitReached,
                 ["screening_cap_exceeded"] = ScreeningCapExceeded,
                 ["screening_unavailable"] = ScreeningUnavailable
             };

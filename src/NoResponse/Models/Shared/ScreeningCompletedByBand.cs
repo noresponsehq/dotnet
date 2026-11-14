@@ -5,7 +5,7 @@ namespace NoResponse.Models.Shared
     using NoResponse.Utils;
 
     /// <summary>
-    /// Screened attendees by the band of their most severe finding.
+    /// Screened people by the band of their most severe finding.
     /// </summary>
     public class ScreeningCompletedByBand
     {

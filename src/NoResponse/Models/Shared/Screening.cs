@@ -17,14 +17,14 @@ namespace NoResponse.Models.Shared
         [JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
         public string Id { get; set; } = default!;
 
-        [JsonProperty("event_id", Required = Newtonsoft.Json.Required.Always)]
-        public string EventId { get; set; } = default!;
+        [JsonProperty("group_id", Required = Newtonsoft.Json.Required.Always)]
+        public string GroupId { get; set; } = default!;
 
         [JsonProperty("environment", Required = Newtonsoft.Json.Required.Always)]
         public AuditSettingsEnvironment Environment { get; set; } = default!;
 
         /// <summary>
-        /// partial finished with some attendees or platforms not covered; attendees_failed and attendees_partial count them.
+        /// partial finished with some people or platforms not covered; people_failed and people_partial count them.
         /// </summary>
         [JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         public ScreeningStatus Status { get; set; } = default!;
@@ -54,37 +54,37 @@ namespace NoResponse.Models.Shared
         public string ExpiresAt { get; set; } = default!;
 
         /// <summary>
-        /// Attendees selected when the screening started.
+        /// People selected when the screening started.
         /// </summary>
-        [JsonProperty("attendees_total", Required = Newtonsoft.Json.Required.Always)]
-        public long AttendeesTotal { get; set; } = default!;
+        [JsonProperty("people_total", Required = Newtonsoft.Json.Required.Always)]
+        public long PeopleTotal { get; set; } = default!;
 
         /// <summary>
-        /// Attendees screened so far, failed ones included.
+        /// People screened so far, failed ones included.
         /// </summary>
-        [JsonProperty("attendees_done", Required = Newtonsoft.Json.Required.Always)]
-        public long AttendeesDone { get; set; } = default!;
+        [JsonProperty("people_done", Required = Newtonsoft.Json.Required.Always)]
+        public long PeopleDone { get; set; } = default!;
 
-        [JsonProperty("attendees_flagged", Required = Newtonsoft.Json.Required.Always)]
-        public long AttendeesFlagged { get; set; } = default!;
+        [JsonProperty("people_flagged", Required = Newtonsoft.Json.Required.Always)]
+        public long PeopleFlagged { get; set; } = default!;
 
-        [JsonProperty("attendees_failed", Required = Newtonsoft.Json.Required.Always)]
-        public long AttendeesFailed { get; set; } = default!;
+        [JsonProperty("people_failed", Required = Newtonsoft.Json.Required.Always)]
+        public long PeopleFailed { get; set; } = default!;
 
         /// <summary>
-        /// Attendees screened with some requested platform not covered; their coverage names which.
+        /// People screened with some requested platform not covered; their coverage names which.
         /// </summary>
-        [JsonProperty("attendees_partial", Required = Newtonsoft.Json.Required.Always)]
-        public long AttendeesPartial { get; set; } = default!;
+        [JsonProperty("people_partial", Required = Newtonsoft.Json.Required.Always)]
+        public long PeoplePartial { get; set; } = default!;
 
         /// <summary>
-        /// What the screening was estimated to cost when it started, in minor units of USD (cents): its attendees at its depth and platforms. Until the screening finishes, what it has not yet spent counts against the environment's screening_daily_cap.
+        /// What the screening was estimated to cost when it started, in minor units of USD (cents): its people at its depth and platforms. Until the screening finishes, what it has not yet spent counts against the environment's screening_daily_cap.
         /// </summary>
         [JsonProperty("estimated_spend", Required = Newtonsoft.Json.Required.Always)]
         public long EstimatedSpend { get; set; } = default!;
 
         /// <summary>
-        /// What the attendees it has screened recorded, in minor units of USD. Each counts toward the UTC day it was recorded on; a failed attendee records nothing.
+        /// What the people it has screened recorded, in minor units of USD. Each counts toward the UTC day it was recorded on; a failed person records nothing.
         /// </summary>
         [JsonProperty("spent", Required = Newtonsoft.Json.Required.Always)]
         public long Spent { get; set; } = default!;

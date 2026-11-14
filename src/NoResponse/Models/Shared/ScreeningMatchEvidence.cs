@@ -10,12 +10,12 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// One identifier that ties a profile to the attendee.
+    /// One identifier that ties a profile to the person.
     /// </summary>
     public class ScreeningMatchEvidence
     {
         /// <summary>
-        /// What matched. email, phone, supplied_handle and source_fact are hard identifiers; company, city and school are soft. supplied_handle is a handle on the attendee row; source_fact is an account a profile found by the attendee's lookups lists.
+        /// What matched. email, phone, supplied_handle and source_fact are hard identifiers; company, city and school are soft. supplied_handle is a handle on the person row; source_fact is an account a profile found by the person's lookups lists.
         /// </summary>
         [JsonProperty("kind", Required = Newtonsoft.Json.Required.Always)]
         public ScreeningMatchEvidenceKind Kind { get; set; } = default!;

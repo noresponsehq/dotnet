@@ -6,7 +6,7 @@ namespace NoResponse.Models.Shared
     using System.Collections.Generic;
 
     /// <summary>
-    /// A person the event protects.
+    /// A person the group protects.
     /// </summary>
     public class Principal
     {

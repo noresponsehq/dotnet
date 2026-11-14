@@ -24,7 +24,7 @@ namespace NoResponse.Models.Shared
         [JsonProperty("policy_publish")] PolicyPublish,
         [JsonProperty("members")] Members,
         [JsonProperty("members_manage")] MembersManage,
-        [JsonProperty("events")] Events,
+        [JsonProperty("groups")] Groups,
     }
 
     public static class KeyRequestScopeExtension

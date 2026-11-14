@@ -23,8 +23,8 @@ namespace NoResponse.Models.Operations
         [NoResponseMetadata("pathParam:style=simple,explode=false,name=environment")]
         public KeyEnvironment Environment { get; set; } = default!;
 
-        [NoResponseMetadata("pathParam:style=simple,explode=false,name=event_id")]
-        public string EventId { get; set; } = default!;
+        [NoResponseMetadata("pathParam:style=simple,explode=false,name=group_id")]
+        public string GroupId { get; set; } = default!;
 
         /// <summary>
         /// Opaque client key, 16 to 128 characters of [A-Za-z0-9._:-] (a UUID or ULID fits). Scoped to the workspace principal and bound to the canonical body for 24 hours. Optional: the SDK generates a UUID when you omit it and sends the same key on every retry of the call.

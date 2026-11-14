@@ -10,12 +10,12 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// How a profile was matched to the attendee: the state its evidence earns, and the evidence.
+    /// How a profile was matched to the person: the state its evidence earns, and the evidence.
     /// </summary>
     public class ScreeningMatch
     {
         /// <summary>
-        /// How sure the screening is that a profile is the attendee's, from its evidence: confirmed is a handle on the attendee row, or two or more hard identifiers (email, phone, a supplied handle, or a fact an existing source returned); probable is one identifier beyond the name; possible is the name alone.
+        /// How sure the screening is that a profile is the person's, from its evidence: confirmed is a handle on the person row, or two or more hard identifiers (email, phone, a supplied handle, or a fact an existing source returned); probable is one identifier beyond the name; possible is the name alone.
         /// </summary>
         [JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
         public ProfileMatchState State { get; set; } = default!;

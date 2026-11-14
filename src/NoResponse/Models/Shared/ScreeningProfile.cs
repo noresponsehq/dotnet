@@ -10,7 +10,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// An account the screening matched to the attendee, how it was matched, and how much of it was read.
+    /// An account the screening matched to the person, how it was matched, and how much of it was read.
     /// </summary>
     public class ScreeningProfile
     {
@@ -51,7 +51,7 @@ namespace NoResponse.Models.Shared
         public Access Access { get; set; } = default!;
 
         /// <summary>
-        /// How a profile was matched to the attendee: the state its evidence earns, and the evidence.
+        /// How a profile was matched to the person: the state its evidence earns, and the evidence.
         /// </summary>
         [JsonProperty("match", Required = Newtonsoft.Json.Required.Always)]
         public ScreeningMatch Match { get; set; } = new();

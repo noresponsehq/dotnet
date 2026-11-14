@@ -6,7 +6,7 @@ namespace NoResponse.Models.Shared
     using System;
 
     /// <summary>
-    /// completed reached every attendee; partial left some not fully covered (partial_coverage); failed covered nobody.
+    /// completed reached every person; partial left some not fully covered (partial_coverage); failed covered nobody.
     /// </summary>
     public enum ScreeningCompletedStatus
     {
