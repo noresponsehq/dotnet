@@ -1,5 +1,15 @@
 # Changelog
 
+## 12.0.9
+
+* `Sdk.Settings.Get()`:  `response.refusedSources[].Enum(scratch)` **Added**
+* `Sdk.Settings.Update()`: 
+  *  `request.body.RefusedSources[].Enum(scratch)` **Added**
+  *  `response.refusedSources[].Enum(scratch)` **Added**
+* `Sdk.Settings.ListHistory()`:  `response.items[].Settings.RefusedSources[].Enum(scratch)` **Added**
+* `Sdk.Settings.Restore()`:  `response.refusedSources[].Enum(scratch)` **Added**
+* `Sdk.Evaluations.Publish()`:  `response.refusedSources[].Enum(scratch)` **Added**
+
 ## 12.0.8
 
 * `Sdk.Groups.GetPerson()`:  `response.posts[]` **Changed**

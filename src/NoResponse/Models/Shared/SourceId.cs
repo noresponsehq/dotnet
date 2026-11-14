@@ -9,7 +9,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// A NoResponse source: github (GitHub accounts), phone (the phone lookup), breach (breach exposure), rdap (the email domain's registration), mx (the email domain's mail servers), ipintel (IP intelligence) or an email account source that searches one platform for an account by email address (adobe, nvidia, wix, life360, zapier, google). google runs only for Gmail addresses.
+    /// A NoResponse source: github (GitHub accounts), phone (the phone lookup), breach (breach exposure), rdap (the email domain's registration), mx (the email domain's mail servers), ipintel (IP intelligence) or an email account source that searches one platform for an account by email address (adobe, nvidia, wix, life360, zapier, google). google runs only for Gmail addresses. scratch searches Scratch for an account by username.
     /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class SourceId : IEquatable<SourceId>, IOpenEnum<string>
@@ -26,6 +26,7 @@ namespace NoResponse.Models.Shared
         public static readonly SourceId Life360 = new SourceId("life360");
         public static readonly SourceId Zapier = new SourceId("zapier");
         public static readonly SourceId Google = new SourceId("google");
+        public static readonly SourceId Scratch = new SourceId("scratch");
 
         private static readonly Dictionary<string, SourceId> _knownValues =
             new Dictionary<string, SourceId>() {
@@ -40,7 +41,8 @@ namespace NoResponse.Models.Shared
                 ["wix"] = Wix,
                 ["life360"] = Life360,
                 ["zapier"] = Zapier,
-                ["google"] = Google
+                ["google"] = Google,
+                ["scratch"] = Scratch
             };
 
         private static readonly ConcurrentDictionary<string, SourceId> _values =
