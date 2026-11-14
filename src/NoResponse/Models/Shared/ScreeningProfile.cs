@@ -79,5 +79,11 @@ namespace NoResponse.Models.Shared
 
         [JsonProperty("collected_at", Required = Newtonsoft.Json.Required.Always)]
         public string CollectedAt { get; set; } = default!;
+
+        /// <summary>
+        /// One answer from one source: where it came from, what found it and every field it holds.
+        /// </summary>
+        [JsonProperty("record", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public Record? Record { get; set; }
     }
 }

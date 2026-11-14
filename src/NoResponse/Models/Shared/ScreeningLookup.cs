@@ -30,6 +30,12 @@ namespace NoResponse.Models.Shared
         public RiskDetails? Details { get; set; }
 
         /// <summary>
+        /// What each source that found an account answered, whole: every field under the source's own names, each answer once. Served only to a caller who may read evidence, as details are.
+        /// </summary>
+        [JsonProperty("records", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<Record>? Records { get; set; }
+
+        /// <summary>
         /// When the lookups ran.
         /// </summary>
         [JsonProperty("looked_at", Required = Newtonsoft.Json.Required.Always)]
