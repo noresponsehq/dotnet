@@ -23,6 +23,12 @@ namespace NoResponse.Models.Shared
         public string By { get; set; } = default!;
 
         /// <summary>
+        /// The search a person started that matched the rows. Searching the same field again with this source's table fetches them.
+        /// </summary>
+        [JsonProperty("search", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? Search { get; set; }
+
+        /// <summary>
         /// How many rows of the source that search matched beyond the records the lookup carries.
         /// </summary>
         [JsonProperty("rows", Required = Newtonsoft.Json.Required.Always)]

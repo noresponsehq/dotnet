@@ -54,6 +54,12 @@ namespace NoResponse.Models.Shared
         public ScreeningLookup? Lookup { get; set; }
 
         /// <summary>
+        /// The searches people started on this person's values, newest first: each names the value, and the record and field it came from. Absent when nobody searched.
+        /// </summary>
+        [JsonProperty("searches", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<Search>? Searches { get; set; }
+
+        /// <summary>
         /// Where else in the environment the person appears, read live from those groups: deleting one removes it here.
         /// </summary>
         [JsonProperty("other_groups", Required = Newtonsoft.Json.Required.Always)]
