@@ -15,7 +15,7 @@ namespace NoResponse.Models.Shared
     public class Record
     {
         /// <summary>
-        /// Made from the source and the fields' names and original values, so the same answer found twice is one record with the same id.
+        /// Made from the source and the fields' names and original values, so the same answer found twice is one record with the same id. Its fields are typed as its latest finding typed them.
         /// </summary>
         [JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
         public string Id { get; set; } = default!;
