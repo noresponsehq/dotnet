@@ -2,7 +2,7 @@
 
 # NoResponse for .NET
 
-Assess sign-ups, logins and purchases with the NoResponse Identity Intelligence API.
+Investigate everyone, everywhere, all at once. Find the accounts and leaked rows behind an email, phone, username or name, screen groups of people, and assess sign-ups with the NoResponse API. The client's `groups` calls create groups, add people, screen them and read each person's records: see the [quickstart](https://docs.noresponse.org/quickstart).
 
 .NET 8+ · C#.
 
@@ -14,7 +14,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v12.0.22 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v12.0.23 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -25,7 +25,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v12.0.22
+git -C third_party/noresponse-dotnet checkout v12.0.23
 git add third_party/noresponse-dotnet
 ```
 
