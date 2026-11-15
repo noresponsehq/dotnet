@@ -1,0 +1,21 @@
+# KeyDeniedAction
+
+## Example Usage
+
+```csharp
+using NoResponse.Models.Shared;
+
+var value = KeyDeniedAction.EvidenceRead;
+
+// Open enum: use .Of() to create instances from custom string values
+var custom = KeyDeniedAction.Of("custom_value");
+```
+
+
+## Values
+
+| Name            | Value           |
+| --------------- | --------------- |
+| `EvidenceRead`  | evidence.read   |
+| `ExportsRead`   | exports.read    |
+| `PolicyPublish` | policy.publish  |

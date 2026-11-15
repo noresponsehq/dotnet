@@ -25,6 +25,10 @@ namespace NoResponse.Models.Shared
         [JsonProperty("members")] Members,
         [JsonProperty("members_manage")] MembersManage,
         [JsonProperty("groups")] Groups,
+        [JsonProperty("people")] People,
+        [JsonProperty("people_write")] PeopleWrite,
+        [JsonProperty("investigations")] Investigations,
+        [JsonProperty("decisions")] Decisions,
     }
 
     public static class KeyRequestScopeExtension

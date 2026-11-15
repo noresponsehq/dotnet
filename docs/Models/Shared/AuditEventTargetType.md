@@ -27,3 +27,5 @@ var custom = AuditEventTargetType.Of("custom_value");
 | `Integration`     | integration       |
 | `Billing`         | billing           |
 | `Review`          | review            |
+| `Person`          | person            |
+| `Group`           | group             |

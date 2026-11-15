@@ -23,6 +23,8 @@ namespace NoResponse.Models.Shared
         public static readonly AuditEventTargetType Integration = new AuditEventTargetType("integration");
         public static readonly AuditEventTargetType Billing = new AuditEventTargetType("billing");
         public static readonly AuditEventTargetType Review = new AuditEventTargetType("review");
+        public static readonly AuditEventTargetType Person = new AuditEventTargetType("person");
+        public static readonly AuditEventTargetType Group = new AuditEventTargetType("group");
 
         private static readonly Dictionary<string, AuditEventTargetType> _knownValues =
             new Dictionary<string, AuditEventTargetType>() {
@@ -34,7 +36,9 @@ namespace NoResponse.Models.Shared
                 ["webhook_endpoint"] = WebhookEndpoint,
                 ["integration"] = Integration,
                 ["billing"] = Billing,
-                ["review"] = Review
+                ["review"] = Review,
+                ["person"] = Person,
+                ["group"] = Group
             };
 
         private static readonly ConcurrentDictionary<string, AuditEventTargetType> _values =

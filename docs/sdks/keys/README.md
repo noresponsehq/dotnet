@@ -10,6 +10,7 @@ Your own API keys.
 * [Create](#create) - Create an API key.
 * [List](#list) - List API keys.
 * [Revoke](#revoke) - Revoke an API key.
+* [UpdateAccess](#updateaccess) - Restrict an API key.
 
 ## Rotate
 
@@ -237,6 +238,58 @@ var res = await sdk.Keys.RevokeAsync(
 ### Response
 
 **[RevokeKeyResponse](../../Models/Operations/RevokeKeyResponse.md)**
+
+### Errors
+
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
+
+## UpdateAccess
+
+Replaces the explicit restrictions on an active key. Restrictions take effect on its next request and survive rotation. The issuer must be able to grant the resulting access in the key environment. A restricted caller cannot remove its own restrictions or grant unrestricted access to another key. Changes are audited without recording the secret.
+
+### Example Usage
+
+<!-- UsageSnippet language="csharp" operationID="updateKeyAccess" method="patch" path="/v1/workspaces/{workspace_id}/keys/{key_id}" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+using System.Collections.Generic;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+var res = await sdk.Keys.UpdateAccessAsync(
+    workspaceId: "tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
+    keyId: "01JA2ZE4K5M6N7P8Q9R0S1T2V3",
+    body: new KeyAccessRequest() {
+        DeniedActions = new List<KeyAccessRequestDeniedAction>() {
+            KeyAccessRequestDeniedAction.PolicyPublish,
+        },
+    }
+);
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                                                                                          | Type                                                                                                                               | Required                                                                                                                           | Description                                                                                                                        | Example                                                                                                                            |
+| ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `WorkspaceId`                                                                                                                      | *string*                                                                                                                           | :heavy_check_mark:                                                                                                                 | Your workspace id, as each key lists it in workspace_id. Another workspace, a malformed id and a test environment's id answer 404. | tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                                                                                     |
+| `KeyId`                                                                                                                            | *string*                                                                                                                           | :heavy_check_mark:                                                                                                                 | The key's id. A key of another workspace answers 404, as does a key of the other environment to an API key.                        | 01JA2ZE4K5M6N7P8Q9R0S1T2V3                                                                                                         |
+| `Body`                                                                                                                             | [KeyAccessRequest](../../Models/Shared/KeyAccessRequest.md)                                                                        | :heavy_check_mark:                                                                                                                 | N/A                                                                                                                                |                                                                                                                                    |
+
+### Response
+
+**[UpdateKeyAccessResponse](../../Models/Operations/UpdateKeyAccessResponse.md)**
 
 ### Errors
 

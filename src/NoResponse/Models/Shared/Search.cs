@@ -42,7 +42,7 @@ namespace NoResponse.Models.Shared
         public SearchKind Kind { get; set; } = default!;
 
         /// <summary>
-        /// The value searched: the field's cleaned value, else as the source wrote it.
+        /// The searched value. Empty in person reports when evidence.read is denied.
         /// </summary>
         [JsonProperty("value", Required = Newtonsoft.Json.Required.Always)]
         public string Value { get; set; } = default!;

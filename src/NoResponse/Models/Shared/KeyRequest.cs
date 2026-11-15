@@ -52,5 +52,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("request_id", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? RequestId { get; set; }
+
+        /// <summary>
+        /// Explicit restrictions that override scope grants. An empty list restores the access supplied by the scopes. Rotation preserves these restrictions.
+        /// </summary>
+        [JsonProperty("denied_actions", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<KeyRequestDeniedAction>? DeniedActions { get; set; }
     }
 }
