@@ -9,7 +9,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// A NoResponse source: github (GitHub accounts), phone (the phone lookup), breach (breach exposure), rdap (the email domain's registration), mx (the email domain's mail servers), ipintel (IP intelligence) or an email account source that searches one platform for an account by email address (adobe, nvidia, wix, life360, zapier, google). google runs only for Gmail addresses. scratch searches Scratch for an account by username.
+    /// A NoResponse source: github (GitHub accounts), phone (the phone lookup), breach (breach exposure), rdap (the email domain's registration), mx (the email domain's mail servers), ipintel (IP intelligence) or an email account source that searches one platform for an account by email address (adobe, nvidia, wix, life360, zapier, google). google runs only for Gmail addresses. scratch, dailymotion, substack, duolingo, dockerhub, wikipedia and internetarchive each search that platform for an account by username.
     /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class SourceId : IEquatable<SourceId>, IOpenEnum<string>
@@ -27,6 +27,12 @@ namespace NoResponse.Models.Shared
         public static readonly SourceId Zapier = new SourceId("zapier");
         public static readonly SourceId Google = new SourceId("google");
         public static readonly SourceId Scratch = new SourceId("scratch");
+        public static readonly SourceId Dailymotion = new SourceId("dailymotion");
+        public static readonly SourceId Substack = new SourceId("substack");
+        public static readonly SourceId Duolingo = new SourceId("duolingo");
+        public static readonly SourceId Dockerhub = new SourceId("dockerhub");
+        public static readonly SourceId Wikipedia = new SourceId("wikipedia");
+        public static readonly SourceId Internetarchive = new SourceId("internetarchive");
 
         private static readonly Dictionary<string, SourceId> _knownValues =
             new Dictionary<string, SourceId>() {
@@ -42,7 +48,13 @@ namespace NoResponse.Models.Shared
                 ["life360"] = Life360,
                 ["zapier"] = Zapier,
                 ["google"] = Google,
-                ["scratch"] = Scratch
+                ["scratch"] = Scratch,
+                ["dailymotion"] = Dailymotion,
+                ["substack"] = Substack,
+                ["duolingo"] = Duolingo,
+                ["dockerhub"] = Dockerhub,
+                ["wikipedia"] = Wikipedia,
+                ["internetarchive"] = Internetarchive
             };
 
         private static readonly ConcurrentDictionary<string, SourceId> _values =
