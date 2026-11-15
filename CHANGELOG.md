@@ -1,5 +1,15 @@
 # Changelog
 
+## 12.0.15
+
+* `Sdk.Settings.Get()`:  `response.refusedSources[].Enum(duolingoEmail)` **Added**
+* `Sdk.Settings.Update()`: 
+  *  `request.body.RefusedSources[].Enum(duolingoEmail)` **Added**
+  *  `response.refusedSources[].Enum(duolingoEmail)` **Added**
+* `Sdk.Settings.ListHistory()`:  `response.items[].Settings.RefusedSources[].Enum(duolingoEmail)` **Added**
+* `Sdk.Settings.Restore()`:  `response.refusedSources[].Enum(duolingoEmail)` **Added**
+* `Sdk.Evaluations.Publish()`:  `response.refusedSources[].Enum(duolingoEmail)` **Added**
+
 ## 12.0.14
 
 No changes detected.
