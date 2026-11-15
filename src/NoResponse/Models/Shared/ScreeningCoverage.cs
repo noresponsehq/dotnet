@@ -36,6 +36,12 @@ namespace NoResponse.Models.Shared
         public List<ScreeningNotAnalysedCount>? NotAnalysedByReason { get; set; }
 
         /// <summary>
+        /// Videos the analyser read from their cover frame and caption alone, without their sound or later frames. They count as analysed and do not make the person partial. Left out when none.
+        /// </summary>
+        [JsonProperty("items_frame_only", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? ItemsFrameOnly { get; set; }
+
+        /// <summary>
         /// The oldest item read on any platform.
         /// </summary>
         [JsonProperty("period_from", Required = Newtonsoft.Json.Required.DisallowNull)]

@@ -1,5 +1,11 @@
 # Changelog
 
+## 12.0.35
+
+* `Sdk.Groups.ListPeople()`:  `response.items[].Coverage.ItemsFrameOnly` **Added**
+* `Sdk.Groups.GetPerson()`:  `response` **Changed**
+* `Sdk.Groups.ReviewPerson()`:  `response.coverage.ItemsFrameOnly` **Added**
+
 ## 12.0.34
 
 * `Sdk.Settings.Get()`:  `response.refusedSources[].Enum(chesscomEmail)` **Added**

@@ -33,6 +33,18 @@ namespace NoResponse.Models.Shared
         public string MediaUrl { get; set; } = default!;
 
         /// <summary>
+        /// For an image that is a video's cover frame, the id of that video's media item.
+        /// </summary>
+        [JsonProperty("cover_of", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? CoverOf { get; set; }
+
+        /// <summary>
+        /// true on a video the analyser read from its cover frame (the image whose cover_of names it) and its caption alone. Left out otherwise.
+        /// </summary>
+        [JsonProperty("frame_only", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public bool? FrameOnly { get; set; }
+
+        /// <summary>
         /// The caption or alt text.
         /// </summary>
         [JsonProperty("text", Required = Newtonsoft.Json.Required.DisallowNull)]
