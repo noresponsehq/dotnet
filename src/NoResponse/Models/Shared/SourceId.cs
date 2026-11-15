@@ -9,7 +9,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// A NoResponse source: github (GitHub accounts), phone (the phone lookup), breach (breach exposure), rdap (the email domain's registration), mx (the email domain's mail servers), ipintel (IP intelligence) or an email account source that searches one platform for an account by email address (adobe, nvidia, wix, life360, zapier, x_email, snapchat_email, amazon, spotify_email, google, duolingo_email). x_email, snapchat_email, amazon and spotify_email only say whether the email has an account on X, Snapchat, Amazon or Spotify. google runs only for Gmail addresses. scratch, dailymotion, substack, duolingo, dockerhub, wikipedia, internetarchive, telegram, spotify, patreon, wordpress, okru, flickr and chesscom each search that platform for an account by username; telegram also searches by phone number, through a logged-in Telegram lookup account. whatsapp searches WhatsApp for an account by phone number, and life360_phone searches Life360 for one. opplysningen (1881, Norway), ratsit (Sweden), numlookup and usphonebook (the US) and reverseaustralia (Australia) each look up a phone number of their own country on that site. youtube searches YouTube for a channel by username.
+    /// A NoResponse source: github (GitHub accounts), phone (the phone lookup), breach (breach exposure), rdap (the email domain's registration), mx (the email domain's mail servers), ipintel (IP intelligence) or an email account source that searches one platform for an account by email address (adobe, nvidia, wix, life360, zapier, x_email, snapchat_email, amazon, spotify_email, google, duolingo_email, chesscom_email). x_email, snapchat_email, amazon, spotify_email and chesscom_email only say whether the email has an account on X, Snapchat, Amazon, Spotify or Chess.com. google runs only for Gmail addresses. scratch, dailymotion, substack, duolingo, dockerhub, wikipedia, internetarchive, telegram, spotify, patreon, wordpress, okru, flickr and chesscom each search that platform for an account by username; telegram also searches by phone number, through a logged-in Telegram lookup account. whatsapp searches WhatsApp for an account by phone number, and life360_phone searches Life360 for one. opplysningen (1881, Norway), ratsit (Sweden), numlookup and usphonebook (the US) and reverseaustralia (Australia) each look up a phone number of their own country on that site. youtube searches YouTube for a channel by username.
     /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class SourceId : IEquatable<SourceId>, IOpenEnum<string>
@@ -30,6 +30,7 @@ namespace NoResponse.Models.Shared
         public static readonly SourceId SnapchatEmail = new SourceId("snapchat_email");
         public static readonly SourceId Amazon = new SourceId("amazon");
         public static readonly SourceId SpotifyEmail = new SourceId("spotify_email");
+        public static readonly SourceId ChesscomEmail = new SourceId("chesscom_email");
         public static readonly SourceId Google = new SourceId("google");
         public static readonly SourceId Scratch = new SourceId("scratch");
         public static readonly SourceId Dailymotion = new SourceId("dailymotion");
@@ -72,6 +73,7 @@ namespace NoResponse.Models.Shared
                 ["snapchat_email"] = SnapchatEmail,
                 ["amazon"] = Amazon,
                 ["spotify_email"] = SpotifyEmail,
+                ["chesscom_email"] = ChesscomEmail,
                 ["google"] = Google,
                 ["scratch"] = Scratch,
                 ["dailymotion"] = Dailymotion,
