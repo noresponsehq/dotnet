@@ -16,7 +16,7 @@ namespace NoResponse.Models.Shared
         public string Connector { get; set; } = default!;
 
         /// <summary>
-        /// The kind of source: platform for an account read off a live platform; for a breach row, the kind of leak its table is: site_breach, credential_list, stealer_log, scrape, hacking_forum, abuse_service or darkweb_site.
+        /// The kind of source: platform for an account read off a live platform; for a breach row, the kind of leak its table is: site_breach, credential_list, stealer_log, scrape, hacking_forum, abuse_service or darkweb_site; domain_registry for an email domain's registry record and domain_dns for its mail records.
         /// </summary>
         [JsonProperty("kind", Required = Newtonsoft.Json.Required.Always)]
         public string Kind { get; set; } = default!;
