@@ -1,5 +1,15 @@
 # Changelog
 
+## 12.0.31
+
+* `Sdk.Settings.Get()`:  `response.refusedSources[]` **Changed**
+* `Sdk.Settings.Update()`: 
+  *  `request.body.RefusedSources[]` **Changed**
+  *  `response.refusedSources[]` **Changed**
+* `Sdk.Settings.ListHistory()`:  `response.items[].Settings.RefusedSources[]` **Changed**
+* `Sdk.Settings.Restore()`:  `response.refusedSources[]` **Changed**
+* `Sdk.Evaluations.Publish()`:  `response.refusedSources[]` **Changed**
+
 ## 12.0.30
 
 * `Sdk.Audit.List()`:  `response.items[].Actor.union(service)` **Added**
