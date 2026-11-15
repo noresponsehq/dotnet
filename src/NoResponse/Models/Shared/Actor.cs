@@ -33,6 +33,13 @@ namespace NoResponse.Models.Shared
             }
         }
 
+        public static ActorType Service
+        {
+            get {
+                return new ActorType("service");
+            }
+        }
+
         public static ActorType Unknown
         {
             get {
@@ -56,6 +63,8 @@ namespace NoResponse.Models.Shared
                     return User;
                 case "api_key":
                     return ApiKey;
+                case "service":
+                    return Service;
                 case "UNKNOWN":
                     return Unknown;
                 default:
@@ -93,6 +102,10 @@ namespace NoResponse.Models.Shared
         [NoResponseMetadata("form:explode=true")]
         public KeyActor? KeyActor { get; set; }
 
+        [UnionVariant]
+        [NoResponseMetadata("form:explode=true")]
+        public ServiceActor? ServiceActor { get; set; }
+
         public ActorType Type { get; set; }
 
         [JsonIgnore]
@@ -123,6 +136,14 @@ namespace NoResponse.Models.Shared
             ActorType typ = ActorType.ApiKey;
             Actor res = new Actor(typ);
             res.KeyActor = apiKey;
+            return res;
+        }
+
+        public static Actor CreateService(ServiceActor service)
+        {
+            ActorType typ = ActorType.Service;
+            Actor res = new Actor(typ);
+            res.ServiceActor = service;
             return res;
         }
 
@@ -163,6 +184,11 @@ namespace NoResponse.Models.Shared
                     KeyActor keyActor = ResponseBodyDeserializer.DeserializeNotNull<KeyActor>(jo.ToString());
                     return CreateApiKey(keyActor);
                 }
+                if (discriminator == ActorType.Service.ToString())
+                {
+                    ServiceActor serviceActor = ResponseBodyDeserializer.DeserializeNotNull<ServiceActor>(jo.ToString());
+                    return CreateService(serviceActor);
+                }
 
                 return CreateUnknown(jo);
             }
@@ -195,6 +221,12 @@ namespace NoResponse.Models.Shared
                 if (res.KeyActor != null)
                 {
                     writer.WriteRawValue(Utilities.SerializeJSON(res.KeyActor));
+                    return;
+                }
+
+                if (res.ServiceActor != null)
+                {
+                    writer.WriteRawValue(Utilities.SerializeJSON(res.ServiceActor));
                     return;
                 }
 

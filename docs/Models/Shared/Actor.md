@@ -14,3 +14,9 @@ Actor.CreateUser(/* values here */);
 ```csharp
 Actor.CreateApiKey(/* values here */);
 ```
+
+### Service
+
+```csharp
+Actor.CreateService(/* values here */);
+```

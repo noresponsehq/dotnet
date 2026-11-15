@@ -51,6 +51,11 @@ namespace NoResponse.Models.Shared
             return Actor.KeyActor;
         }
 
+        public ServiceActor? GetActorService()
+        {
+            return Actor.ServiceActor;
+        }
+
         [JsonProperty("target", Required = Newtonsoft.Json.Required.Always)]
         public AuditEventTarget Target { get; set; } = new();
 
