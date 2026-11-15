@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 70bd5ecd-d923-41ca-9a42-6e3360b4ce2f
 management:
-  docChecksum: 521ef4bd61d9c1dc15c21ed8f97af8c7
+  docChecksum: 3a8ec73ac76a49edfbd4d7919fa7d34b
   docVersion: "1"
   speakeasyVersion: internal
   generationVersion: internal
-  releaseVersion: 12.0.12
-  configChecksum: b56e2d99c8dab85e41481f7c0870c8fe
+  releaseVersion: 12.0.13
+  configChecksum: 779f31831d52b37bac8eeafe3cc979a1
 features:
   csharp:
     additionalDependencies: 0.1.0
@@ -1353,7 +1353,7 @@ trackedFiles:
   docs/Models/Shared/Source.md:
     last_write_checksum: sha1:beeb45c99e4842285c169f2728bbccaeb15b592b
   docs/Models/Shared/SourceId.md:
-    last_write_checksum: sha1:605dffa906e67dcc1c74a883488eec26f3d680a1
+    last_write_checksum: sha1:910cd212e2be8069c7ef3f27fc4f988bdd198ca7
   docs/Models/Shared/Status.md:
     last_write_checksum: sha1:b76dbd8dfb527a009ce69ac36c2dc9b85f4d53dd
   docs/Models/Shared/Thresholds.md:
@@ -2821,7 +2821,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/Source.cs:
     last_write_checksum: sha1:ecd4d9cc1b7c8fd587ab20af9a2d777dd6698292
   src/NoResponse/Models/Shared/SourceId.cs:
-    last_write_checksum: sha1:5e80d61f807a0c6480a8928bf1a6279e595c3f20
+    last_write_checksum: sha1:e3cb535032f1f27f84481ad8d92721c9d74f7ab1
   src/NoResponse/Models/Shared/Status.cs:
     last_write_checksum: sha1:2e9347ca96254901a912fb2a58bdfcd385c0295a
   src/NoResponse/Models/Shared/Thresholds.cs:
@@ -2899,7 +2899,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/WorkspaceOperationsSummaryRequest.cs:
     last_write_checksum: sha1:29c3ef293b3925883936aca2d63cb0cb41988bf2
   src/NoResponse/NoResponse.csproj:
-    last_write_checksum: sha1:8e35706d407aa90ce582adaa505f8877c7f128e2
+    last_write_checksum: sha1:4ada7cae9e44c1a6c2c6fd936fbc7473b6436c51
   src/NoResponse/NoResponseClient.cs:
     last_write_checksum: sha1:ef4ee68375e2e4fec9053c64198cc050c360fe27
   src/NoResponse/Operations.cs:
@@ -2909,7 +2909,7 @@ trackedFiles:
   src/NoResponse/Reviews.cs:
     last_write_checksum: sha1:a8dda3c5129d3f8aa6a28fd2c88cb5306528cf5d
   src/NoResponse/SDKConfig.cs:
-    last_write_checksum: sha1:8bfd8ab197867db49ea9a33d0bb4305349530dbb
+    last_write_checksum: sha1:90d8ac08efa0b718bfaf10b19fc14b2affd58baf
   src/NoResponse/Settings.cs:
     last_write_checksum: sha1:959b4c61d952a8da79b1eb61e0bdd828e27ed971
   src/NoResponse/Usage.cs:
@@ -2919,7 +2919,7 @@ trackedFiles:
   src/NoResponse/Utils/BigIntStrConverter.cs:
     last_write_checksum: sha1:8803aa46f7bca5595c22751ede125e3c4e993856
   src/NoResponse/Utils/Constants.cs:
-    last_write_checksum: sha1:ee2b1ec399d915fb3929def2f471a29a57e6bd64
+    last_write_checksum: sha1:8efce664ae6e9892b63b75edc17dbba320333367
   src/NoResponse/Utils/DecimalStrConverter.cs:
     last_write_checksum: sha1:1fa9c1159f476245dfff02718e434accbba46136
   src/NoResponse/Utils/EnumConverter.cs:
@@ -4407,7 +4407,7 @@ examples:
         application/json: {"version": 157178, "expected_policy_version": 260899, "change_reason": "Adjust thresholds after reviewing retained evidence"}
       responses:
         "200":
-          application/json: {"workspace_id": "tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM", "environment": "live", "retention_days": 450670, "policy_version": 529327, "updated_by": "nrk_live_01JA2Z8K6Q4V7W9XBCDEFGHJKM", "updated_at": "2026-10-23T09:14:12.000Z", "flows": {"account_creation": {"step_up": 477126, "review": 980395, "default_depth": "quick", "inherits_account_creation": false, "admission": "immediate", "hold_seconds": 948838, "on_expiry": "block"}, "login": {"step_up": 867829, "review": 523593, "default_depth": "quick", "inherits_account_creation": false, "admission": "held", "hold_seconds": 363505, "on_expiry": "block"}, "purchase": {"step_up": 374559, "review": 194632, "default_depth": "quick", "inherits_account_creation": true, "admission": "held", "hold_seconds": 365509, "on_expiry": "allow"}}, "refused_sources": ["okru"], "screening_daily_cap": null}
+          application/json: {"workspace_id": "tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM", "environment": "live", "retention_days": 450670, "policy_version": 529327, "updated_by": "nrk_live_01JA2Z8K6Q4V7W9XBCDEFGHJKM", "updated_at": "2026-10-23T09:14:12.000Z", "flows": {"account_creation": {"step_up": 477126, "review": 980395, "default_depth": "quick", "inherits_account_creation": false, "admission": "immediate", "hold_seconds": 948838, "on_expiry": "block"}, "login": {"step_up": 867829, "review": 523593, "default_depth": "quick", "inherits_account_creation": false, "admission": "held", "hold_seconds": 363505, "on_expiry": "block"}, "purchase": {"step_up": 374559, "review": 194632, "default_depth": "quick", "inherits_account_creation": true, "admission": "held", "hold_seconds": 365509, "on_expiry": "allow"}}, "refused_sources": ["flickr"], "screening_daily_cap": null}
         "400":
           application/problem+json: {"type": "https://docs.noresponse.org/errors/invalid_request", "title": "Invalid request", "status": 400, "detail": "identifiers: at least one of email, username or phone is required.", "instance": "/v1/assessments", "code": "invalid_idempotency_key", "request_id": "9f2c4b7a1d3e4f5a8b6c0d1e2f3a4b5c", "invalid_params": [{"field": "identifiers", "reason": "at least one of email, username or phone is required", "example": "new.user@example.com"}]}
         "401":
