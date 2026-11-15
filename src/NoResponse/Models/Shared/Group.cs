@@ -75,12 +75,6 @@ namespace NoResponse.Models.Shared
         public long Version { get; set; } = default!;
 
         /// <summary>
-        /// When raw collected items and unmatched candidate profiles are purged: 30 days after the group ends.
-        /// </summary>
-        [JsonProperty("purge_after", Required = Newtonsoft.Json.Required.Always)]
-        public string PurgeAfter { get; set; } = default!;
-
-        /// <summary>
         /// The member or key label that created the group.
         /// </summary>
         [JsonProperty("created_by", Required = Newtonsoft.Json.Required.Always)]

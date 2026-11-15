@@ -1,5 +1,180 @@
 # Changelog
 
+## 14.0.0
+
+* `Sdk.Groups.List()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `response.items[].PurgeAfter` **Removed** (Breaking ⚠️)
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Groups.Create()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `response.purgeAfter` **Removed** (Breaking ⚠️)
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Groups.Get()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `response.purgeAfter` **Removed** (Breaking ⚠️)
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Groups.Delete()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Groups.Update()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `response.purgeAfter` **Removed** (Breaking ⚠️)
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Groups.ExportPeople()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `response.items[].ExpiresAt` **Added**
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Groups.CancelScreening()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Groups.GetScreening()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Groups.StartScreening()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Groups.ListScreenings()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Groups.RunSearch()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Groups.StartSearch()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Groups.JudgeRecord()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Groups.ReviewPerson()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `response.expiresAt` **Added**
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Groups.GetPerson()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `response` **Changed** (Breaking ⚠️)
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Groups.AddPeople()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `response.items[].SuggestedMatches` **Added**
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Groups.ListPeople()`: 
+  *  `request` **Changed** (Breaking ⚠️)
+  *  `response.items[].ExpiresAt` **Added**
+  *  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Audit.ListStreams()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Invites.Resend()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Assessments.Query()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Assessments.Aggregate()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Assessments.Search()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Assessments.RetrieveVersion()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Assessments.BindAccount()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Accounts.ListChanged()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Accounts.Get()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Accounts.Delete()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Accounts.ListAssessments()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Accounts.ListLinked()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Accounts.ListEnforcements()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Accounts.RecordEnforcement()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Accounts.ListOutcomes()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Accounts.RecordOutcome()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Accounts.RetrieveDecision()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Accounts.ListCredentials()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Accounts.AssociateCredential()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Accounts.RetireCredential()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Accounts.Export()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Accounts.ListDecisions()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Accounts.Search()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.KeyUsage.Record()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Keys.Rotate()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Keys.List()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Keys.Create()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Keys.Revoke()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Keys.UpdateAccess()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Integrations.List()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Integrations.Create()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Integrations.Delete()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Integrations.Rotate()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.WebhookEndpoints.List()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.WebhookEndpoints.Create()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.WebhookEndpoints.Delete()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.WebhookEndpoints.RotateSigningKey()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.WebhookEndpoints.SendTestEvent()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.WebhookEndpoints.ListDeliveries()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.WebhookEndpoints.ReplayDelivery()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.WebhookEndpoints.Aggregate()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Members.List()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Members.Remove()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Members.Update()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Audit.List()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Audit.GetRetention()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Audit.UpdateRetention()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Assessments.Delete()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Audit.ConfigureStream()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Audit.RemoveStream()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Audit.ReplayStream()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Usage.Get()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Invites.List()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Invites.Create()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Invites.Revoke()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Assessments.RecordOutcome()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Settings.Get()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Settings.Update()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Settings.ListHistory()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Settings.Restore()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Settings.Preview()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Requests.List()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Requests.Aggregate()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Lists.List()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Lists.Create()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Lists.Delete()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Lists.Preview()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Lists.Change()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Lists.GetChange()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.List()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.Create()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.Get()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.Update()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.Resolve()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.ListComments()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.Comment()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.ListResolutions()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.ListViews()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.CreateView()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.DeleteView()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.UpdateView()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.Export()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.ListSubjects()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.AddSubject()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.DeleteSubject()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Reviews.Query()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Erasures.Get()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Exports.List()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Exports.Create()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Exports.Get()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Exports.Cancel()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Exports.Retry()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Exports.DownloadChunk()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Evaluations.List()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Evaluations.Create()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Assessments.Get()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Assessments.Create()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Investigations.Cancel()`: **Added**
+* `Sdk.Investigations.Review()`: **Added**
+* `Sdk.Investigations.Get()`: **Added**
+* `Sdk.Investigations.Create()`: **Added**
+* `Sdk.Investigations.List()`: **Added**
+* `Sdk.People.Delete()`: **Added**
+* `Sdk.People.Get()`: **Added**
+* `Sdk.People.Create()`: **Added**
+* `Sdk.People.List()`: **Added**
+* `Sdk.Groups.RemovePerson()`: **Added**
+* `Sdk.Evaluations.Get()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Evaluations.GetResult()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Evaluations.Cancel()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Evaluations.Publish()`:  `error.code.Enum(personReferenceConflict)` **Added**
+* `Sdk.Operations.Summarize()`:  `error.code.Enum(personReferenceConflict)` **Added**
+
 ## 13.0.4
 
 No changes detected.

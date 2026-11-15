@@ -89,6 +89,7 @@ namespace NoResponse.Tests
                 ["account.risk_changed"] = webhookEvent.AccountRiskChangedEvent,
                 ["audit.event"] = webhookEvent.AuditEventEvent,
                 ["screening.completed"] = webhookEvent.ScreeningCompletedEvent,
+                ["investigation.completed"] = webhookEvent.InvestigationCompletedEvent,
                 ["person.flagged"] = webhookEvent.PersonFlaggedEvent,
                 ["person.decided"] = webhookEvent.PersonDecidedEvent,
             };

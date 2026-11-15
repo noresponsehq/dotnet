@@ -44,6 +44,7 @@ namespace NoResponse.Models.Shared
         public static readonly ConflictErrorCode GroupLimitReached = new ConflictErrorCode("group_limit_reached");
         public static readonly ConflictErrorCode ScreeningCapExceeded = new ConflictErrorCode("screening_cap_exceeded");
         public static readonly ConflictErrorCode ScreeningUnavailable = new ConflictErrorCode("screening_unavailable");
+        public static readonly ConflictErrorCode PersonReferenceConflict = new ConflictErrorCode("person_reference_conflict");
 
         private static readonly Dictionary<string, ConflictErrorCode> _knownValues =
             new Dictionary<string, ConflictErrorCode>() {
@@ -76,7 +77,8 @@ namespace NoResponse.Models.Shared
                 ["group_conflict"] = GroupConflict,
                 ["group_limit_reached"] = GroupLimitReached,
                 ["screening_cap_exceeded"] = ScreeningCapExceeded,
-                ["screening_unavailable"] = ScreeningUnavailable
+                ["screening_unavailable"] = ScreeningUnavailable,
+                ["person_reference_conflict"] = PersonReferenceConflict
             };
 
         private static readonly ConcurrentDictionary<string, ConflictErrorCode> _values =

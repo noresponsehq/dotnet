@@ -13,10 +13,10 @@ namespace NoResponse
     using System.Threading;
     using System.Threading.Tasks;
     /// <summary>
-    /// NoResponse API: Server-side risk assessment of account creation, login and purchase: a recommendation, polling and signed webhooks.
+    /// NoResponse API: Workspace people, source-grounded investigations, group screening and signup assessment recommendations.
     /// </summary>
     /// <remarks>
-    /// Assess an account creation, login or purchase and get back the account's one current risk, poll a pending assessment, page through an account's history, record what you later learned, report usage of the API keys you issue to your accounts, rotate your API key, manage your webhook endpoints, and register hosted endpoints that answer your WorkOS, Auth0 or Supabase sign-up and sign-in hooks. Every response carries X-Request-ID; every error is an RFC 9457 problem document. Keep the API key on your server.
+    /// NoResponse is an identity and people risk engine. Retain workspace people, investigate their identifiers, read complete source evidence and preserve investigation history. Groups organize people for screening and context-specific decisions. Account creation, login and purchase assessments use the same engine. People-read access includes evidence by default; explicit evidence restrictions retain submitted details, job status, coverage and decision summaries. Keep the API key on your server.
     /// </remarks>
     public interface INoResponseClient
     {
@@ -114,13 +114,23 @@ namespace NoResponse
         /// Groups, lists of people, screenings and reviewer decisions.
         /// </summary>
         public IGroups Groups { get; }
+
+        /// <summary>
+        /// Workspace people, submitted identity, source evidence and expiry.
+        /// </summary>
+        public IPeople People { get; }
+
+        /// <summary>
+        /// Person investigation jobs, retained results and contextual decisions.
+        /// </summary>
+        public IInvestigations Investigations { get; }
     }
 
     /// <summary>
-    /// NoResponse API: Server-side risk assessment of account creation, login and purchase: a recommendation, polling and signed webhooks.
+    /// NoResponse API: Workspace people, source-grounded investigations, group screening and signup assessment recommendations.
     /// </summary>
     /// <remarks>
-    /// Assess an account creation, login or purchase and get back the account's one current risk, poll a pending assessment, page through an account's history, record what you later learned, report usage of the API keys you issue to your accounts, rotate your API key, manage your webhook endpoints, and register hosted endpoints that answer your WorkOS, Auth0 or Supabase sign-up and sign-in hooks. Every response carries X-Request-ID; every error is an RFC 9457 problem document. Keep the API key on your server.
+    /// NoResponse is an identity and people risk engine. Retain workspace people, investigate their identifiers, read complete source evidence and preserve investigation history. Groups organize people for screening and context-specific decisions. Account creation, login and purchase assessments use the same engine. People-read access includes evidence by default; explicit evidence restrictions retain submitted details, job status, coverage and decision summaries. Keep the API key on your server.
     /// </remarks>
     public class NoResponseClient : INoResponseClient
     {
@@ -204,6 +214,14 @@ namespace NoResponse
         /// The Groups sub-SDK.
         /// </summary>
         public IGroups Groups { get; private set; }
+        /// <summary>
+        /// The People sub-SDK.
+        /// </summary>
+        public IPeople People { get; private set; }
+        /// <summary>
+        /// The Investigations sub-SDK.
+        /// </summary>
+        public IInvestigations Investigations { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the SDK based on a <see cref="SDKConfig"/> configuration object.
@@ -251,6 +269,10 @@ namespace NoResponse
             Operations = new Operations(SDKConfiguration);
 
             Groups = new Groups(SDKConfiguration);
+
+            People = new People(SDKConfiguration);
+
+            Investigations = new Investigations(SDKConfiguration);
         }
 
         /// <summary>
@@ -356,6 +378,10 @@ namespace NoResponse
             Operations = new Operations(SDKConfiguration);
 
             Groups = new Groups(SDKConfiguration);
+
+            People = new People(SDKConfiguration);
+
+            Investigations = new Investigations(SDKConfiguration);
         }
 
         private void InitHooks()

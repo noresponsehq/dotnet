@@ -18,25 +18,25 @@ namespace NoResponse.Models.Shared
         public Person Person { get; set; } = new();
 
         /// <summary>
-        /// The accounts the latest screening matched, with how each was matched.
+        /// The accounts this result matched, with how each was matched.
         /// </summary>
         [JsonProperty("profiles", Required = Newtonsoft.Json.Required.Always)]
         public List<ScreeningProfile> Profiles { get; set; } = default!;
 
         /// <summary>
-        /// What the latest screening flagged, most severe first, each citing its evidence.
+        /// What this result flagged, most severe first, each citing its evidence.
         /// </summary>
         [JsonProperty("findings", Required = Newtonsoft.Json.Required.Always)]
         public List<ScreeningFinding> Findings { get; set; } = default!;
 
         /// <summary>
-        /// The posts the findings cite.
+        /// All posts retained for this result, including posts that no finding cites.
         /// </summary>
         [JsonProperty("posts", Required = Newtonsoft.Json.Required.Always)]
         public List<ScreeningPost> Posts { get; set; } = default!;
 
         /// <summary>
-        /// The images and videos the findings cite.
+        /// All images and videos retained for this result, including media that no finding cites.
         /// </summary>
         [JsonProperty("media", Required = Newtonsoft.Json.Required.Always)]
         public List<ScreeningMedia> Media { get; set; } = default!;

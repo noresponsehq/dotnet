@@ -64,3 +64,9 @@ WebhookEvent.CreatePersonFlagged(/* values here */);
 ```csharp
 WebhookEvent.CreatePersonDecided(/* values here */);
 ```
+
+### InvestigationCompleted
+
+```csharp
+WebhookEvent.CreateInvestigationCompleted(/* values here */);
+```

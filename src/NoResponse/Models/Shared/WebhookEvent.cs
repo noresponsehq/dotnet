@@ -89,6 +89,13 @@ namespace NoResponse.Models.Shared
             }
         }
 
+        public static WebhookEventType InvestigationCompleted
+        {
+            get {
+                return new WebhookEventType("investigation.completed");
+            }
+        }
+
         public override string ToString()
         {
             return Value;
@@ -121,6 +128,8 @@ namespace NoResponse.Models.Shared
                     return PersonFlagged;
                 case "person.decided":
                     return PersonDecided;
+                case "investigation.completed":
+                    return InvestigationCompleted;
                 default:
                     throw new ArgumentException("Invalid value for WebhookEventType");
             }
@@ -190,6 +199,10 @@ namespace NoResponse.Models.Shared
         [UnionVariant]
         [NoResponseMetadata("form:explode=true")]
         public PersonDecidedEvent? PersonDecidedEvent { get; set; }
+
+        [UnionVariant]
+        [NoResponseMetadata("form:explode=true")]
+        public InvestigationCompletedEvent? InvestigationCompletedEvent { get; set; }
 
         public WebhookEventType Type { get; set; }
 
@@ -273,6 +286,14 @@ namespace NoResponse.Models.Shared
             return res;
         }
 
+        public static WebhookEvent CreateInvestigationCompleted(InvestigationCompletedEvent investigationCompleted)
+        {
+            WebhookEventType typ = WebhookEventType.InvestigationCompleted;
+            WebhookEvent res = new WebhookEvent(typ);
+            res.InvestigationCompletedEvent = investigationCompleted;
+            return res;
+        }
+
         public class WebhookEventConverter : JsonConverter
         {
             public override bool CanConvert(System.Type objectType) => objectType == typeof(WebhookEvent);
@@ -338,6 +359,11 @@ namespace NoResponse.Models.Shared
                 {
                     PersonDecidedEvent personDecidedEvent = ResponseBodyDeserializer.DeserializeNotNull<PersonDecidedEvent>(jo.ToString());
                     return CreatePersonDecided(personDecidedEvent);
+                }
+                if (discriminator == WebhookEventType.InvestigationCompleted.ToString())
+                {
+                    InvestigationCompletedEvent investigationCompletedEvent = ResponseBodyDeserializer.DeserializeNotNull<InvestigationCompletedEvent>(jo.ToString());
+                    return CreateInvestigationCompleted(investigationCompletedEvent);
                 }
 
                 throw new InvalidOperationException("Could not deserialize into any supported types.");
@@ -409,6 +435,12 @@ namespace NoResponse.Models.Shared
                 if (res.PersonDecidedEvent != null)
                 {
                     writer.WriteRawValue(Utilities.SerializeJSON(res.PersonDecidedEvent));
+                    return;
+                }
+
+                if (res.InvestigationCompletedEvent != null)
+                {
+                    writer.WriteRawValue(Utilities.SerializeJSON(res.InvestigationCompletedEvent));
                     return;
                 }
 

@@ -30,10 +30,10 @@ namespace NoResponse.Models.Shared
         public string PersonId { get; set; } = default!;
 
         /// <summary>
-        /// Which identifiers match, in this order. external_id appears only beside email or phone: the same external id alone is not a match, since ticket numbers may be reused across groups.
+        /// The same workspace person explicitly belongs to this group. Membership requires an explicit person or customer reference.
         /// </summary>
         [JsonProperty("matched_on", Required = Newtonsoft.Json.Required.Always)]
-        public List<MatchedOn> MatchedOn { get; set; } = default!;
+        public List<OtherGroupMatchedOn> MatchedOn { get; set; } = default!;
 
         /// <summary>
         /// How sure the latest screening is that it found the person's accounts. unscreened until a screening reaches the person, and after one that had no profile to check (no_profile_to_check).

@@ -34,11 +34,11 @@ namespace NoResponse.Tests
         {
             var person = JObject.Parse(Body)["person"]!;
             string group = (string)person["group_id"]!, id = (string)person["id"]!;
-            const string workspace = "tnt_01JC8Y0A2B4C6D8E0F2G4H6J8K";
+
             var transport = new Transport();
             var client = new NoResponseClient(apiKey: "nrk_test_records_fixture", serverUrl: "https://api.example.test", client: transport);
-            var response = await client.Groups.GetPersonAsync(workspace, KeyEnvironment.Test, group, id);
-            Assert.Equal($"/v1/workspaces/{workspace}/groups/test/{group}/people/{id}", transport.Path);
+            var response = await client.Groups.GetPersonAsync(group, id);
+            Assert.Equal($"/v1/groups/{group}/people/{id}", transport.Path);
 
             var lookup = response.Result.Lookup!;
             var account = lookup.Records![0];

@@ -9,13 +9,10 @@ namespace NoResponse.Models.Shared
     using System.Collections.Generic;
     using System.Linq;
 
-    /// <summary>
-    /// What you know about a person. Stored encrypted under the workspace's key.
-    /// </summary>
     public class PersonIdentity
     {
         /// <summary>
-        /// Your own id for the person, unique within the group. A later row with the same external id updates this person.
+        /// Your reference for this person within the workspace environment. Only an explicit reference or person_id can reuse an existing person.
         /// </summary>
         [JsonProperty("external_id", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? ExternalId { get; set; }
@@ -23,8 +20,8 @@ namespace NoResponse.Models.Shared
         /// <summary>
         /// The person's full name.
         /// </summary>
-        [JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
-        public string Name { get; set; } = default!;
+        [JsonProperty("name", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? Name { get; set; }
 
         /// <summary>
         /// The person's email.
@@ -50,11 +47,11 @@ namespace NoResponse.Models.Shared
         [JsonProperty("city", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? City { get; set; }
 
-        /// <summary>
-        /// Accounts the person is known to hold, at most 20.
-        /// </summary>
         [JsonProperty("handles", Required = Newtonsoft.Json.Required.DisallowNull)]
         public List<Handle>? Handles { get; set; }
+
+        [JsonProperty("person_id", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? PersonId { get; set; }
 
         /// <summary>
         /// The person's role in the group: guest (a ticket holder), crew, vendor or press. Leave it out when you do not know it: a person without one has no role, not guest. A later row naming the same person replaces it, and a change of role alone keeps the person's screening results.

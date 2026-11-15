@@ -2,7 +2,7 @@
 
 # NoResponse for .NET
 
-Investigate everyone, everywhere, all at once. Find the accounts and leaked rows behind an email, phone, username or name, screen groups of people, and assess sign-ups with the NoResponse API. The client's `groups` calls create groups, add people, screen them and read each person's records: see the [quickstart](https://docs.noresponse.org/quickstart).
+NoResponse is an identity and people risk engine. Create a person, investigate the accounts and source records behind their identifiers, and keep investigation history. Groups organize people for events, venues and team review. Signup assessment uses the same engine.
 
 .NET 8+ · C#.
 
@@ -14,7 +14,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v13.0.4 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v14.0.0 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -25,7 +25,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v13.0.4
+git -C third_party/noresponse-dotnet checkout v14.0.0
 git add third_party/noresponse-dotnet
 ```
 
@@ -33,7 +33,33 @@ Use the [latest release tag](https://github.com/noresponsehq/dotnet/tags).
 
 </details>
 
-## Quick start
+## Investigate a person
+
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+
+var client = new NoResponseClient();
+var created = await client.People.CreateAsync(
+    body: new WorkspacePersonRequest { ExternalId = "case-person-1042", Name = "Jordan Example", Email = "jordan@example.com" },
+    idempotencyKey: "case-1042-person-create");
+var job = await client.Investigations.CreateAsync(
+    body: new InvestigationRequest {
+        PersonId = created.Result.Person.Id,
+        Depth = ScreeningDepth.Standard,
+        Platforms = new List<string> { "x" },
+    },
+    idempotencyKey: "case-1042-investigation-1");
+Console.WriteLine(job.Result.Id);
+```
+
+After `investigation.completed`, use `await client.Investigations.GetAsync(investigationId: id)` to read that investigation's report.
+
+The API key selects the workspace and environment. This flow needs `people_write` to create a person, `investigations` to start work, and `people` to read the report. Save the investigation id and key: retry the same work with the same key; use a new key for a deliberate new investigation. A person can belong to several groups or none. Their `expires_at` comes from workspace retention.
+
+Evidence is included by default for pre-verified customers. An explicit evidence restriction keeps submitted details, status, coverage and decision summaries, and withholds collected records, profiles, posts, media and discovered identifiers. Each investigation and group keeps its own review context.
+
+## Assess a signup
 
 ```csharp
 using NoResponse;

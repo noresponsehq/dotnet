@@ -25,5 +25,8 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("outcome", Required = Newtonsoft.Json.Required.Always)]
         public PersonBatchItemOutcome Outcome { get; set; } = default!;
+
+        [JsonProperty("suggested_matches", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<PersonMatch>? SuggestedMatches { get; set; }
     }
 }

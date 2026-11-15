@@ -48,3 +48,4 @@ var custom = ConflictErrorCode.Of("custom_value");
 | `GroupLimitReached`            | group_limit_reached            |
 | `ScreeningCapExceeded`         | screening_cap_exceeded         |
 | `ScreeningUnavailable`         | screening_unavailable          |
+| `PersonReferenceConflict`      | person_reference_conflict      |

@@ -21,7 +21,7 @@ namespace NoResponse.Models.Shared
         public string GroupId { get; set; } = default!;
 
         /// <summary>
-        /// Your own id for the person, unique within the group. A later row with the same external id updates this person.
+        /// Your reference for the person in this workspace environment.
         /// </summary>
         [JsonProperty("external_id", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? ExternalId { get; set; }
@@ -124,5 +124,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("spend", Required = Newtonsoft.Json.Required.Always)]
         public ScreeningSpend Spend { get; set; } = new();
+
+        /// <summary>
+        /// When workspace retention removes the person and their investigation history.
+        /// </summary>
+        [JsonProperty("expires_at", Required = Newtonsoft.Json.Required.Always)]
+        public string ExpiresAt { get; set; } = default!;
     }
 }
