@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 70bd5ecd-d923-41ca-9a42-6e3360b4ce2f
 management:
-  docChecksum: 6ac0a22bb6e594434ce61cd101149ec1
+  docChecksum: f56c167747275f7a1d16c89e4b93524b
   docVersion: "1"
   speakeasyVersion: internal
   generationVersion: internal
-  releaseVersion: 13.0.1
-  configChecksum: 0b6d8d967287ebca9de6ca6cf4c915bf
+  releaseVersion: 13.0.2
+  configChecksum: 5dd3d995ebd089e56ac9e25043ca1b25
 features:
   csharp:
     additionalDependencies: 0.1.0
@@ -105,7 +105,7 @@ trackedFiles:
   docs/Models/Operations/CreateCustomerExportResponse.md:
     last_write_checksum: sha1:2a9202deaa2685be7dd84bcf74a27b54485342eb
   docs/Models/Operations/CreateGroupRequest.md:
-    last_write_checksum: sha1:8a3227f241ac6ab750f64c4414510bc7a53b6004
+    last_write_checksum: sha1:5fbf3c56bd7527882a2209e8ace48b71532521c7
   docs/Models/Operations/CreateGroupResponse.md:
     last_write_checksum: sha1:8201563d86e64481fc2d68805cf869091d9668df
   docs/Models/Operations/CreateIntegrationResponse.md:
@@ -467,7 +467,7 @@ trackedFiles:
   docs/Models/Operations/StartScreeningResponse.md:
     last_write_checksum: sha1:343aaec97c404bac9e5b54a25133d4a4387300d0
   docs/Models/Operations/StartSearchRequest.md:
-    last_write_checksum: sha1:7fd8c6d2fbbd4314f5c18d3aa42b32946fc469d1
+    last_write_checksum: sha1:07da7ed1fa2cc59f62737ef232164fecfb9a1fa3
   docs/Models/Operations/StartSearchResponse.md:
     last_write_checksum: sha1:4284d2d160c6ccd0cbb2cee2773a9a05df5f087a
   docs/Models/Operations/SummarizeWorkspaceOperationsRequest.md:
@@ -1443,7 +1443,7 @@ trackedFiles:
   docs/sdks/exports/README.md:
     last_write_checksum: sha1:bd05e61263c11c7d038b388a2a9dcae73390d349
   docs/sdks/groups/README.md:
-    last_write_checksum: sha1:a46ffc0b770e323776c713bfb8533a25e17b43a8
+    last_write_checksum: sha1:5b6313a75e43252157a189d2742e9529786834f7
   docs/sdks/integrations/README.md:
     last_write_checksum: sha1:dbc3783286764f18e8998f8556ac690d65287192
   docs/sdks/invites/README.md:
@@ -1483,7 +1483,7 @@ trackedFiles:
   src/NoResponse/Exports.cs:
     last_write_checksum: sha1:14a7427024b9c0583018697f7759c857d6756a3b
   src/NoResponse/Groups.cs:
-    last_write_checksum: sha1:2a7590f37bd71ca680749f30e6e2a9307b7398f6
+    last_write_checksum: sha1:a8830dda51732c7e9fa6b9943adf70309537081c
   src/NoResponse/Hooks/HookTypes.cs:
     last_write_checksum: sha1:c90e0ccfed8e1cc4fa7a0e507130d2fc364a9f26
   src/NoResponse/Hooks/SDKHooks.cs:
@@ -1573,7 +1573,7 @@ trackedFiles:
   src/NoResponse/Models/Operations/CreateCustomerExportResponse.cs:
     last_write_checksum: sha1:563e6e0bfd871b3a0370cfc4584d819e62842dee
   src/NoResponse/Models/Operations/CreateGroupRequest.cs:
-    last_write_checksum: sha1:c11c73fa6bd7e86bce5db4aa196f6a750e179604
+    last_write_checksum: sha1:01f63f2457a757bbddff8d947251a986bcd03068
   src/NoResponse/Models/Operations/CreateGroupResponse.cs:
     last_write_checksum: sha1:e0163bcbc327d1863f22c94c4b788f7bbac4bcf9
   src/NoResponse/Models/Operations/CreateIntegrationResponse.cs:
@@ -1935,7 +1935,7 @@ trackedFiles:
   src/NoResponse/Models/Operations/StartScreeningResponse.cs:
     last_write_checksum: sha1:2204d702f734f3924579f20fc67ac5bf46148a9b
   src/NoResponse/Models/Operations/StartSearchRequest.cs:
-    last_write_checksum: sha1:cc0862e7f4acf862488aec51e5ffa5f976696ba0
+    last_write_checksum: sha1:bc965acc909e756ca36400495f358682af19580b
   src/NoResponse/Models/Operations/StartSearchResponse.cs:
     last_write_checksum: sha1:9df5a8f6b46cce091bb899beaac1676b54293f57
   src/NoResponse/Models/Operations/SummarizeWorkspaceOperationsRequest.cs:
@@ -2899,7 +2899,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/WorkspaceOperationsSummaryRequest.cs:
     last_write_checksum: sha1:29c3ef293b3925883936aca2d63cb0cb41988bf2
   src/NoResponse/NoResponse.csproj:
-    last_write_checksum: sha1:cc97b241d6c8ac3e95a4c750da8d7bd70941b126
+    last_write_checksum: sha1:e22586a8619f906130a61fdf4fc96ba761d135b8
   src/NoResponse/NoResponseClient.cs:
     last_write_checksum: sha1:ef4ee68375e2e4fec9053c64198cc050c360fe27
   src/NoResponse/Operations.cs:
@@ -2909,7 +2909,7 @@ trackedFiles:
   src/NoResponse/Reviews.cs:
     last_write_checksum: sha1:a8dda3c5129d3f8aa6a28fd2c88cb5306528cf5d
   src/NoResponse/SDKConfig.cs:
-    last_write_checksum: sha1:3fb88f988a95bcd38e5e2082d69f0c7a3d135a3b
+    last_write_checksum: sha1:6137a9266fa3644c59665d0d6d7f31af53ac4ece
   src/NoResponse/Settings.cs:
     last_write_checksum: sha1:959b4c61d952a8da79b1eb61e0bdd828e27ed971
   src/NoResponse/Usage.cs:
@@ -2919,7 +2919,7 @@ trackedFiles:
   src/NoResponse/Utils/BigIntStrConverter.cs:
     last_write_checksum: sha1:8803aa46f7bca5595c22751ede125e3c4e993856
   src/NoResponse/Utils/Constants.cs:
-    last_write_checksum: sha1:9dd51245531b8faa9d569c3fd547377d6a2e9dff
+    last_write_checksum: sha1:90655b9aa54817667f40b1795a1474bde47b9859
   src/NoResponse/Utils/DecimalStrConverter.cs:
     last_write_checksum: sha1:1fa9c1159f476245dfff02718e434accbba46136
   src/NoResponse/Utils/EnumConverter.cs:
@@ -5310,6 +5310,8 @@ examples:
         path:
           workspace_id: "tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM"
           environment: "live"
+        header:
+          Idempotency-Key: "request-01JA2Z8K6Q4V7W9XBCDEFGHJKM"
       requestBody:
         application/json: {"name": "Annual shareholder meeting", "starts_at": "2026-01-01T00:00:00Z", "ends_at": "2026-01-02T00:00:00Z", "venue": "Example Convention Centre", "host": "Example Holdings", "principals": [{"name": "Alex Principal", "aliases": ["Alex P"]}], "topics": ["executive pay"]}
       responses:
@@ -5512,6 +5514,8 @@ examples:
           environment: "live"
           group_id: "grp_01JA2Z8K6Q4V7W9XBCDEFGHJKM"
           person_id: "per_01JA2Z8K6Q4V7W9XBCDEFGHJKM"
+        header:
+          Idempotency-Key: "request-01JA2Z8K6Q4V7W9XBCDEFGHJKM"
       requestBody:
         application/json: {"record_id": "rec_3f9a1c22d4e5b6a73f9a1c22d4e5b6a7", "field": "username", "table": "FORUM_EXAMPLE_COM_2019"}
       responses:

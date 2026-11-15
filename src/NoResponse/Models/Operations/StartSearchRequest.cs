@@ -29,6 +29,12 @@ namespace NoResponse.Models.Operations
         [NoResponseMetadata("pathParam:style=simple,explode=false,name=person_id")]
         public string PersonId { get; set; } = default!;
 
+        /// <summary>
+        /// Opaque request key, 16 to 128 characters. Repeating the key and request returns the same resource in its current state while it is retained. A different request with the same key answers 409. Use a new key for a deliberate new operation. Keys are scoped to the environment and operation; person searches also scope them to the group and person.
+        /// </summary>
+        [NoResponseMetadata("header:style=simple,explode=false,name=Idempotency-Key")]
+        public string? IdempotencyKey { get; set; }
+
         [NoResponseMetadata("request:mediaType=application/json")]
         public SearchRequest Body { get; set; } = new();
     }

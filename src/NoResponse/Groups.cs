@@ -59,11 +59,12 @@ namespace NoResponse
         /// Create a group to screen.
         /// </summary>
         /// <remarks>
-        /// Create a group to screen: its name, start, venue, host, the principals it protects and the sensitive topics posts are read against. An environment holds at most 1000 groups.
+        /// Create a group to screen: its name, start, venue, host, the principals it protects and the sensitive topics posts are read against. An environment holds at most 1000 groups. Send an Idempotency-Key to repeat a request safely while the group is retained. A replay returns the same group in its current state; changed input returns 409.
         /// </remarks>
         /// <param name="workspaceId">Your workspace id, as each key lists it in workspace_id. Another workspace, a malformed id and a test environment's id answer 404.</param>
         /// <param name="environment">The environment: live or test. Each has its own settings. Any other value answers 400. An API key reads and changes only its own environment's; the other answers 404.</param>
         /// <param name="body">A <see cref="GroupRequest"/> parameter.</param>
+        /// <param name="idempotencyKey">Opaque request key, 16 to 128 characters. Repeating the key and request returns the same resource in its current state while it is retained. A different request with the same key answers 409. Use a new key for a deliberate new operation. Keys are scoped to the environment and operation; person searches also scope them to the group and person.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="CreateGroupResponse"/> object when completed.</returns>
         /// <exception cref="ArgumentNullException">One of <paramref name="workspaceId"/> or <paramref name="body"/> is null.</exception>
@@ -81,6 +82,7 @@ namespace NoResponse
             string workspaceId,
             KeyEnvironment environment,
             GroupRequest body,
+            string? idempotencyKey = null,
             CancellationToken? cancellationToken = null
         );
 
@@ -346,17 +348,12 @@ namespace NoResponse
         /// Search again on a value of one of a person's records.
         /// </summary>
         /// <remarks>
-        /// Search again on the value of one field of one of a person's records, named by the record and field. Nothing searches again by itself. A password or hash search counts its breach rows first and runs only when you run it; read the person to see each search and what it found.
+        /// Search again on the value of one field of one of a person's records, named by the record and field. Nothing searches again by itself. A password or hash search counts its breach rows first and runs only when you run it; read the person to see each search and what it found. Send an Idempotency-Key to return the same search after a lost answer, even after it completes. A different request with the same key returns 409. Use a new key for a deliberate new search.
         /// </remarks>
-        /// <param name="workspaceId">Your workspace id, as each key lists it in workspace_id. Another workspace, a malformed id and a test environment's id answer 404.</param>
-        /// <param name="environment">The environment: live or test. Each has its own settings. Any other value answers 400. An API key reads and changes only its own environment's; the other answers 404.</param>
-        /// <param name="groupId">Description not available.</param>
-        /// <param name="personId">Description not available.</param>
-        /// <param name="body">A <see cref="SearchRequest"/> parameter.</param>
-        /// <param name="retryConfig">The retry configuration to use for this operation.</param>
+        /// <param name="request">A <see cref="StartSearchRequest"/> parameter.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="StartSearchResponse"/> object when completed.</returns>
-        /// <exception cref="ArgumentNullException">One of <paramref name="workspaceId"/>, <paramref name="groupId"/>, <paramref name="personId"/> or <paramref name="body"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The required parameter <paramref name="request"/> is null.</exception>
         /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
         /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
@@ -368,12 +365,7 @@ namespace NoResponse
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<StartSearchResponse> StartSearchAsync(
-            string workspaceId,
-            KeyEnvironment environment,
-            string groupId,
-            string personId,
-            SearchRequest body,
-            RetryConfig? retryConfig = null,
+            StartSearchRequest request,
             CancellationToken? cancellationToken = null
         );
 
@@ -848,11 +840,12 @@ namespace NoResponse
         /// Create a group to screen.
         /// </summary>
         /// <remarks>
-        /// Create a group to screen: its name, start, venue, host, the principals it protects and the sensitive topics posts are read against. An environment holds at most 1000 groups.
+        /// Create a group to screen: its name, start, venue, host, the principals it protects and the sensitive topics posts are read against. An environment holds at most 1000 groups. Send an Idempotency-Key to repeat a request safely while the group is retained. A replay returns the same group in its current state; changed input returns 409.
         /// </remarks>
         /// <param name="workspaceId">Your workspace id, as each key lists it in workspace_id. Another workspace, a malformed id and a test environment's id answer 404.</param>
         /// <param name="environment">The environment: live or test. Each has its own settings. Any other value answers 400. An API key reads and changes only its own environment's; the other answers 404.</param>
         /// <param name="body">A <see cref="GroupRequest"/> parameter.</param>
+        /// <param name="idempotencyKey">Opaque request key, 16 to 128 characters. Repeating the key and request returns the same resource in its current state while it is retained. A different request with the same key answers 409. Use a new key for a deliberate new operation. Keys are scoped to the environment and operation; person searches also scope them to the group and person.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="CreateGroupResponse"/> object when completed.</returns>
         /// <exception cref="ArgumentNullException">One of <paramref name="workspaceId"/> or <paramref name="body"/> is null.</exception>
@@ -870,6 +863,7 @@ namespace NoResponse
             string workspaceId,
             KeyEnvironment environment,
             GroupRequest body,
+            string? idempotencyKey = null,
             CancellationToken? cancellationToken = null
         )
         {
@@ -880,6 +874,7 @@ namespace NoResponse
                 WorkspaceId = workspaceId,
                 Environment = environment,
                 Body = body,
+                IdempotencyKey = idempotencyKey,
             };
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
@@ -887,6 +882,7 @@ namespace NoResponse
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, urlString);
             httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
+            HeaderSerializer.PopulateHeaders(ref httpRequest, request);
 
             if (!httpRequest.Headers.Contains("Accept"))
             {
@@ -3355,17 +3351,12 @@ namespace NoResponse
         /// Search again on a value of one of a person's records.
         /// </summary>
         /// <remarks>
-        /// Search again on the value of one field of one of a person's records, named by the record and field. Nothing searches again by itself. A password or hash search counts its breach rows first and runs only when you run it; read the person to see each search and what it found.
+        /// Search again on the value of one field of one of a person's records, named by the record and field. Nothing searches again by itself. A password or hash search counts its breach rows first and runs only when you run it; read the person to see each search and what it found. Send an Idempotency-Key to return the same search after a lost answer, even after it completes. A different request with the same key returns 409. Use a new key for a deliberate new search.
         /// </remarks>
-        /// <param name="workspaceId">Your workspace id, as each key lists it in workspace_id. Another workspace, a malformed id and a test environment's id answer 404.</param>
-        /// <param name="environment">The environment: live or test. Each has its own settings. Any other value answers 400. An API key reads and changes only its own environment's; the other answers 404.</param>
-        /// <param name="groupId">Description not available.</param>
-        /// <param name="personId">Description not available.</param>
-        /// <param name="body">A <see cref="SearchRequest"/> parameter.</param>
-        /// <param name="retryConfig">The retry configuration to use for this operation.</param>
+        /// <param name="request">A <see cref="StartSearchRequest"/> parameter.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="StartSearchResponse"/> object when completed.</returns>
-        /// <exception cref="ArgumentNullException">One of <paramref name="workspaceId"/>, <paramref name="groupId"/>, <paramref name="personId"/> or <paramref name="body"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The required parameter <paramref name="request"/> is null.</exception>
         /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
         /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
@@ -3377,33 +3368,18 @@ namespace NoResponse
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<StartSearchResponse> StartSearchAsync(
-            string workspaceId,
-            KeyEnvironment environment,
-            string groupId,
-            string personId,
-            SearchRequest body,
-            RetryConfig? retryConfig = null,
+            StartSearchRequest request,
             CancellationToken? cancellationToken = null
         )
         {
-            if (workspaceId == null) throw new ArgumentNullException(nameof(workspaceId));
-            if (groupId == null) throw new ArgumentNullException(nameof(groupId));
-            if (personId == null) throw new ArgumentNullException(nameof(personId));
-            if (body == null) throw new ArgumentNullException(nameof(body));
-
-            var request = new StartSearchRequest() {
-                WorkspaceId = workspaceId,
-                Environment = environment,
-                GroupId = groupId,
-                PersonId = personId,
-                Body = body,
-            };
+            if (request == null) throw new ArgumentNullException(nameof(request));
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
             var urlString = URLBuilder.Build(baseUrl, "/v1/workspaces/{workspace_id}/groups/{environment}/{group_id}/people/{person_id}/searches", request, null);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, urlString);
             httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
+            HeaderSerializer.PopulateHeaders(ref httpRequest, request);
 
             if (!httpRequest.Headers.Contains("Accept"))
             {
@@ -3424,45 +3400,11 @@ namespace NoResponse
             var hookCtx = new HookContext(SDKConfiguration, baseUrl, "startSearch", null, SDKConfiguration.SecuritySource, cancellationToken);
 
             httpRequest = await this.SDKConfiguration.Hooks.BeforeRequestAsync(new BeforeRequestContext(hookCtx), httpRequest);
-            if (retryConfig == null)
-            {
-                if (this.SDKConfiguration.RetryConfig != null)
-                {
-                    retryConfig = this.SDKConfiguration.RetryConfig;
-                }
-                else
-                {
-                    var backoff = new BackoffStrategy(
-                        initialIntervalMs: 500L,
-                        maxIntervalMs: 8000L,
-                        maxElapsedTimeMs: 30000L,
-                        exponent: 2
-                    );
-                    retryConfig = new RetryConfig(
-                        strategy: RetryConfig.RetryStrategy.BACKOFF,
-                        backoff: backoff,
-                        retryConnectionErrors: true
-                    );
-                }
-            }
-
-            List<string> statusCodes = new List<string> {
-                "408",
-                "429",
-                "5XX",
-            };
-
-            Func<Task<HttpResponseMessage>> retrySend = async () =>
-            {
-                var _httpRequest = await SDKConfiguration.Client.CloneAsync(httpRequest);
-                return await SDKConfiguration.Client.SendAsync(_httpRequest, cancellationToken);
-            };
-            var retries = new NoResponse.Utils.Retries.Retries(retrySend, retryConfig, statusCodes, cancellationToken);
 
             HttpResponseMessage httpResponse;
             try
             {
-                httpResponse = await retries.Run();
+                httpResponse = await SDKConfiguration.Client.SendAsync(httpRequest, cancellationToken);
                 int _statusCode = (int)httpResponse.StatusCode;
 
                 if (_statusCode >= 400 && _statusCode < 500 || _statusCode >= 500 && _statusCode < 600)
