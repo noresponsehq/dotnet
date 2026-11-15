@@ -39,7 +39,7 @@ namespace NoResponse.Models.Shared
         public RecordRole? Role { get; set; }
 
         /// <summary>
-        /// The value cleaned to its kind's one form: an email in lower case, a phone number in international form when its country is known, a date in ISO form, a country as its two-letter code, a flag as true or false. Absent when the value cannot be cleaned as its kind; original still holds it.
+        /// The value cleaned to its kind's one form: an email in lower case, a phone number in international form when its country is known, a date in ISO form, a country as its two-letter code, a flag as true or false. Absent when the value cannot be cleaned as its kind, or when the source masked it or cut it short, with a run of asterisks or bullets or a trailing ellipsis, in a kind that links people or is searched again; original still holds it.
         /// </summary>
         [JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? Value { get; set; }
