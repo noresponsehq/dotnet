@@ -9,7 +9,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// A platform a screening can cover. synthetic is the deterministic connector's own platform, for exercising the product end to end with no network.
+    /// A platform a screening can cover. github and scratch through flickr are each one read of the public profile a handle names, with no posts. synthetic is the deterministic connector's own platform, for exercising the product end to end with no network.
     /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class HandlePlatform : IEquatable<HandlePlatform>, IOpenEnum<string>
@@ -24,6 +24,19 @@ namespace NoResponse.Models.Shared
         public static readonly HandlePlatform Reddit = new HandlePlatform("reddit");
         public static readonly HandlePlatform Telegram = new HandlePlatform("telegram");
         public static readonly HandlePlatform Linkedin = new HandlePlatform("linkedin");
+        public static readonly HandlePlatform Github = new HandlePlatform("github");
+        public static readonly HandlePlatform Scratch = new HandlePlatform("scratch");
+        public static readonly HandlePlatform Dailymotion = new HandlePlatform("dailymotion");
+        public static readonly HandlePlatform Substack = new HandlePlatform("substack");
+        public static readonly HandlePlatform Duolingo = new HandlePlatform("duolingo");
+        public static readonly HandlePlatform Dockerhub = new HandlePlatform("dockerhub");
+        public static readonly HandlePlatform Wikipedia = new HandlePlatform("wikipedia");
+        public static readonly HandlePlatform Internetarchive = new HandlePlatform("internetarchive");
+        public static readonly HandlePlatform Spotify = new HandlePlatform("spotify");
+        public static readonly HandlePlatform Patreon = new HandlePlatform("patreon");
+        public static readonly HandlePlatform Wordpress = new HandlePlatform("wordpress");
+        public static readonly HandlePlatform Okru = new HandlePlatform("okru");
+        public static readonly HandlePlatform Flickr = new HandlePlatform("flickr");
         public static readonly HandlePlatform Synthetic = new HandlePlatform("synthetic");
 
         private static readonly Dictionary<string, HandlePlatform> _knownValues =
@@ -38,6 +51,19 @@ namespace NoResponse.Models.Shared
                 ["reddit"] = Reddit,
                 ["telegram"] = Telegram,
                 ["linkedin"] = Linkedin,
+                ["github"] = Github,
+                ["scratch"] = Scratch,
+                ["dailymotion"] = Dailymotion,
+                ["substack"] = Substack,
+                ["duolingo"] = Duolingo,
+                ["dockerhub"] = Dockerhub,
+                ["wikipedia"] = Wikipedia,
+                ["internetarchive"] = Internetarchive,
+                ["spotify"] = Spotify,
+                ["patreon"] = Patreon,
+                ["wordpress"] = Wordpress,
+                ["okru"] = Okru,
+                ["flickr"] = Flickr,
                 ["synthetic"] = Synthetic
             };
 

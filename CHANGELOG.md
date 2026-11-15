@@ -1,5 +1,19 @@
 # Changelog
 
+## 12.0.12
+
+* `Sdk.Groups.ListPeople()`:  `response.items[].Handles[].Platform` **Changed**
+* `Sdk.Groups.AddPeople()`: 
+  *  `request.Body.People[].Handles[].Platform` **Changed**
+* `Sdk.Groups.GetPerson()`:  `response.person.Handles[].Platform` **Changed**
+* `Sdk.Groups.ReviewPerson()`:  `response.handles[].Platform` **Changed**
+* `Sdk.Groups.ListScreenings()`:  `response.items[].Platforms[]` **Changed**
+* `Sdk.Groups.StartScreening()`: 
+  *  `request.Body.Platforms[]` **Changed**
+  *  `response.platforms[]` **Changed**
+* `Sdk.Groups.GetScreening()`:  `response.platforms[]` **Changed**
+* `Sdk.Groups.CancelScreening()`:  `response.platforms[]` **Changed**
+
 ## 12.0.11
 
 * `Sdk.Settings.Get()`:  `response.refusedSources[]` **Changed**
