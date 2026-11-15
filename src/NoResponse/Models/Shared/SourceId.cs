@@ -9,7 +9,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// A NoResponse source: github (GitHub accounts), phone (the phone lookup), breach (breach exposure), rdap (the email domain's registration), mx (the email domain's mail servers), ipintel (IP intelligence) or an email account source that searches one platform for an account by email address (adobe, nvidia, wix, life360, zapier, google, duolingo_email). google runs only for Gmail addresses. scratch, dailymotion, substack, duolingo, dockerhub, wikipedia, internetarchive, telegram, spotify, patreon, wordpress, okru and flickr each search that platform for an account by username; telegram also searches by phone number, through a logged-in Telegram lookup account. whatsapp searches WhatsApp for an account by phone number.
+    /// A NoResponse source: github (GitHub accounts), phone (the phone lookup), breach (breach exposure), rdap (the email domain's registration), mx (the email domain's mail servers), ipintel (IP intelligence) or an email account source that searches one platform for an account by email address (adobe, nvidia, wix, life360, zapier, google, duolingo_email). google runs only for Gmail addresses. scratch, dailymotion, substack, duolingo, dockerhub, wikipedia, internetarchive, telegram, spotify, patreon, wordpress, okru and flickr each search that platform for an account by username; telegram also searches by phone number, through a logged-in Telegram lookup account. whatsapp searches WhatsApp for an account by phone number. youtube searches YouTube for a channel by username.
     /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class SourceId : IEquatable<SourceId>, IOpenEnum<string>
@@ -35,6 +35,7 @@ namespace NoResponse.Models.Shared
         public static readonly SourceId Wikipedia = new SourceId("wikipedia");
         public static readonly SourceId Internetarchive = new SourceId("internetarchive");
         public static readonly SourceId Telegram = new SourceId("telegram");
+        public static readonly SourceId Youtube = new SourceId("youtube");
         public static readonly SourceId Spotify = new SourceId("spotify");
         public static readonly SourceId Patreon = new SourceId("patreon");
         public static readonly SourceId Wordpress = new SourceId("wordpress");
@@ -65,6 +66,7 @@ namespace NoResponse.Models.Shared
                 ["wikipedia"] = Wikipedia,
                 ["internetarchive"] = Internetarchive,
                 ["telegram"] = Telegram,
+                ["youtube"] = Youtube,
                 ["spotify"] = Spotify,
                 ["patreon"] = Patreon,
                 ["wordpress"] = Wordpress,

@@ -1,5 +1,15 @@
 # Changelog
 
+## 12.0.17
+
+* `Sdk.Settings.Get()`:  `response.refusedSources[].Enum(youtube)` **Added**
+* `Sdk.Settings.Update()`: 
+  *  `request.body.RefusedSources[].Enum(youtube)` **Added**
+  *  `response.refusedSources[].Enum(youtube)` **Added**
+* `Sdk.Settings.ListHistory()`:  `response.items[].Settings.RefusedSources[].Enum(youtube)` **Added**
+* `Sdk.Settings.Restore()`:  `response.refusedSources[].Enum(youtube)` **Added**
+* `Sdk.Evaluations.Publish()`:  `response.refusedSources[].Enum(youtube)` **Added**
+
 ## 12.0.16
 
 No changes detected.
