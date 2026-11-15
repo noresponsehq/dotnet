@@ -1,5 +1,15 @@
 # Changelog
 
+## 12.0.22
+
+* `Sdk.Settings.Get()`:  `response.refusedSources[].Enum(life360Phone)` **Added**
+* `Sdk.Settings.Update()`: 
+  *  `request.body.RefusedSources[].Enum(life360Phone)` **Added**
+  *  `response.refusedSources[].Enum(life360Phone)` **Added**
+* `Sdk.Settings.ListHistory()`:  `response.items[].Settings.RefusedSources[].Enum(life360Phone)` **Added**
+* `Sdk.Settings.Restore()`:  `response.refusedSources[].Enum(life360Phone)` **Added**
+* `Sdk.Evaluations.Publish()`:  `response.refusedSources[].Enum(life360Phone)` **Added**
+
 ## 12.0.21
 
 * `Sdk.Settings.Get()`:  `response.refusedSources[]` **Changed**
