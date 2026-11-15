@@ -52,5 +52,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("reason", Required = Newtonsoft.Json.Required.DisallowNull)]
         public FailureReason? Reason { get; set; }
+
+        /// <summary>
+        /// Each source that did not give a definite answer, by connector, with why: the same connector id a record's source names. A source of the lane that no connector covers is counted in sources and not named here.
+        /// </summary>
+        [JsonProperty("unanswered", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<ScreeningLookupCheckUnansweredItem>? Unanswered { get; set; }
     }
 }
