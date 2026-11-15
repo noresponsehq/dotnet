@@ -1,5 +1,26 @@
 # Changelog
 
+## 13.0.0
+
+* `Sdk.Settings.Get()`:  `response.refusedSources[]` **Changed** (Breaking ⚠️)
+* `Sdk.Settings.Update()`: 
+  *  `request.body.RefusedSources[]` **Changed** (Breaking ⚠️)
+  *  `response.refusedSources[]` **Changed** (Breaking ⚠️)
+* `Sdk.Settings.ListHistory()`:  `response.items[].Settings.RefusedSources[]` **Changed** (Breaking ⚠️)
+* `Sdk.Settings.Restore()`:  `response.refusedSources[]` **Changed** (Breaking ⚠️)
+* `Sdk.Evaluations.Publish()`:  `response.refusedSources[]` **Changed** (Breaking ⚠️)
+* `Sdk.Groups.ListPeople()`:  `response.items[]` **Changed** (Breaking ⚠️)
+* `Sdk.Groups.AddPeople()`: 
+  *  `request.Body.People[].Handles[].Platform` **Changed** (Breaking ⚠️)
+* `Sdk.Groups.GetPerson()`:  `response` **Changed** (Breaking ⚠️)
+* `Sdk.Groups.ReviewPerson()`:  `response` **Changed** (Breaking ⚠️)
+* `Sdk.Groups.ListScreenings()`:  `response.items[].Platforms[]` **Changed** (Breaking ⚠️)
+* `Sdk.Groups.StartScreening()`: 
+  *  `request.Body.Platforms[]` **Changed** (Breaking ⚠️)
+  *  `response.platforms[]` **Changed** (Breaking ⚠️)
+* `Sdk.Groups.GetScreening()`:  `response.platforms[]` **Changed** (Breaking ⚠️)
+* `Sdk.Groups.CancelScreening()`:  `response.platforms[]` **Changed** (Breaking ⚠️)
+
 ## 12.0.35
 
 * `Sdk.Groups.ListPeople()`:  `response.items[].Coverage.ItemsFrameOnly` **Added**

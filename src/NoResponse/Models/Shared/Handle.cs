@@ -2,12 +2,7 @@
 namespace NoResponse.Models.Shared
 {
     using Newtonsoft.Json;
-    using NoResponse.Models.Shared;
     using NoResponse.Utils;
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
     /// An account the person is known to hold.
@@ -15,10 +10,10 @@ namespace NoResponse.Models.Shared
     public class Handle
     {
         /// <summary>
-        /// A platform a screening can cover. github and scratch through flickr are each one read of the public profile a handle names, with no posts; chesscom also reads the profile's stats, clubs and last two months of games, for its activity and contacts, and through a signed-in session up to 100 of the player's friends, each a contact with the date the friendship began. synthetic is the deterministic connector's own platform, for exercising the product end to end with no network.
+        /// A platform a screening can cover, such as instagram, x, bluesky, youtube, tiktok or github. The screening registry owns the set: a request that names a platform it does not cover answers 422. A new platform adds an id without changing this contract, so read a platform you do not know in a response as one you have not seen before, not as an error. synthetic is the deterministic connector's own platform, for exercising the product end to end with no network.
         /// </summary>
         [JsonProperty("platform", Required = Newtonsoft.Json.Required.Always)]
-        public HandlePlatform Platform { get; set; } = default!;
+        public string Platform { get; set; } = default!;
 
         /// <summary>
         /// The account's handle, without a leading @.

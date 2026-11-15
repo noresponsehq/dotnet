@@ -733,7 +733,9 @@ var res = await sdk.Groups.StartScreeningAsync(
     groupId: "grp_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
     body: new ScreeningRequest() {
         Depth = ScreeningDepth.Standard,
-        Platforms = new List<HandlePlatform>() {},
+        Platforms = new List<string>() {
+            "bluesky",
+        },
     },
     idempotencyKey: "account-acct_7f3a9c"
 );

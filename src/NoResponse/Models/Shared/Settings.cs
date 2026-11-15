@@ -57,7 +57,7 @@ namespace NoResponse.Models.Shared
         /// The sources this environment refuses, sorted; empty, the default, refuses none. An assessment leaves a refused source out: its coverage is missing (an identifier with no other source lists coverage-unavailable as unavailable) rather than not_found, and a stored result of a refused source is not reused.
         /// </summary>
         [JsonProperty("refused_sources", Required = Newtonsoft.Json.Required.Always)]
-        public List<SourceId> RefusedSources { get; set; } = default!;
+        public List<string> RefusedSources { get; set; } = default!;
 
         /// <summary>
         /// The most the environment's screenings may spend in one UTC day, in minor units of USD (cents), 0 to 100000000; null is no cap. Default 50000. A screening whose estimated_spend exceeds the cap less the day's recorded spend and what open screenings may still spend answers 409 screening_cap_exceeded.

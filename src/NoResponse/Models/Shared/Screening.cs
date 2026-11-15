@@ -33,7 +33,7 @@ namespace NoResponse.Models.Shared
         public ScreeningDepth Depth { get; set; } = default!;
 
         [JsonProperty("platforms", Required = Newtonsoft.Json.Required.Always)]
-        public List<HandlePlatform> Platforms { get; set; } = default!;
+        public List<string> Platforms { get; set; } = default!;
 
         [JsonProperty("requested_by", Required = Newtonsoft.Json.Required.Always)]
         public string RequestedBy { get; set; } = default!;

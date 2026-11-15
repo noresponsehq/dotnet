@@ -73,7 +73,7 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 
 var res = await sdk.Settings.UpdateAsync(
     workspaceId: "tnt_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
-    environment: KeyEnvironment.Test,
+    environment: KeyEnvironment.Live,
     body: new SettingsRequest() {
         RetentionDays = 30,
         ExpectedPolicyVersion = 1,
@@ -99,8 +99,8 @@ var res = await sdk.Settings.UpdateAsync(
     environment: KeyEnvironment.Live,
     body: new SettingsRequest() {
         RetentionDays = 90,
-        RefusedSources = new List<SourceId>() {
-            SourceId.Phone,
+        RefusedSources = new List<string>() {
+            "phone",
         },
         Flows = new SettingsRequestFlows() {
             AccountCreation = new FlowChange() {

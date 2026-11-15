@@ -4,10 +4,7 @@ namespace NoResponse.Models.Shared
     using Newtonsoft.Json;
     using NoResponse.Models.Shared;
     using NoResponse.Utils;
-    using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
     /// Changes only named settings, atomically. Every successful write advances policy_version and retains an immutable settings snapshot. expected_policy_version optionally guards against stale edits; restore always requires it.
@@ -21,7 +18,7 @@ namespace NoResponse.Models.Shared
         /// Replaces the refused sources; [] refuses none. A change applies to new assessments within a minute.
         /// </summary>
         [JsonProperty("refused_sources", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public List<SourceId>? RefusedSources { get; set; }
+        public List<string>? RefusedSources { get; set; }
 
         /// <summary>
         /// Replaces the daily screening cap, in minor units of USD; null removes the cap. Needs settings.write only, like retention_days.
