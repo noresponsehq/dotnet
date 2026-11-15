@@ -29,6 +29,7 @@ var custom = RecordRole.Of("custom_value");
 | `Bot`             | bot               |
 | `CallerCategory`  | caller_category   |
 | `Chargebacks`     | chargebacks       |
+| `Contact`         | contact           |
 | `CoverPicture`    | cover_picture     |
 | `Declines`        | declines          |
 | `Deleted`         | deleted           |

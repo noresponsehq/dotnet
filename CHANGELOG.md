@@ -1,5 +1,26 @@
 # Changelog
 
+## 12.0.24
+
+* `Sdk.Settings.Get()`:  `response.refusedSources[].Enum(chesscom)` **Added**
+* `Sdk.Settings.Update()`: 
+  *  `request.body.RefusedSources[].Enum(chesscom)` **Added**
+  *  `response.refusedSources[].Enum(chesscom)` **Added**
+* `Sdk.Settings.ListHistory()`:  `response.items[].Settings.RefusedSources[].Enum(chesscom)` **Added**
+* `Sdk.Settings.Restore()`:  `response.refusedSources[].Enum(chesscom)` **Added**
+* `Sdk.Evaluations.Publish()`:  `response.refusedSources[].Enum(chesscom)` **Added**
+* `Sdk.Groups.ListPeople()`:  `response.items[].Handles[].Platform.Enum(chesscom)` **Added**
+* `Sdk.Groups.AddPeople()`: 
+  *  `request.Body.People[].Handles[].Platform.Enum(chesscom)` **Added**
+* `Sdk.Groups.GetPerson()`:  `response` **Changed**
+* `Sdk.Groups.ReviewPerson()`:  `response.handles[].Platform.Enum(chesscom)` **Added**
+* `Sdk.Groups.ListScreenings()`:  `response.items[].Platforms[].Enum(chesscom)` **Added**
+* `Sdk.Groups.StartScreening()`: 
+  *  `request.Body.Platforms[].Enum(chesscom)` **Added**
+  *  `response.platforms[].Enum(chesscom)` **Added**
+* `Sdk.Groups.GetScreening()`:  `response.platforms[].Enum(chesscom)` **Added**
+* `Sdk.Groups.CancelScreening()`:  `response.platforms[].Enum(chesscom)` **Added**
+
 ## 12.0.23
 
 No changes detected.

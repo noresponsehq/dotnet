@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 70bd5ecd-d923-41ca-9a42-6e3360b4ce2f
 management:
-  docChecksum: 38db441ac789607e0bc66f71633e5ea7
+  docChecksum: 1ce48e3e391b6b2742b27f798b8dbb1b
   docVersion: "1"
   speakeasyVersion: internal
   generationVersion: internal
-  releaseVersion: 12.0.23
-  configChecksum: 675fd1d1199d6281fc00ecd002d08b3a
+  releaseVersion: 12.0.24
+  configChecksum: 60b879cfd26705b46994102327fe16bc
 features:
   csharp:
     additionalDependencies: 0.1.0
@@ -825,9 +825,9 @@ trackedFiles:
   docs/Models/Shared/GroupUpdate.md:
     last_write_checksum: sha1:007acc2314828c164e83a5c6700f616b4dc5a918
   docs/Models/Shared/Handle.md:
-    last_write_checksum: sha1:7ba11897992ca136ef95ebf4894c7d239f276a33
+    last_write_checksum: sha1:65d36c5f744a5924d916486b0e79bd4fff31307b
   docs/Models/Shared/HandlePlatform.md:
-    last_write_checksum: sha1:3bce2d2001e76abddd5c44bfc5e4d5ff0a47bd6e
+    last_write_checksum: sha1:2149a69577e484f2088b3bcd291e94ac0f53e07e
   docs/Models/Shared/HighestBand.md:
     last_write_checksum: sha1:171e18771d108cc4a78377543757f161d62b0872
   docs/Models/Shared/HookPoint.md:
@@ -1153,7 +1153,7 @@ trackedFiles:
   docs/Models/Shared/RecordRemaining.md:
     last_write_checksum: sha1:72b6954755b2ce49869e40ae854a84a0ac9a8025
   docs/Models/Shared/RecordRole.md:
-    last_write_checksum: sha1:06b9541140738466b033f826f7457412cdb8892b
+    last_write_checksum: sha1:b21faa31c7fbdcb258c191a9782ca34f42bad749
   docs/Models/Shared/RecordSource.md:
     last_write_checksum: sha1:5d219342e591d2e930f09d4bbc4dbc1c593e51f3
   docs/Models/Shared/RecordVerdict.md:
@@ -1297,13 +1297,13 @@ trackedFiles:
   docs/Models/Shared/ScreeningNotAnalysedReason.md:
     last_write_checksum: sha1:059f627aa89c125d3efc8b98c7811c652c72c441
   docs/Models/Shared/ScreeningPlatformCoverage.md:
-    last_write_checksum: sha1:34f85225ea59f1f248d937c99e6f2ad97e5f51e4
+    last_write_checksum: sha1:32bea214d6943a64ecc611ab7925f04e443b1940
   docs/Models/Shared/ScreeningPlatformCoverageStatus.md:
     last_write_checksum: sha1:0d850bd4b62a38561da53f7fbb7b6090b0991092
   docs/Models/Shared/ScreeningPost.md:
     last_write_checksum: sha1:e71dcdcdced383c164118af59e56f7307bf253e2
   docs/Models/Shared/ScreeningProfile.md:
-    last_write_checksum: sha1:4b89bbef7f25c2a22d107dcc7433ad005e25d48b
+    last_write_checksum: sha1:22d32ba9fbdfb1418100ca44bd950e5f70873bb0
   docs/Models/Shared/ScreeningRequest.md:
     last_write_checksum: sha1:08fc9591a16c59ae6cad46388767a67e23cb6b21
   docs/Models/Shared/ScreeningSpend.md:
@@ -1353,7 +1353,7 @@ trackedFiles:
   docs/Models/Shared/Source.md:
     last_write_checksum: sha1:beeb45c99e4842285c169f2728bbccaeb15b592b
   docs/Models/Shared/SourceId.md:
-    last_write_checksum: sha1:9fdafd291e0643f2e72c0c36a4b4ebad24945c14
+    last_write_checksum: sha1:367f7856ef43bb8b17a7d6cb7c19776777d63096
   docs/Models/Shared/Status.md:
     last_write_checksum: sha1:b76dbd8dfb527a009ce69ac36c2dc9b85f4d53dd
   docs/Models/Shared/Thresholds.md:
@@ -2293,9 +2293,9 @@ trackedFiles:
   src/NoResponse/Models/Shared/GroupUpdate.cs:
     last_write_checksum: sha1:991743954b31d4b629b6c0e557dba3075b3ca5c5
   src/NoResponse/Models/Shared/Handle.cs:
-    last_write_checksum: sha1:dc4f446d5fc262d7326986cd9fe2f9e953e805ff
+    last_write_checksum: sha1:f7511e49687eb41da16419a95cf0c1c3cc3167b2
   src/NoResponse/Models/Shared/HandlePlatform.cs:
-    last_write_checksum: sha1:e00e3cdf2c63856e0b3d760b19cd4892074996d2
+    last_write_checksum: sha1:b27f7e18ea4ac1bd196ba4a9e8f63d785b995b83
   src/NoResponse/Models/Shared/HighestBand.cs:
     last_write_checksum: sha1:8eebf8a4f828dc559fbbad39615c179e70e095ff
   src/NoResponse/Models/Shared/HookPoint.cs:
@@ -2621,7 +2621,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/RecordRemaining.cs:
     last_write_checksum: sha1:692a0a0d319616448114ea523c977eebfeaf1b52
   src/NoResponse/Models/Shared/RecordRole.cs:
-    last_write_checksum: sha1:fae0c6800b296aba5460cc89b7834bcb95d8bf90
+    last_write_checksum: sha1:dbe64f3b019091898f07d6e04a8b581c738abb0d
   src/NoResponse/Models/Shared/RecordSource.cs:
     last_write_checksum: sha1:6e37632904b586cd0af795dc51bdf2bfb83faa7f
   src/NoResponse/Models/Shared/RecordVerdict.cs:
@@ -2765,13 +2765,13 @@ trackedFiles:
   src/NoResponse/Models/Shared/ScreeningNotAnalysedReason.cs:
     last_write_checksum: sha1:deb992891959213da74ddfeec1ef4f7d69fcbe1c
   src/NoResponse/Models/Shared/ScreeningPlatformCoverage.cs:
-    last_write_checksum: sha1:5567c05b04e5edb60418a43e15d3f0d4223e04fd
+    last_write_checksum: sha1:f74df638e9c886aefee46c33a7c59dbf76279ac0
   src/NoResponse/Models/Shared/ScreeningPlatformCoverageStatus.cs:
     last_write_checksum: sha1:d6982506813a9049fa9ac2385a77e416bd974200
   src/NoResponse/Models/Shared/ScreeningPost.cs:
     last_write_checksum: sha1:c537d0de897ae37f6027b67e8bbbb717c5f5c661
   src/NoResponse/Models/Shared/ScreeningProfile.cs:
-    last_write_checksum: sha1:ec8b985006d4c3fb6af0648599968adaac6d83d2
+    last_write_checksum: sha1:9b1cd67a7c20eb04a05c5ea897446c2e6742a4f7
   src/NoResponse/Models/Shared/ScreeningRequest.cs:
     last_write_checksum: sha1:39379e2ab95674a1d10b568edf09c573bffec715
   src/NoResponse/Models/Shared/ScreeningSpend.cs:
@@ -2821,7 +2821,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/Source.cs:
     last_write_checksum: sha1:ecd4d9cc1b7c8fd587ab20af9a2d777dd6698292
   src/NoResponse/Models/Shared/SourceId.cs:
-    last_write_checksum: sha1:1535f008bb221a7dd8bb76b76a3052fdefdf2a41
+    last_write_checksum: sha1:3e4d18a23e45ec4d3a92015f306ead0636f8aea5
   src/NoResponse/Models/Shared/Status.cs:
     last_write_checksum: sha1:2e9347ca96254901a912fb2a58bdfcd385c0295a
   src/NoResponse/Models/Shared/Thresholds.cs:
@@ -2899,7 +2899,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/WorkspaceOperationsSummaryRequest.cs:
     last_write_checksum: sha1:29c3ef293b3925883936aca2d63cb0cb41988bf2
   src/NoResponse/NoResponse.csproj:
-    last_write_checksum: sha1:683a6fca3d14fbfe63db5ed50be8502e58b5a854
+    last_write_checksum: sha1:15542df671faf4146fe20b796f5bb95724cd54f6
   src/NoResponse/NoResponseClient.cs:
     last_write_checksum: sha1:ef4ee68375e2e4fec9053c64198cc050c360fe27
   src/NoResponse/Operations.cs:
@@ -2909,7 +2909,7 @@ trackedFiles:
   src/NoResponse/Reviews.cs:
     last_write_checksum: sha1:a8dda3c5129d3f8aa6a28fd2c88cb5306528cf5d
   src/NoResponse/SDKConfig.cs:
-    last_write_checksum: sha1:b40d0f4513d25a2dbfea9a273257e6af14b7d4b9
+    last_write_checksum: sha1:0d304a8256cec61a070bd0152d4f9aa4730fe359
   src/NoResponse/Settings.cs:
     last_write_checksum: sha1:959b4c61d952a8da79b1eb61e0bdd828e27ed971
   src/NoResponse/Usage.cs:
@@ -2919,7 +2919,7 @@ trackedFiles:
   src/NoResponse/Utils/BigIntStrConverter.cs:
     last_write_checksum: sha1:8803aa46f7bca5595c22751ede125e3c4e993856
   src/NoResponse/Utils/Constants.cs:
-    last_write_checksum: sha1:11ff5adaf2cb7ffe1af6e757a37e5298f46a411d
+    last_write_checksum: sha1:8c77d4536cf3ed30ecd57492b64604a02f1bad4d
   src/NoResponse/Utils/DecimalStrConverter.cs:
     last_write_checksum: sha1:1fa9c1159f476245dfff02718e434accbba46136
   src/NoResponse/Utils/EnumConverter.cs:
@@ -5640,7 +5640,7 @@ examples:
         application/json: {}
       responses:
         "200":
-          application/json: {"id": "scn_01JA2Z8K6Q4V7W9XBCDEFGHJKM", "group_id": "grp_01JA2Z8K6Q4V7W9XBCDEFGHJKM", "environment": "test", "status": "partial", "depth": "standard", "platforms": ["threads"], "requested_by": "user_2abc", "created_at": "2026-01-01T00:00:00Z", "started_at": "2026-01-01T00:00:00Z", "finished_at": "2026-01-02T00:00:00Z", "expires_at": "2026-01-02T00:00:00Z", "people_total": 438718, "people_done": 951747, "people_flagged": 942514, "people_failed": 682715, "people_partial": 283813, "estimated_spend": 375895, "spent": 990898, "spend": {"total_minor": 51134, "by_implementation": []}, "error_code": "user_cancelled"}
+          application/json: {"id": "scn_01JA2Z8K6Q4V7W9XBCDEFGHJKM", "group_id": "grp_01JA2Z8K6Q4V7W9XBCDEFGHJKM", "environment": "test", "status": "partial", "depth": "standard", "platforms": ["reddit"], "requested_by": "user_2abc", "created_at": "2026-01-01T00:00:00Z", "started_at": "2026-01-01T00:00:00Z", "finished_at": "2026-01-02T00:00:00Z", "expires_at": "2026-01-02T00:00:00Z", "people_total": 438718, "people_done": 951747, "people_flagged": 942514, "people_failed": 682715, "people_partial": 283813, "estimated_spend": 375895, "spent": 990898, "spend": {"total_minor": 51134, "by_implementation": []}, "error_code": "user_cancelled"}
         "400":
           application/problem+json: {"type": "https://docs.noresponse.org/errors/invalid_request", "title": "Invalid request", "status": 400, "detail": "identifiers: at least one of email, username or phone is required.", "instance": "/v1/assessments", "code": "invalid_request", "request_id": "9f2c4b7a1d3e4f5a8b6c0d1e2f3a4b5c", "invalid_params": [{"field": "identifiers", "reason": "at least one of email, username or phone is required", "example": "new.user@example.com"}]}
         "401":

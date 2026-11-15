@@ -25,6 +25,7 @@ namespace NoResponse.Models.Shared
         public static readonly RecordRole Bot = new RecordRole("bot");
         public static readonly RecordRole CallerCategory = new RecordRole("caller_category");
         public static readonly RecordRole Chargebacks = new RecordRole("chargebacks");
+        public static readonly RecordRole Contact = new RecordRole("contact");
         public static readonly RecordRole CoverPicture = new RecordRole("cover_picture");
         public static readonly RecordRole Declines = new RecordRole("declines");
         public static readonly RecordRole Deleted = new RecordRole("deleted");
@@ -101,6 +102,7 @@ namespace NoResponse.Models.Shared
                 ["bot"] = Bot,
                 ["caller_category"] = CallerCategory,
                 ["chargebacks"] = Chargebacks,
+                ["contact"] = Contact,
                 ["cover_picture"] = CoverPicture,
                 ["declines"] = Declines,
                 ["deleted"] = Deleted,

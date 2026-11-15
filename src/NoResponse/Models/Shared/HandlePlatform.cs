@@ -9,7 +9,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// A platform a screening can cover. github and scratch through flickr are each one read of the public profile a handle names, with no posts. synthetic is the deterministic connector's own platform, for exercising the product end to end with no network.
+    /// A platform a screening can cover. github and scratch through flickr are each one read of the public profile a handle names, with no posts; chesscom also reads the profile's stats, clubs and last two months of games, for its activity and contacts. synthetic is the deterministic connector's own platform, for exercising the product end to end with no network.
     /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class HandlePlatform : IEquatable<HandlePlatform>, IOpenEnum<string>
@@ -37,6 +37,7 @@ namespace NoResponse.Models.Shared
         public static readonly HandlePlatform Wordpress = new HandlePlatform("wordpress");
         public static readonly HandlePlatform Okru = new HandlePlatform("okru");
         public static readonly HandlePlatform Flickr = new HandlePlatform("flickr");
+        public static readonly HandlePlatform Chesscom = new HandlePlatform("chesscom");
         public static readonly HandlePlatform Synthetic = new HandlePlatform("synthetic");
 
         private static readonly Dictionary<string, HandlePlatform> _knownValues =
@@ -64,6 +65,7 @@ namespace NoResponse.Models.Shared
                 ["wordpress"] = Wordpress,
                 ["okru"] = Okru,
                 ["flickr"] = Flickr,
+                ["chesscom"] = Chesscom,
                 ["synthetic"] = Synthetic
             };
 
