@@ -16,7 +16,7 @@ namespace NoResponse.Models.Shared
         public string RecordId { get; set; } = default!;
 
         /// <summary>
-        /// The name of the record's field whose value to search. Its kind must be email, phone, username, person_name, password, hash or ip.
+        /// The name of the record's field whose value to search. Its kind must be email, phone, username, person_name, password, hash, ip or domain, and it must have a value: a field the source masked or that could not be cleaned is not searched.
         /// </summary>
         [JsonProperty("field", Required = Newtonsoft.Json.Required.Always)]
         public string Field { get; set; } = default!;
