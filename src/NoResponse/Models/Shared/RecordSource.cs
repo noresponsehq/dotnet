@@ -34,7 +34,7 @@ namespace NoResponse.Models.Shared
         public string? Table { get; set; }
 
         /// <summary>
-        /// When the source's data dates from, at the precision it is known: YYYY or YYYY-MM for a breach table.
+        /// When the source's data dates from, at the precision it is known: YYYY or YYYY-MM for a breach table, and YYYY-MM-DD, the day the computer was infected, for a row of a stealer log.
         /// </summary>
         [JsonProperty("date", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? Date { get; set; }
