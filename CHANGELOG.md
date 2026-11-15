@@ -1,5 +1,9 @@
 # Changelog
 
+## 13.0.4
+
+No changes detected.
+
 ## 13.0.3
 
 * `Sdk.Keys.UpdateAccess()`: **Added**
