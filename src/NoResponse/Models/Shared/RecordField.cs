@@ -27,7 +27,7 @@ namespace NoResponse.Models.Shared
         public string Original { get; set; } = default!;
 
         /// <summary>
-        /// What sort of value a field holds, which decides how it is cleaned, compared and searched again. It comes from the value itself where its shape is certain (an email, an IP, a URL, an international phone number), else from the answer stored for the source's column, else text. A value of any kind is returned. Each kind's description says what it holds and the form value takes.
+        /// What sort of value a field holds, which decides how it is cleaned, compared and searched again. It comes from the value itself where its shape is certain (an email, an IP, a URL, an international phone number), else from the answer committed for the source's column, else from the answer stored for it, else text. A value of any kind is returned. Each kind's description says what it holds and the form value takes.
         /// </summary>
         [JsonProperty("kind", Required = Newtonsoft.Json.Required.DisallowNull)]
         public RecordKind? Kind { get; set; }
