@@ -9,7 +9,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// The kind of the value searched.
+    /// The kind of the value searched. A domain search finds the leaked rows of every email address at the domain.
     /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class SearchKind : IEquatable<SearchKind>, IOpenEnum<string>
@@ -21,6 +21,7 @@ namespace NoResponse.Models.Shared
         public static readonly SearchKind Password = new SearchKind("password");
         public static readonly SearchKind Hash = new SearchKind("hash");
         public static readonly SearchKind Ip = new SearchKind("ip");
+        public static readonly SearchKind Domain = new SearchKind("domain");
 
         private static readonly Dictionary<string, SearchKind> _knownValues =
             new Dictionary<string, SearchKind>() {
@@ -30,7 +31,8 @@ namespace NoResponse.Models.Shared
                 ["person_name"] = PersonName,
                 ["password"] = Password,
                 ["hash"] = Hash,
-                ["ip"] = Ip
+                ["ip"] = Ip,
+                ["domain"] = Domain
             };
 
         private static readonly ConcurrentDictionary<string, SearchKind> _values =

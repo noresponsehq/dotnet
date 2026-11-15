@@ -36,7 +36,7 @@ namespace NoResponse.Models.Shared
         public string? Table { get; set; }
 
         /// <summary>
-        /// The kind of the value searched.
+        /// The kind of the value searched. A domain search finds the leaked rows of every email address at the domain.
         /// </summary>
         [JsonProperty("kind", Required = Newtonsoft.Json.Required.Always)]
         public SearchKind Kind { get; set; } = default!;

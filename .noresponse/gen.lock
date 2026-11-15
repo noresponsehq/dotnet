@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 70bd5ecd-d923-41ca-9a42-6e3360b4ce2f
 management:
-  docChecksum: 30a106a7feb0609f4e19b44eb23f1d10
+  docChecksum: 38a48cc4af8291f1ccc162d42933fc09
   docVersion: "1"
   speakeasyVersion: internal
   generationVersion: internal
-  releaseVersion: 12.0.18
-  configChecksum: be5236a438777425ec0cd71d8a96c97f
+  releaseVersion: 12.0.19
+  configChecksum: f9520a582d2378c31e5b3385cfa829e7
 features:
   csharp:
     additionalDependencies: 0.1.0
@@ -1149,7 +1149,7 @@ trackedFiles:
   docs/Models/Shared/RecordKind.md:
     last_write_checksum: sha1:2c5a0270af6179338e88bdb718c10e837eefd67c
   docs/Models/Shared/RecordMatch.md:
-    last_write_checksum: sha1:8eb676415698da6b872622b88234d6d7903b4928
+    last_write_checksum: sha1:3c85d951906b3528677f6d1ec9510187642d66f5
   docs/Models/Shared/RecordRemaining.md:
     last_write_checksum: sha1:72b6954755b2ce49869e40ae854a84a0ac9a8025
   docs/Models/Shared/RecordRole.md:
@@ -1315,9 +1315,9 @@ trackedFiles:
   docs/Models/Shared/ScreeningStatus.md:
     last_write_checksum: sha1:ed80221eb56917da9f87d3df812b18e6ff3b47e1
   docs/Models/Shared/Search.md:
-    last_write_checksum: sha1:f6f88059c7e20d8f318456c30630a259b2dff7b2
+    last_write_checksum: sha1:a500aa5aa8c141fdc8b17be28a787b7acbbfc673
   docs/Models/Shared/SearchKind.md:
-    last_write_checksum: sha1:68bffc4dff835a60fd90e41a510bb6ff48a74615
+    last_write_checksum: sha1:cabf5a93da42b6f5b3a742736f627af7352a5ad9
   docs/Models/Shared/SearchRequest.md:
     last_write_checksum: sha1:6e0d3ad544f03676628f0a1c3bf013f6f59599b5
   docs/Models/Shared/SearchStatus.md:
@@ -2617,7 +2617,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/RecordKind.cs:
     last_write_checksum: sha1:a291e97523370888803e26efd687043710e1e97b
   src/NoResponse/Models/Shared/RecordMatch.cs:
-    last_write_checksum: sha1:e27b7e46388a5dfee3a5e25e4a46f7fc5180057f
+    last_write_checksum: sha1:df4dbda91b7558fc4a865f800f0497ee4635cc8e
   src/NoResponse/Models/Shared/RecordRemaining.cs:
     last_write_checksum: sha1:692a0a0d319616448114ea523c977eebfeaf1b52
   src/NoResponse/Models/Shared/RecordRole.cs:
@@ -2783,9 +2783,9 @@ trackedFiles:
   src/NoResponse/Models/Shared/ScreeningStatus.cs:
     last_write_checksum: sha1:25f4bc5cd22552cb32bb8b2afb9991a2c474ce23
   src/NoResponse/Models/Shared/Search.cs:
-    last_write_checksum: sha1:0ec28db4473ed0eaad36dae9dc5d49a8d2ea0c45
+    last_write_checksum: sha1:1f4151047056d15c87656867a68b6fab15f5645c
   src/NoResponse/Models/Shared/SearchKind.cs:
-    last_write_checksum: sha1:e1da89fb74120ccfafb473c40bdaabba339ec2bd
+    last_write_checksum: sha1:a107c08d551c5d03d55bf5cb24ff1fb2121f6505
   src/NoResponse/Models/Shared/SearchRequest.cs:
     last_write_checksum: sha1:96f5a5ff882d4ae06fbf337abbda94bf016e1e95
   src/NoResponse/Models/Shared/SearchStatus.cs:
@@ -2899,7 +2899,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/WorkspaceOperationsSummaryRequest.cs:
     last_write_checksum: sha1:29c3ef293b3925883936aca2d63cb0cb41988bf2
   src/NoResponse/NoResponse.csproj:
-    last_write_checksum: sha1:d8a41fd79d386ca6c4fb47ac2604d32321832028
+    last_write_checksum: sha1:65cfbc97968837cd4eca8fdc52b137f13cb63dd1
   src/NoResponse/NoResponseClient.cs:
     last_write_checksum: sha1:ef4ee68375e2e4fec9053c64198cc050c360fe27
   src/NoResponse/Operations.cs:
@@ -2909,7 +2909,7 @@ trackedFiles:
   src/NoResponse/Reviews.cs:
     last_write_checksum: sha1:a8dda3c5129d3f8aa6a28fd2c88cb5306528cf5d
   src/NoResponse/SDKConfig.cs:
-    last_write_checksum: sha1:2291fe60defe86fb9d3cc21cdd7107b3238e4f8c
+    last_write_checksum: sha1:9beebf5f9e1e05ee378b009a12493aeb1b2e3b92
   src/NoResponse/Settings.cs:
     last_write_checksum: sha1:959b4c61d952a8da79b1eb61e0bdd828e27ed971
   src/NoResponse/Usage.cs:
@@ -2919,7 +2919,7 @@ trackedFiles:
   src/NoResponse/Utils/BigIntStrConverter.cs:
     last_write_checksum: sha1:8803aa46f7bca5595c22751ede125e3c4e993856
   src/NoResponse/Utils/Constants.cs:
-    last_write_checksum: sha1:5ece5576786dce4bbca26a293a6aa06d419d1e28
+    last_write_checksum: sha1:8994ca27f26d7502f6df8bf8d557170d5f2bd6c3
   src/NoResponse/Utils/DecimalStrConverter.cs:
     last_write_checksum: sha1:1fa9c1159f476245dfff02718e434accbba46136
   src/NoResponse/Utils/EnumConverter.cs:
@@ -5516,7 +5516,7 @@ examples:
         application/json: {"record_id": "rec_3f9a1c22d4e5b6a73f9a1c22d4e5b6a7", "field": "username", "table": "FORUM_EXAMPLE_COM_2019"}
       responses:
         "202":
-          application/json: {"search_id": "srh_01JA2Z8K6Q4V7W9XBCDEFGHJKM", "record_id": "rec_3f9a1c22d4e5b6a73f9a1c22d4e5b6a7", "field": "username", "table": "FORUM_EXAMPLE_COM_2019", "kind": "email", "value": "jordanexample42", "status": "completed", "sources": 369225, "answered": 317146, "found": 776513, "estimated_spend": 346465, "spent": 341223, "requested_by": "user_2abc", "created_at": "2026-01-01T00:00:00Z", "finished_at": "2026-01-01T00:00:05Z"}
+          application/json: {"search_id": "srh_01JA2Z8K6Q4V7W9XBCDEFGHJKM", "record_id": "rec_3f9a1c22d4e5b6a73f9a1c22d4e5b6a7", "field": "username", "table": "FORUM_EXAMPLE_COM_2019", "kind": "phone", "value": "jordanexample42", "status": "completed", "sources": 369225, "answered": 317146, "found": 776513, "estimated_spend": 346465, "spent": 341223, "requested_by": "user_2abc", "created_at": "2026-01-01T00:00:00Z", "finished_at": "2026-01-01T00:00:05Z"}
         "400":
           application/problem+json: {"type": "https://docs.noresponse.org/errors/invalid_request", "title": "Invalid request", "status": 400, "detail": "identifiers: at least one of email, username or phone is required.", "instance": "/v1/assessments", "code": "webhook_url_refused", "request_id": "9f2c4b7a1d3e4f5a8b6c0d1e2f3a4b5c", "invalid_params": [{"field": "identifiers", "reason": "at least one of email, username or phone is required", "example": "new.user@example.com"}]}
         "401":

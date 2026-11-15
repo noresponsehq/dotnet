@@ -1,6 +1,6 @@
 # SearchKind
 
-The kind of the value searched.
+The kind of the value searched. A domain search finds the leaked rows of every email address at the domain.
 
 ## Example Usage
 
@@ -25,3 +25,4 @@ var custom = SearchKind.Of("custom_value");
 | `Password`   | password     |
 | `Hash`       | hash         |
 | `Ip`         | ip           |
+| `Domain`     | domain       |
