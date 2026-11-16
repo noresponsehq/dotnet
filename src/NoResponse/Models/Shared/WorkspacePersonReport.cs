@@ -96,6 +96,12 @@ namespace NoResponse.Models.Shared
         public ScreeningLookup? Lookup { get; set; }
 
         /// <summary>
+        /// Every search on this person's values, newest first, whether a person started it or enrichment did: each names the value, the record and field it came from, and the search that found that record. Absent when nothing was searched.
+        /// </summary>
+        [JsonProperty("searches", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<Search>? Searches { get; set; }
+
+        /// <summary>
         /// True when evidence.read is explicitly denied. Submitted details, coverage, job status and decisions remain available. Collected records, profiles, findings, posts, media, discovered values and free-text decision notes are withheld.
         /// </summary>
         [JsonProperty("evidence_restricted", Required = Newtonsoft.Json.Required.DisallowNull)]

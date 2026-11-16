@@ -10,7 +10,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// One search a person started on a value of one of a person's records. Nothing searches again by itself.
+    /// One search on a value of one of a person's records, started by a person or by enrichment.
     /// </summary>
     public class Search
     {
@@ -96,10 +96,22 @@ namespace NoResponse.Models.Shared
         public ErrorCode? ErrorCode { get; set; }
 
         /// <summary>
-        /// Who started the search.
+        /// Who started the search: the member or key, or enrichment when the engine started it on a value an earlier result showed.
         /// </summary>
         [JsonProperty("requested_by", Required = Newtonsoft.Json.Required.Always)]
         public string RequestedBy { get; set; } = default!;
+
+        /// <summary>
+        /// The search that found the record this value came from. Absent when the record came from the person's investigation.
+        /// </summary>
+        [JsonProperty("parent_search_id", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? ParentSearchId { get; set; }
+
+        /// <summary>
+        /// How many searches lie between the person's investigation and this one, this one included: 1 for a value of a record the investigation found, 2 for a value of a record a depth-1 search found, and so on.
+        /// </summary>
+        [JsonProperty("depth", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? Depth { get; set; }
 
         [JsonProperty("created_at", Required = Newtonsoft.Json.Required.Always)]
         public string CreatedAt { get; set; } = default!;
