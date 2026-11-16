@@ -40,6 +40,7 @@ var custom = ConflictErrorCode.Of("custom_value");
 | `EvaluationConflict`           | evaluation_conflict            |
 | `EvaluationNoProposal`         | evaluation_no_proposal         |
 | `EvaluationLimitReached`       | evaluation_limit_reached       |
+| `EvaluationUnavailable`        | evaluation_unavailable         |
 | `AlreadyMember`                | already_member                 |
 | `MemberLimitReached`           | member_limit_reached           |
 | `OwnerInvitePending`           | owner_invite_pending           |

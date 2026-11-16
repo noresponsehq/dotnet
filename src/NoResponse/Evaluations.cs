@@ -77,7 +77,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The policy, idempotency binding, evaluation state, proposal or provenance does not match; or the environment retains five jobs. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">The policy, idempotency binding, evaluation state, proposal or provenance does not match; the environment retains five jobs; or no evaluator runs in this deployment. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<CreatePolicyEvaluationResponse> CreateAsync(
@@ -140,7 +140,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The policy, idempotency binding, evaluation state, proposal or provenance does not match; or the environment retains five jobs. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">The policy, idempotency binding, evaluation state, proposal or provenance does not match; the environment retains five jobs; or no evaluator runs in this deployment. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<GetPolicyEvaluationResultResponse> GetResultAsync(
@@ -204,7 +204,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The policy, idempotency binding, evaluation state, proposal or provenance does not match; or the environment retains five jobs. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">The policy, idempotency binding, evaluation state, proposal or provenance does not match; the environment retains five jobs; or no evaluator runs in this deployment. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<PublishPolicyEvaluationResponse> PublishAsync(
@@ -564,7 +564,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The policy, idempotency binding, evaluation state, proposal or provenance does not match; or the environment retains five jobs. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">The policy, idempotency binding, evaluation state, proposal or provenance does not match; the environment retains five jobs; or no evaluator runs in this deployment. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<CreatePolicyEvaluationResponse> CreateAsync(
@@ -1139,7 +1139,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The policy, idempotency binding, evaluation state, proposal or provenance does not match; or the environment retains five jobs. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">The policy, idempotency binding, evaluation state, proposal or provenance does not match; the environment retains five jobs; or no evaluator runs in this deployment. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<GetPolicyEvaluationResultResponse> GetResultAsync(
@@ -1715,7 +1715,7 @@ namespace NoResponse
         /// <exception cref="AuthenticationException">No API key, or one that is malformed, unknown, revoked or expired. Thrown when the API returns a 401 response.</exception>
         /// <exception cref="PermissionDeniedException">workspace_forbidden: the signing key lacks the management scope, or a scope it would grant. Thrown when the API returns a 403 response.</exception>
         /// <exception cref="NotFoundException">No such key or environment for the signing key: another workspace and the other environment answer this too, so no answer shows which workspaces exist. Thrown when the API returns a 404 response.</exception>
-        /// <exception cref="ConflictException">The policy, idempotency binding, evaluation state, proposal or provenance does not match; or the environment retains five jobs. Thrown when the API returns a 409 response.</exception>
+        /// <exception cref="ConflictException">The policy, idempotency binding, evaluation state, proposal or provenance does not match; the environment retains five jobs; or no evaluator runs in this deployment. Thrown when the API returns a 409 response.</exception>
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<PublishPolicyEvaluationResponse> PublishAsync(

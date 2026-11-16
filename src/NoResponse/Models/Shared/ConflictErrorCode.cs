@@ -36,6 +36,7 @@ namespace NoResponse.Models.Shared
         public static readonly ConflictErrorCode EvaluationConflict = new ConflictErrorCode("evaluation_conflict");
         public static readonly ConflictErrorCode EvaluationNoProposal = new ConflictErrorCode("evaluation_no_proposal");
         public static readonly ConflictErrorCode EvaluationLimitReached = new ConflictErrorCode("evaluation_limit_reached");
+        public static readonly ConflictErrorCode EvaluationUnavailable = new ConflictErrorCode("evaluation_unavailable");
         public static readonly ConflictErrorCode AlreadyMember = new ConflictErrorCode("already_member");
         public static readonly ConflictErrorCode MemberLimitReached = new ConflictErrorCode("member_limit_reached");
         public static readonly ConflictErrorCode OwnerInvitePending = new ConflictErrorCode("owner_invite_pending");
@@ -70,6 +71,7 @@ namespace NoResponse.Models.Shared
                 ["evaluation_conflict"] = EvaluationConflict,
                 ["evaluation_no_proposal"] = EvaluationNoProposal,
                 ["evaluation_limit_reached"] = EvaluationLimitReached,
+                ["evaluation_unavailable"] = EvaluationUnavailable,
                 ["already_member"] = AlreadyMember,
                 ["member_limit_reached"] = MemberLimitReached,
                 ["owner_invite_pending"] = OwnerInvitePending,
