@@ -106,5 +106,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("evidence_investigation", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = NullValueHandling.Include)]
         public Investigation? EvidenceInvestigation { get; set; }
+
+        /// <summary>
+        /// An investigator's profile of this person, written from the evidence of a settled investigation. Null until an investigation completes or partially completes, and null when evidence.read is denied.
+        /// </summary>
+        [JsonProperty("written_profile", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = NullValueHandling.Include)]
+        public WrittenProfile? WrittenProfile { get; set; }
     }
 }

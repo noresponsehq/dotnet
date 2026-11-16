@@ -1,5 +1,9 @@
 # Changelog
 
+## 15.0.1
+
+* `Sdk.People.Get()`:  `response.writtenProfile` **Added**
+
 ## 15.0.0
 
 * `Sdk.Groups.List()`:  `response.items[]` **Changed** (Breaking ⚠️)
