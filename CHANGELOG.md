@@ -1,5 +1,17 @@
 # Changelog
 
+## 15.0.0
+
+* `Sdk.Groups.List()`:  `response.items[]` **Changed** (Breaking ⚠️)
+* `Sdk.Groups.Create()`: 
+  *  `request.body` **Changed**
+  *  `response` **Changed** (Breaking ⚠️)
+* `Sdk.Groups.Get()`:  `response` **Changed** (Breaking ⚠️)
+* `Sdk.Groups.Update()`: 
+  *  `request.body` **Changed**
+  *  `response` **Changed** (Breaking ⚠️)
+* `Sdk.Groups.GetPerson()`:  `response.otherGroups.Items[].GroupStartsAt` **Changed** (Breaking ⚠️)
+
 ## 14.0.1
 
 No changes detected.

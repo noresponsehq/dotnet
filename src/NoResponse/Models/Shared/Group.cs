@@ -10,7 +10,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// A group and its screening context.
+    /// A workspace group for a building, organization or event. Dates are optional and do not control person retention.
     /// </summary>
     public class Group
     {
@@ -27,16 +27,16 @@ namespace NoResponse.Models.Shared
         public string Name { get; set; } = default!;
 
         /// <summary>
-        /// When the group starts.
+        /// Optional event start; null for an ongoing group.
         /// </summary>
-        [JsonProperty("starts_at", Required = Newtonsoft.Json.Required.Always)]
-        public string StartsAt { get; set; } = default!;
+        [JsonProperty("starts_at", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = NullValueHandling.Include)]
+        public string? StartsAt { get; set; }
 
         /// <summary>
-        /// When the group ends, at or after its start; the start when omitted.
+        /// Optional event end; requires starts_at and must be at or after it. Null when no end is set.
         /// </summary>
-        [JsonProperty("ends_at", Required = Newtonsoft.Json.Required.Always)]
-        public string EndsAt { get; set; } = default!;
+        [JsonProperty("ends_at", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = NullValueHandling.Include)]
+        public string? EndsAt { get; set; }
 
         /// <summary>
         /// Where the group is held.

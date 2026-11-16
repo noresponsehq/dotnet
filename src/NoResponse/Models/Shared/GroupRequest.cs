@@ -7,7 +7,7 @@ namespace NoResponse.Models.Shared
     using System.Collections.Generic;
 
     /// <summary>
-    /// Creates a group.
+    /// Creates an ongoing group or an event with optional dates.
     /// </summary>
     public class GroupRequest
     {
@@ -18,16 +18,18 @@ namespace NoResponse.Models.Shared
         public string Name { get; set; } = default!;
 
         /// <summary>
-        /// When the group starts.
+        /// Optional event start; null for an ongoing group.
         /// </summary>
-        [JsonProperty("starts_at", Required = Newtonsoft.Json.Required.Always)]
-        public string StartsAt { get; set; } = default!;
+        [JsonProperty("starts_at", Required = Newtonsoft.Json.Required.Default, NullValueHandling = NullValueHandling.Include)]
+        public OptionalNullable<string?> StartsAt { get; set; }
+        public bool ShouldSerializeStartsAt() => StartsAt.IsSet;
 
         /// <summary>
-        /// When the group ends, at or after its start; the start when omitted.
+        /// Optional event end; requires starts_at and must be at or after it. Null when no end is set.
         /// </summary>
-        [JsonProperty("ends_at", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public string? EndsAt { get; set; }
+        [JsonProperty("ends_at", Required = Newtonsoft.Json.Required.Default, NullValueHandling = NullValueHandling.Include)]
+        public OptionalNullable<string?> EndsAt { get; set; }
+        public bool ShouldSerializeEndsAt() => EndsAt.IsSet;
 
         /// <summary>
         /// Where the group is held.

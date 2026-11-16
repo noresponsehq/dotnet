@@ -20,8 +20,11 @@ namespace NoResponse.Models.Shared
         [JsonProperty("group_name", Required = Newtonsoft.Json.Required.Always)]
         public string GroupName { get; set; } = default!;
 
-        [JsonProperty("group_starts_at", Required = Newtonsoft.Json.Required.Always)]
-        public string GroupStartsAt { get; set; } = default!;
+        /// <summary>
+        /// The other group's optional event start; null for an ongoing group.
+        /// </summary>
+        [JsonProperty("group_starts_at", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = NullValueHandling.Include)]
+        public string? GroupStartsAt { get; set; }
 
         /// <summary>
         /// The person on that group's list.

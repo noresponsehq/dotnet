@@ -7,7 +7,7 @@ namespace NoResponse.Models.Shared
     using System.Collections.Generic;
 
     /// <summary>
-    /// Changes the fields it names; at least one besides expected_version.
+    /// Updates a group. Dates describe an optional event and do not control person retention.
     /// </summary>
     public class GroupUpdate
     {
@@ -18,16 +18,18 @@ namespace NoResponse.Models.Shared
         public string? Name { get; set; }
 
         /// <summary>
-        /// When the group starts.
+        /// Optional event start; null for an ongoing group. Omit to keep the current value; send null to clear it.
         /// </summary>
-        [JsonProperty("starts_at", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public string? StartsAt { get; set; }
+        [JsonProperty("starts_at", Required = Newtonsoft.Json.Required.Default, NullValueHandling = NullValueHandling.Include)]
+        public OptionalNullable<string?> StartsAt { get; set; }
+        public bool ShouldSerializeStartsAt() => StartsAt.IsSet;
 
         /// <summary>
-        /// When the group ends, at or after its start; the start when omitted.
+        /// Optional event end; requires starts_at and must be at or after it. Null when no end is set. Omit to keep the current value; send null to clear it.
         /// </summary>
-        [JsonProperty("ends_at", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public string? EndsAt { get; set; }
+        [JsonProperty("ends_at", Required = Newtonsoft.Json.Required.Default, NullValueHandling = NullValueHandling.Include)]
+        public OptionalNullable<string?> EndsAt { get; set; }
+        public bool ShouldSerializeEndsAt() => EndsAt.IsSet;
 
         /// <summary>
         /// Where the group is held.
