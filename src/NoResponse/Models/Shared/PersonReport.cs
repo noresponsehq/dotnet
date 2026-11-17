@@ -60,6 +60,12 @@ namespace NoResponse.Models.Shared
         public List<Search>? Searches { get; set; }
 
         /// <summary>
+        /// The searches enrichment would start on this person in this group, likeliest record first. Group screening follows the environment's enrichment setting, with suggest as its mode while the workspace has not set one. In off mode the list is empty. In suggest mode enrichment starts none of them by itself; in automatic mode it starts them as its limits allow. Empty when evidence.read is denied.
+        /// </summary>
+        [JsonProperty("suggested_searches", Required = Newtonsoft.Json.Required.Always)]
+        public List<SuggestedSearch> SuggestedSearches { get; set; } = default!;
+
+        /// <summary>
         /// Where else in the environment the person appears, read live from those groups: deleting one removes it here.
         /// </summary>
         [JsonProperty("other_groups", Required = Newtonsoft.Json.Required.Always)]
