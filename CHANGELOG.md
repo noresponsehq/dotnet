@@ -1,5 +1,12 @@
 # Changelog
 
+## 15.0.12
+
+* `Sdk.Groups.StartScreening()`: 
+  *  `request.body.Platforms` **Changed**
+* `Sdk.Investigations.Create()`: 
+  *  `request.body.Platforms` **Changed**
+
 ## 15.0.11
 
 No changes detected.

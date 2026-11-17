@@ -17,8 +17,11 @@ namespace NoResponse.Models.Shared
         [JsonProperty("depth", Required = Newtonsoft.Json.Required.Always)]
         public ScreeningDepth Depth { get; set; } = default!;
 
-        [JsonProperty("platforms", Required = Newtonsoft.Json.Required.Always)]
-        public List<string> Platforms { get; set; } = default!;
+        /// <summary>
+        /// The platforms to search. Leave it out for a full search: every platform a connector serves in the environment when the investigation starts, which the investigation then lists.
+        /// </summary>
+        [JsonProperty("platforms", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<string>? Platforms { get; set; }
 
         [JsonProperty("person_id", Required = Newtonsoft.Json.Required.Always)]
         public string PersonId { get; set; } = default!;
