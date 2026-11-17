@@ -10,6 +10,7 @@ Workspace people, submitted identity, source evidence and expiry.
 * [Create](#create) - Create or reuse a workspace person.
 * [Get](#get) - Read a workspace person.
 * [Delete](#delete) - Delete a workspace person.
+* [JudgeRecord](#judgerecord) - Join one of a workspace person's records to them, or reject it.
 
 ## List
 
@@ -171,6 +172,54 @@ var res = await sdk.People.DeleteAsync(personId: "per_01JA2Z8K6Q4V7W9XBCDEFGHJKM
 ### Response
 
 **[DeleteWorkspacePersonResponse](../../Models/Operations/DeleteWorkspacePersonResponse.md)**
+
+### Errors
+
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
+
+## JudgeRecord
+
+Records a verdict on one of the records the person report holds: joined makes the record the person's whatever its likelihood, and rejected keeps it a lead that leads nowhere. The verdict belongs to the person on their own: the person report and enrichment follow it, and each group keeps its own verdicts. It sticks for as long as the person's evidence holds the same record, and a later verdict on the same record replaces it. After each verdict, enrichment reads the person again under the environment's enrichment setting: it starts no search from a rejected record or from what a search of it found, and a joined record's values lead on. A record the person report does not hold answers 404. Each verdict is audited as person.record_judged. The decisions scope grants this operation. Explicit evidence.read restrictions override default evidence access. The groups scope is also accepted for existing integrations. The API key selects the workspace and environment.
+
+### Example Usage
+
+<!-- UsageSnippet language="csharp" operationID="judgeWorkspacePersonRecord" method="post" path="/v1/people/{person_id}/records" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+var res = await sdk.People.JudgeRecordAsync(
+    personId: "per_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
+    body: new RecordVerdictRequest() {
+        RecordId = "rec_3f9a1c22d4e5b6a73f9a1c22d4e5b6a7",
+        Verdict = Verdict.Rejected,
+    }
+);
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         | Example                                                             |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `PersonId`                                                          | *string*                                                            | :heavy_check_mark:                                                  | N/A                                                                 | per_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                      |
+| `Body`                                                              | [RecordVerdictRequest](../../Models/Shared/RecordVerdictRequest.md) | :heavy_check_mark:                                                  | N/A                                                                 |                                                                     |
+
+### Response
+
+**[JudgeWorkspacePersonRecordResponse](../../Models/Operations/JudgeWorkspacePersonRecordResponse.md)**
 
 ### Errors
 
