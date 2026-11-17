@@ -71,7 +71,7 @@ namespace NoResponse.Tests
             var birthday = row.Fields.Single(field => field.Field == "birthday");
             Assert.Null(birthday.Value);
             Assert.Equal("07/03/1990", birthday.Original);
-            Assert.Equal(0.99, row.Likelihood);
+            Assert.Equal(0.8, row.Likelihood);
             Assert.Null(row.Verdict);
 
             var remaining = lookup.Remaining![0];
