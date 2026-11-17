@@ -13,5 +13,17 @@ namespace NoResponse.Models.Operations
         /// </summary>
         [NoResponseMetadata("queryParam:style=form,explode=true,name=after")]
         public string? After { get; set; }
+
+        /// <summary>
+        /// Return only people whose email is this address, compared without case or surrounding spaces.
+        /// </summary>
+        [NoResponseMetadata("queryParam:style=form,explode=true,name=email")]
+        public string? Email { get; set; }
+
+        /// <summary>
+        /// Return only people whose phone is this number, compared without surrounding spaces.
+        /// </summary>
+        [NoResponseMetadata("queryParam:style=form,explode=true,name=phone")]
+        public string? Phone { get; set; }
     }
 }

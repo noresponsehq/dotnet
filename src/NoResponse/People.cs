@@ -24,10 +24,12 @@ namespace NoResponse
         /// List workspace people.
         /// </summary>
         /// <remarks>
-        /// Lists retained people in the key workspace and environment, including people in no group. Each returned person records a person.viewed audit event. Expired people are excluded before background deletion.
+        /// Lists retained people in the key workspace and environment, including people in no group. Each returned person records a person.viewed audit event. Expired people are excluded before background deletion. email and phone narrow the list to people holding that exact address or number, so a client can open the person it already has instead of adding a duplicate.
         /// </remarks>
         /// <param name="limit">Description not available.</param>
         /// <param name="after">Pass next_cursor from the prior page.</param>
+        /// <param name="email">Return only people whose email is this address, compared without case or surrounding spaces.</param>
+        /// <param name="phone">Return only people whose phone is this number, compared without surrounding spaces.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="ListWorkspacePeopleResponse"/> object when completed.</returns>
@@ -44,6 +46,8 @@ namespace NoResponse
         public Task<ListWorkspacePeopleResponse> ListAsync(
             long? limit = 100,
             string? after = null,
+            string? email = null,
+            string? phone = null,
             RetryConfig? retryConfig = null,
             CancellationToken? cancellationToken = null
         );
@@ -239,10 +243,12 @@ namespace NoResponse
         /// List workspace people.
         /// </summary>
         /// <remarks>
-        /// Lists retained people in the key workspace and environment, including people in no group. Each returned person records a person.viewed audit event. Expired people are excluded before background deletion.
+        /// Lists retained people in the key workspace and environment, including people in no group. Each returned person records a person.viewed audit event. Expired people are excluded before background deletion. email and phone narrow the list to people holding that exact address or number, so a client can open the person it already has instead of adding a duplicate.
         /// </remarks>
         /// <param name="limit">Description not available.</param>
         /// <param name="after">Pass next_cursor from the prior page.</param>
+        /// <param name="email">Return only people whose email is this address, compared without case or surrounding spaces.</param>
+        /// <param name="phone">Return only people whose phone is this number, compared without surrounding spaces.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="ListWorkspacePeopleResponse"/> object when completed.</returns>
@@ -259,6 +265,8 @@ namespace NoResponse
         public async Task<ListWorkspacePeopleResponse> ListAsync(
             long? limit = 100,
             string? after = null,
+            string? email = null,
+            string? phone = null,
             RetryConfig? retryConfig = null,
             CancellationToken? cancellationToken = null
         )
@@ -266,6 +274,8 @@ namespace NoResponse
             var request = new ListWorkspacePeopleRequest() {
                 Limit = limit,
                 After = after,
+                Email = email,
+                Phone = phone,
             };
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();

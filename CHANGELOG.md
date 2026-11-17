@@ -1,5 +1,16 @@
 # Changelog
 
+## 15.0.13
+
+* `Sdk.People.List()`: 
+  *  `request` **Changed**
+  *  `response.items[].Username` **Added**
+* `Sdk.People.Create()`: 
+  *  `request.body.Username` **Added**
+  *  `response.person.Username` **Added**
+* `Sdk.People.Get()`:  `response.username` **Added**
+* `Sdk.Investigations.Get()`:  `response.person.Username` **Added**
+
 ## 15.0.12
 
 * `Sdk.Groups.StartScreening()`: 

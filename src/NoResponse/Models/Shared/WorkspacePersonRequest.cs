@@ -44,6 +44,12 @@ namespace NoResponse.Models.Shared
         [JsonProperty("city", Required = Newtonsoft.Json.Required.DisallowNull)]
         public string? City { get; set; }
 
+        /// <summary>
+        /// A username the person uses, with no platform. A search looks it up on every platform that finds accounts by username.
+        /// </summary>
+        [JsonProperty("username", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? Username { get; set; }
+
         [JsonProperty("handles", Required = Newtonsoft.Json.Required.DisallowNull)]
         public List<Handle>? Handles { get; set; }
 

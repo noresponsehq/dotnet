@@ -42,6 +42,12 @@ namespace NoResponse.Models.Shared
         public string? City { get; set; }
 
         /// <summary>
+        /// A username the person uses, with no platform. A search looks it up on every platform that finds accounts by username.
+        /// </summary>
+        [JsonProperty("username", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? Username { get; set; }
+
+        /// <summary>
         /// Accounts the person is known to hold, at most 20.
         /// </summary>
         [JsonProperty("handles", Required = Newtonsoft.Json.Required.DisallowNull)]
