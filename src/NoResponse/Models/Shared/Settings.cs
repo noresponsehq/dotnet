@@ -10,7 +10,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// One environment's settings: how long its assessments are kept, and for each flow the risk thresholds that decide it and the depth a request that names none is served at, the sources it refuses, and the daily cap on screening spend. Live and test each have their own. A flow without thresholds of its own uses account_creation's (inherits_account_creation). Every change is recorded in the audit log as settings.updated, with who made it.
+    /// One environment's settings: how long its assessments are kept, and for each flow the risk thresholds that decide it and the depth a request that names none is served at, the sources it refuses, the daily cap on screening spend, and how enrichment searches what an investigation finds. Live and test each have their own. A flow without thresholds of its own uses account_creation's (inherits_account_creation). Every change is recorded in the audit log as settings.updated, with who made it.
     /// </summary>
     public class Settings
     {
@@ -64,5 +64,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("screening_daily_cap", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = NullValueHandling.Include)]
         public long? ScreeningDailyCap { get; set; }
+
+        /// <summary>
+        /// How enrichment searches the values a standalone investigation of a workspace person finds (POST /v1/investigations); group screening only suggests. Defaults: mode automatic, min_likelihood 0.5, kinds username, max_spend null and deadline null. An investigation request may override each field for that investigation. A change applies to the next search enrichment starts, investigations already run included. Enrichment also keeps to limits of its own: each value once per person (once more if that search failed), at most 5 searches from one search's records, 20 per person and 6 searches deep.
+        /// </summary>
+        [JsonProperty("enrichment", Required = Newtonsoft.Json.Required.Always)]
+        public Enrichment Enrichment { get; set; } = new();
     }
 }

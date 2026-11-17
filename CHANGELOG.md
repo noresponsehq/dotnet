@@ -1,5 +1,17 @@
 # Changelog
 
+## 15.0.5
+
+* `Sdk.Settings.Get()`:  `response.enrichment` **Added**
+* `Sdk.Settings.Update()`: 
+  *  `request.body.Enrichment` **Added**
+  *  `response.enrichment` **Added**
+* `Sdk.Settings.ListHistory()`:  `response.items[].Settings.Enrichment` **Added**
+* `Sdk.Settings.Restore()`:  `response.enrichment` **Added**
+* `Sdk.Evaluations.Publish()`:  `response.enrichment` **Added**
+* `Sdk.Investigations.Create()`: 
+  *  `request.body.Enrichment` **Added**
+
 ## 15.0.4
 
 No changes detected.

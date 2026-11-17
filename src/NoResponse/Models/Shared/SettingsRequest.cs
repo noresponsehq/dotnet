@@ -28,6 +28,12 @@ namespace NoResponse.Models.Shared
         public bool ShouldSerializeScreeningDailyCap() => ScreeningDailyCap.IsSet;
 
         /// <summary>
+        /// A change to enrichment. A field left out keeps the value in force; max_spend or deadline null removes the bound.
+        /// </summary>
+        [JsonProperty("enrichment", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public EnrichmentChange? Enrichment { get; set; }
+
+        /// <summary>
         /// Use account_creation or its deprecated alias signup, not both.
         /// </summary>
         [JsonProperty("flows", Required = Newtonsoft.Json.Required.DisallowNull)]
