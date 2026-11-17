@@ -10,7 +10,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// How distinctive a searchable value is: an email, phone, username, password, hash, person name or IP. Absent for other values, for a field with no value, and when its rating could not be worked out, such as when a count failed.
+    /// How distinctive a searchable value is: an email, phone, username, password, hash, person name or IP. Absent for other values, for a field with no value, and when its rating could not be worked out, such as when a count failed. Linkage weighs a password, hash or username by these numbers: the rarer the value, the more a shared one counts.
     /// </summary>
     public class RecordDistinctive
     {
@@ -25,5 +25,23 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("reason", Required = Newtonsoft.Json.Required.Always)]
         public string Reason { get; set; } = default!;
+
+        /// <summary>
+        /// How many breach rows hold the value, when they were counted. Set for a username, password, hash or person name.
+        /// </summary>
+        [JsonProperty("rows", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? Rows { get; set; }
+
+        /// <summary>
+        /// How many times the Pwned Passwords list holds the password, when it was asked. Set for a password only.
+        /// </summary>
+        [JsonProperty("pwned", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? Pwned { get; set; }
+
+        /// <summary>
+        /// How surprising the username is, to one decimal place: a character model spells it about once in 2^bits usernames. Set for a username the model can spell.
+        /// </summary>
+        [JsonProperty("bits", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public double? Bits { get; set; }
     }
 }
