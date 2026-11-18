@@ -1,5 +1,11 @@
 # Changelog
 
+## 15.0.19
+
+* `Sdk.Groups.GetPerson()`:  `response.profiles[].Record.Fields[].Noise` **Added**
+* `Sdk.People.Get()`:  `response.profiles[].Record.Fields[].Noise` **Added**
+* `Sdk.Investigations.Get()`:  `response.profiles[].Record.Fields[].Noise` **Added**
+
 ## 15.0.18
 
 * `Sdk.Groups.ListPeople()`:  `response.items[].Coverage.NotAnalysedByReason[].Reason.Enum(analysisOff)` **Added**

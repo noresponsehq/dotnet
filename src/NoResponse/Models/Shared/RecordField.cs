@@ -55,5 +55,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("distinctive", Required = Newtonsoft.Json.Required.DisallowNull)]
         public RecordDistinctive? Distinctive { get; set; }
+
+        /// <summary>
+        /// True when the value tells an investigator nothing on its own: a setting flag, a zero count, a bare number or a value with no letter or digit, in a field with no role. A field with a role is not noise. Investigation views hide noise by default; the field is still returned in full.
+        /// </summary>
+        [JsonProperty("noise", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public bool? Noise { get; set; }
     }
 }
