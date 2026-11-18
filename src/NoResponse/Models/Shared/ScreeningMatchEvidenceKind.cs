@@ -9,7 +9,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// What matched. email, phone, supplied_handle and source_fact are hard identifiers; company, city and school are soft. supplied_handle is a handle on the person row; source_fact is an account a profile found by the person's lookups lists.
+    /// What matched. email, phone, supplied_handle and source_fact are hard identifiers; company, city and school are soft. supplied_handle is a handle on the person row; supplied_username is an account at the person's platform-free username, which alone makes a possible match; source_fact is an account a profile found by the person's lookups lists.
     /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class ScreeningMatchEvidenceKind : IEquatable<ScreeningMatchEvidenceKind>, IOpenEnum<string>
@@ -17,6 +17,7 @@ namespace NoResponse.Models.Shared
         public static readonly ScreeningMatchEvidenceKind Email = new ScreeningMatchEvidenceKind("email");
         public static readonly ScreeningMatchEvidenceKind Phone = new ScreeningMatchEvidenceKind("phone");
         public static readonly ScreeningMatchEvidenceKind SuppliedHandle = new ScreeningMatchEvidenceKind("supplied_handle");
+        public static readonly ScreeningMatchEvidenceKind SuppliedUsername = new ScreeningMatchEvidenceKind("supplied_username");
         public static readonly ScreeningMatchEvidenceKind SourceFact = new ScreeningMatchEvidenceKind("source_fact");
         public static readonly ScreeningMatchEvidenceKind Name = new ScreeningMatchEvidenceKind("name");
         public static readonly ScreeningMatchEvidenceKind Company = new ScreeningMatchEvidenceKind("company");
@@ -28,6 +29,7 @@ namespace NoResponse.Models.Shared
                 ["email"] = Email,
                 ["phone"] = Phone,
                 ["supplied_handle"] = SuppliedHandle,
+                ["supplied_username"] = SuppliedUsername,
                 ["source_fact"] = SourceFact,
                 ["name"] = Name,
                 ["company"] = Company,
