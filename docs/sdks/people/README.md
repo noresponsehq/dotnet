@@ -14,6 +14,7 @@ Workspace people, submitted identity, source evidence and expiry.
 * [StartSearch](#startsearch) - Search again on a value of one of a workspace person's records.
 * [RunSearch](#runsearch) - Run a counted password or hash search on a workspace person.
 * [ReviewChange](#reviewchange) - Mark a change on a workspace person reviewed.
+* [Schedule](#schedule) - Schedule a workspace person's reruns.
 
 ## List
 
@@ -370,6 +371,53 @@ var res = await sdk.People.ReviewChangeAsync(
 ### Response
 
 **[ReviewWorkspacePersonChangeResponse](../../Models/Operations/ReviewWorkspacePersonChangeResponse.md)**
+
+### Errors
+
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
+
+## Schedule
+
+Sets how often the person is investigated again: daily, weekly or monthly, counted from now, or off. Each due run starts one full investigation of the person, which the person's investigations list and whose changes the person report stores. Setting the period the schedule already has keeps its next run. The schedule lives in the database and the worker runs it, so a restart or a release neither skips nor repeats a run. Each change is audited as person.schedule_changed. The investigations scope grants this operation. The groups scope is also accepted for existing integrations. The API key selects the workspace and environment.
+
+### Example Usage
+
+<!-- UsageSnippet language="csharp" operationID="scheduleWorkspacePerson" method="post" path="/v1/people/{person_id}/schedule" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+var res = await sdk.People.ScheduleAsync(
+    personId: "per_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
+    body: new PersonScheduleRequest() {
+        Period = SchedulePeriod.Weekly,
+    }
+);
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                             | Type                                                                  | Required                                                              | Description                                                           | Example                                                               |
+| --------------------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `PersonId`                                                            | *string*                                                              | :heavy_check_mark:                                                    | N/A                                                                   | per_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                        |
+| `Body`                                                                | [PersonScheduleRequest](../../Models/Shared/PersonScheduleRequest.md) | :heavy_check_mark:                                                    | N/A                                                                   |                                                                       |
+
+### Response
+
+**[ScheduleWorkspacePersonResponse](../../Models/Operations/ScheduleWorkspacePersonResponse.md)**
 
 ### Errors
 
