@@ -72,6 +72,12 @@ namespace NoResponse.Models.Shared
         public string ExpiresAt { get; set; } = default!;
 
         /// <summary>
+        /// Every group this person belongs to in this environment, most recently added first, with their role in each. A person can belong to any number of groups; removing them from a group or deleting the group removes it here.
+        /// </summary>
+        [JsonProperty("groups", Required = Newtonsoft.Json.Required.Always)]
+        public List<PersonGroup> Groups { get; set; } = default!;
+
+        /// <summary>
         /// The accounts this result matched, with how each was matched.
         /// </summary>
         [JsonProperty("profiles", Required = Newtonsoft.Json.Required.Always)]
