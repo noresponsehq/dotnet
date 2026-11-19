@@ -13,15 +13,11 @@ namespace NoResponse.Models.Shared
     {
         public static readonly ErasureReceiptTargetName Serving = new ErasureReceiptTargetName("serving");
         public static readonly ErasureReceiptTargetName Outbox = new ErasureReceiptTargetName("outbox");
-        public static readonly ErasureReceiptTargetName Cache = new ErasureReceiptTargetName("cache");
-        public static readonly ErasureReceiptTargetName DownstreamProjection = new ErasureReceiptTargetName("downstream_projection");
 
         private static readonly Dictionary<string, ErasureReceiptTargetName> _knownValues =
             new Dictionary<string, ErasureReceiptTargetName>() {
                 ["serving"] = Serving,
-                ["outbox"] = Outbox,
-                ["cache"] = Cache,
-                ["downstream_projection"] = DownstreamProjection
+                ["outbox"] = Outbox
             };
 
         private static readonly ConcurrentDictionary<string, ErasureReceiptTargetName> _values =

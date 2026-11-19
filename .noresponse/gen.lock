@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 70bd5ecd-d923-41ca-9a42-6e3360b4ce2f
 management:
-  docChecksum: 52166e18903a9bd256a668a5f7479af2
+  docChecksum: c0b7e3fe586c2aebdf273ca56bbe990a
   docVersion: "1"
   speakeasyVersion: internal
   generationVersion: internal
-  releaseVersion: 15.0.19
-  configChecksum: d2f23ada0012a67b202ace166e0b181b
+  releaseVersion: 16.0.0
+  configChecksum: 83bedc06d17975ef85b1df557611eac9
 features:
   csharp:
     additionalDependencies: 0.1.0
@@ -851,7 +851,7 @@ trackedFiles:
   docs/Models/Shared/ErasureReceiptTarget.md:
     last_write_checksum: sha1:00a54f5b545bf66433cae1b8ca41aee6f4c1d087
   docs/Models/Shared/ErasureReceiptTargetName.md:
-    last_write_checksum: sha1:47a3fa887f54145de2e7cb5cb00df4d61817ea8e
+    last_write_checksum: sha1:db3a2a878423759edb6dd59e0f001294a722b576
   docs/Models/Shared/ErasureReceiptTargetStatus.md:
     last_write_checksum: sha1:562ee3bbbfe3bd3cf92cf60b5be0216a141e8627
   docs/Models/Shared/ErrorCode.md:
@@ -2457,7 +2457,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/ErasureReceiptTarget.cs:
     last_write_checksum: sha1:0b0e6f6ca68d00b84ec841271a290bfbd7e1ffea
   src/NoResponse/Models/Shared/ErasureReceiptTargetName.cs:
-    last_write_checksum: sha1:22c6d18baceff85531f56367099c681a9ce9295b
+    last_write_checksum: sha1:dfcb75e420478d944fb4ace5a69723e67826b101
   src/NoResponse/Models/Shared/ErasureReceiptTargetStatus.cs:
     last_write_checksum: sha1:e6a39f261c577f893af7af5ac83b94883b163f0e
   src/NoResponse/Models/Shared/ErrorCode.cs:
@@ -3169,7 +3169,7 @@ trackedFiles:
   src/NoResponse/Models/Shared/WrittenProfileStatus.cs:
     last_write_checksum: sha1:af577c644f810b8e6d3170526e1dfc238715dacb
   src/NoResponse/NoResponse.csproj:
-    last_write_checksum: sha1:53255e3487ad02a4c90063cba2882376c9ac3731
+    last_write_checksum: sha1:cfb5c8856fdeb3f28cfeecb91bcabf8ff84dfb0e
   src/NoResponse/NoResponseClient.cs:
     last_write_checksum: sha1:d98b94f254799f18756d753f2c0f1fb2f86a6783
   src/NoResponse/Operations.cs:
@@ -3181,7 +3181,7 @@ trackedFiles:
   src/NoResponse/Reviews.cs:
     last_write_checksum: sha1:a8dda3c5129d3f8aa6a28fd2c88cb5306528cf5d
   src/NoResponse/SDKConfig.cs:
-    last_write_checksum: sha1:6a3e74ec3874067ade0cdc976b717ce74ecf8307
+    last_write_checksum: sha1:1a5904a126c4e0d6b47549fbf0672a6869a3f493
   src/NoResponse/Settings.cs:
     last_write_checksum: sha1:959b4c61d952a8da79b1eb61e0bdd828e27ed971
   src/NoResponse/Usage.cs:
@@ -3191,7 +3191,7 @@ trackedFiles:
   src/NoResponse/Utils/BigIntStrConverter.cs:
     last_write_checksum: sha1:8803aa46f7bca5595c22751ede125e3c4e993856
   src/NoResponse/Utils/Constants.cs:
-    last_write_checksum: sha1:b82762d022df2a43f830ad84472b1fbf0efac8d9
+    last_write_checksum: sha1:233d1b32b9f306b5fbdc6de0827bfae41b368327
   src/NoResponse/Utils/DecimalStrConverter.cs:
     last_write_checksum: sha1:1fa9c1159f476245dfff02718e434accbba46136
   src/NoResponse/Utils/EnumConverter.cs:
@@ -5290,7 +5290,7 @@ examples:
           erasure_id: "<id>"
       responses:
         "200":
-          application/json: {"id": "0123456789abcdef0123456789abcdef", "kind": "account", "status": "propagating", "assessments_deleted": 2, "requested_at": "2026-10-14T09:00:00.412Z", "targets": [{"name": "serving", "status": "completed", "completed_at": "2026-10-14T09:00:00.412Z"}, {"name": "outbox", "status": "completed", "completed_at": "2026-10-14T09:00:00.412Z"}, {"name": "cache", "status": "pending"}, {"name": "downstream_projection", "status": "pending"}], "backup_policy": "Backup and point-in-time recovery copies expire under the configured backup retention policy. Serving-system completion does not certify deletion from backups."}
+          application/json: {"id": "0123456789abcdef0123456789abcdef", "kind": "account", "status": "completed", "assessments_deleted": 2, "requested_at": "2026-10-14T09:00:00.412Z", "completed_at": "2026-10-14T09:00:00.412Z", "targets": [{"name": "serving", "status": "completed", "completed_at": "2026-10-14T09:00:00.412Z"}, {"name": "outbox", "status": "completed", "completed_at": "2026-10-14T09:00:00.412Z"}], "backup_policy": "Backup and point-in-time recovery copies expire under the configured backup retention policy. Serving-system completion does not certify deletion from backups."}
   createCustomerExport:
     noresponse-default-create-customer-export:
       parameters:
