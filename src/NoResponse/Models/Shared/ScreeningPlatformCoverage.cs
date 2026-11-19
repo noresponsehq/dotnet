@@ -26,6 +26,9 @@ namespace NoResponse.Models.Shared
         [JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         public ScreeningPlatformCoverageStatus Status { get; set; } = default!;
 
+        /// <summary>
+        /// Accounts found on the platform: at most 5, the best candidates the search kept.
+        /// </summary>
         [JsonProperty("accounts_found", Required = Newtonsoft.Json.Required.Always)]
         public long AccountsFound { get; set; } = default!;
 
