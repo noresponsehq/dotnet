@@ -24,18 +24,6 @@ namespace NoResponse.Models.Shared
         public List<ScreeningLookupAnswer>? Answers { get; set; }
 
         /// <summary>
-        /// A few typed facts per identifier: an assessment's risk.summary, and a screened person's lookup summary. Every fact is optional: absent means the evidence did not answer and makes no claim, while false or 0 is a definite answer.
-        /// </summary>
-        [JsonProperty("summary", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public RiskSummary? Summary { get; set; }
-
-        /// <summary>
-        /// Merged observations behind the summary, served only to a caller who may read evidence: no provider, source, origin, raw breach record or score.
-        /// </summary>
-        [JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public RiskDetails? Details { get; set; }
-
-        /// <summary>
         /// What each source answered, whole, each answer once: every field of each account a connector found, and every column of each breach row the person's email or usernames matched, under the source's own names, and what each search a person started found, each match naming its search. Anyone who may read the person reads them: no extra permission applies, breach passwords and hashes included.
         /// </summary>
         [JsonProperty("records", Required = Newtonsoft.Json.Required.DisallowNull)]
