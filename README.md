@@ -14,7 +14,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v18.0.1 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v19.0.0 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -25,7 +25,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v18.0.1
+git -C third_party/noresponse-dotnet checkout v19.0.0
 git add third_party/noresponse-dotnet
 ```
 
@@ -47,7 +47,6 @@ var job = await client.Investigations.CreateAsync(
     body: new InvestigationRequest {
         PersonId = created.Result.Person.Id,
         Depth = ScreeningDepth.Standard,
-        Platforms = new List<string> { "x" },
     },
     idempotencyKey: "case-1042-investigation-1");
 Console.WriteLine(job.Result.Id);
