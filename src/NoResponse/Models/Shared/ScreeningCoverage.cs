@@ -58,5 +58,17 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("not_searched", Required = Newtonsoft.Json.Required.DisallowNull)]
         public List<string>? NotSearched { get; set; }
+
+        /// <summary>
+        /// How many sources this search asked and how many answered, across the lookup stage (sources asked whether an account exists for an identifier) and the platform stage (profiles read on each platform). A source that answered may have found nothing; one that did not answer failed or ran out of time.
+        /// </summary>
+        [JsonProperty("sources", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public ScreeningCoverageSources? Sources { get; set; }
+
+        /// <summary>
+        /// How long this search's latest attempt took, stage by stage. started_at minus the investigation's creation is the time spent queued or retrying.
+        /// </summary>
+        [JsonProperty("timing", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public ScreeningCoverageTiming? Timing { get; set; }
     }
 }
