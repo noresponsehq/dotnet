@@ -57,7 +57,7 @@ namespace NoResponse.Models.Shared
         public ScreeningMatch Match { get; set; } = new();
 
         /// <summary>
-        /// The resolver, collector or analyser that produced a record, by its catalogue name.
+        /// The resolver or collector that produced a record, by its catalogue name.
         /// </summary>
         [JsonProperty("collector", Required = Newtonsoft.Json.Required.Always)]
         public string Collector { get; set; } = default!;

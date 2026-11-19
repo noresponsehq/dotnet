@@ -15,11 +15,14 @@ namespace NoResponse.Models.Shared
     public class ScreeningSpendLine
     {
         /// <summary>
-        /// The resolver, collector or analyser that produced a record, by its catalogue name.
+        /// The resolver or collector that produced a record, by its catalogue name.
         /// </summary>
         [JsonProperty("implementation", Required = Newtonsoft.Json.Required.Always)]
         public string Implementation { get; set; } = default!;
 
+        /// <summary>
+        /// What the implementation did. analyser appears only on spend recorded before the engine stopped analysing posts.
+        /// </summary>
         [JsonProperty("role", Required = Newtonsoft.Json.Required.Always)]
         public ScreeningSpendLineRole Role { get; set; } = default!;
 

@@ -90,7 +90,6 @@ namespace NoResponse.Tests
                 ["audit.event"] = webhookEvent.AuditEventEvent,
                 ["screening.completed"] = webhookEvent.ScreeningCompletedEvent,
                 ["investigation.completed"] = webhookEvent.InvestigationCompletedEvent,
-                ["person.flagged"] = webhookEvent.PersonFlaggedEvent,
                 ["person.decided"] = webhookEvent.PersonDecidedEvent,
             };
             var member = Assert.Single(members, m => m.Value is not null);

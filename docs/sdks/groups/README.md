@@ -277,33 +277,35 @@ var res = await sdk.Groups.DeleteAsync(groupId: "grp_01JA2Z8K6Q4V7W9XBCDEFGHJKM"
 
 ## ListPeople
 
-The roster in upload order, with each person's role, match state, highest finding band and decision. Filter by band (or none), decision (or undecided) and role (or unstated). The people scope grants this operation. Explicit evidence.read restrictions override default evidence access. The groups scope is also accepted for existing integrations. The API key selects the workspace and environment.
+The roster in upload order, with each person's role, match state and decision. Filter by decision (or undecided) and role (or unstated). The people scope grants this operation. Explicit evidence.read restrictions override default evidence access. The groups scope is also accepted for existing integrations. The API key selects the workspace and environment.
 
 ### Example Usage
 
 <!-- UsageSnippet language="csharp" operationID="listPeople" method="get" path="/v1/groups/{group_id}/people" -->
 ```csharp
 using NoResponse;
-using NoResponse.Models.Operations;
 using NoResponse.Models.Shared;
 using System;
 
 var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
-ListPeopleRequest req = new ListPeopleRequest() {
-    GroupId = "grp_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
-};
-
-var res = await sdk.Groups.ListPeopleAsync(req);
+var res = await sdk.Groups.ListPeopleAsync(
+    groupId: "grp_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
+    limit: 100
+);
 
 // handle response
 ```
 
 ### Parameters
 
-| Parameter                                                         | Type                                                              | Required                                                          | Description                                                       |
-| ----------------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------- |
-| `request`                                                         | [ListPeopleRequest](../../Models/Operations/ListPeopleRequest.md) | :heavy_check_mark:                                                | The request object to use for the request.                        |
+| Parameter                                                                 | Type                                                                      | Required                                                                  | Description                                                               | Example                                                                   |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `GroupId`                                                                 | *string*                                                                  | :heavy_check_mark:                                                        | N/A                                                                       | grp_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                            |
+| `Limit`                                                                   | *long*                                                                    | :heavy_minus_sign:                                                        | At most this many people.                                                 |                                                                           |
+| `After`                                                                   | *string*                                                                  | :heavy_minus_sign:                                                        | Read people after this one.                                               |                                                                           |
+| `Decision`                                                                | [ListPeopleDecision](../../Models/Shared/ListPeopleDecision.md)           | :heavy_minus_sign:                                                        | Only people with this decision; undecided for none yet.                   |                                                                           |
+| `Role`                                                                    | [ListPeopleRole](../../Models/Shared/ListPeopleRole.md)                   | :heavy_minus_sign:                                                        | Only people with this role; unstated for people whose role was not given. |                                                                           |
 
 ### Response
 
@@ -323,7 +325,7 @@ var res = await sdk.Groups.ListPeopleAsync(req);
 
 ## AddPeople
 
-Adds 1 to 500 workspace people to this group, at most 512 KiB. An explicit person_id or external_id reuses the named workspace person. A reference-only row keeps submitted details; an identity supplied with that reference replaces those details. A shared email or phone only suggests matches and does not merge people. Each person's match, band and coverage in the group come from their latest investigation; a changed identity sets aside investigations started before the change, and prior investigation history remains available. Identities are encrypted under the workspace key. Idempotency-Key is required: the same key and body return the original import result with Idempotent-Replayed: true while its people remain retained. An expired or deleted imported person answers 404; expired or deleted match suggestions are omitted. A different body answers 409 idempotency_key_reused. A group holds at most 20000 people. The people_write scope grants this operation; groups is also accepted. Suggested matches require people-read access. The API key selects the workspace and environment.
+Adds 1 to 500 workspace people to this group, at most 512 KiB. An explicit person_id or external_id reuses the named workspace person. A reference-only row keeps submitted details; an identity supplied with that reference replaces those details. A shared email or phone only suggests matches and does not merge people. Each person's match and coverage in the group come from their latest investigation; a changed identity sets aside investigations started before the change, and prior investigation history remains available. Identities are encrypted under the workspace key. Idempotency-Key is required: the same key and body return the original import result with Idempotent-Replayed: true while its people remain retained. An expired or deleted imported person answers 404; expired or deleted match suggestions are omitted. A different body answers 409 idempotency_key_reused. A group holds at most 20000 people. The people_write scope grants this operation; groups is also accepted. Suggested matches require people-read access. The API key selects the workspace and environment.
 
 ### Example Usage
 
@@ -859,26 +861,28 @@ Returns one page for export. Each returned person is durably audited as person.e
 <!-- UsageSnippet language="csharp" operationID="exportPeople" method="get" path="/v1/groups/{group_id}/export" -->
 ```csharp
 using NoResponse;
-using NoResponse.Models.Operations;
 using NoResponse.Models.Shared;
 using System;
 
 var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
-ExportPeopleRequest req = new ExportPeopleRequest() {
-    GroupId = "grp_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
-};
-
-var res = await sdk.Groups.ExportPeopleAsync(req);
+var res = await sdk.Groups.ExportPeopleAsync(
+    groupId: "grp_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
+    limit: 100
+);
 
 // handle response
 ```
 
 ### Parameters
 
-| Parameter                                                             | Type                                                                  | Required                                                              | Description                                                           |
-| --------------------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `request`                                                             | [ExportPeopleRequest](../../Models/Operations/ExportPeopleRequest.md) | :heavy_check_mark:                                                    | The request object to use for the request.                            |
+| Parameter                                                                 | Type                                                                      | Required                                                                  | Description                                                               | Example                                                                   |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `GroupId`                                                                 | *string*                                                                  | :heavy_check_mark:                                                        | N/A                                                                       | grp_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                            |
+| `Limit`                                                                   | *long*                                                                    | :heavy_minus_sign:                                                        | At most this many people.                                                 |                                                                           |
+| `After`                                                                   | *string*                                                                  | :heavy_minus_sign:                                                        | Read people after this one.                                               |                                                                           |
+| `Decision`                                                                | [ListPeopleDecision](../../Models/Shared/ListPeopleDecision.md)           | :heavy_minus_sign:                                                        | Only people with this decision; undecided for none yet.                   |                                                                           |
+| `Role`                                                                    | [ListPeopleRole](../../Models/Shared/ListPeopleRole.md)                   | :heavy_minus_sign:                                                        | Only people with this role; unstated for people whose role was not given. |                                                                           |
 
 ### Response
 

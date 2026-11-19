@@ -22,12 +22,6 @@ namespace NoResponse.Models.Operations
         public string? After { get; set; }
 
         /// <summary>
-        /// Only people whose highest finding has this band; none for people with no finding.
-        /// </summary>
-        [NoResponseMetadata("queryParam:style=form,explode=true,name=band")]
-        public ListPeopleBand? Band { get; set; }
-
-        /// <summary>
         /// Only people with this decision; undecided for none yet.
         /// </summary>
         [NoResponseMetadata("queryParam:style=form,explode=true,name=decision")]

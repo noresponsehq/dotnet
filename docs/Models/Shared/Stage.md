@@ -1,5 +1,7 @@
 # Stage
 
+ai_typing and analysis appear only on searches recorded before the engine stopped analysing results.
+
 ## Example Usage
 
 ```csharp

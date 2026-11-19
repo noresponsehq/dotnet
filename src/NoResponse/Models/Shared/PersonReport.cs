@@ -24,19 +24,13 @@ namespace NoResponse.Models.Shared
         public List<ScreeningProfile> Profiles { get; set; } = default!;
 
         /// <summary>
-        /// What this result flagged, most severe first, each citing its evidence.
-        /// </summary>
-        [JsonProperty("findings", Required = Newtonsoft.Json.Required.Always)]
-        public List<ScreeningFinding> Findings { get; set; } = default!;
-
-        /// <summary>
-        /// All posts retained for this result, including posts that no finding cites.
+        /// All posts retained for this result.
         /// </summary>
         [JsonProperty("posts", Required = Newtonsoft.Json.Required.Always)]
         public List<ScreeningPost> Posts { get; set; } = default!;
 
         /// <summary>
-        /// All images and videos retained for this result, including media that no finding cites.
+        /// All images and videos retained for this result.
         /// </summary>
         [JsonProperty("media", Required = Newtonsoft.Json.Required.Always)]
         public List<ScreeningMedia> Media { get; set; } = default!;
@@ -48,7 +42,7 @@ namespace NoResponse.Models.Shared
         public List<PersonReview> Reviews { get; set; } = default!;
 
         /// <summary>
-        /// What the signup check's lookups found for a person: account presence for the email, phone and usernames (the person's handles), the phone lookup, the email domain's registration and the breach search. Context and coverage for the reviewer, not a finding: nothing here sets a band or a match state.
+        /// What the signup check's lookups found for a person: account presence for the email, phone and usernames (the person's handles), the phone lookup, the email domain's registration and the breach search. Nothing here sets a match state.
         /// </summary>
         [JsonProperty("lookup", Required = Newtonsoft.Json.Required.DisallowNull)]
         public ScreeningLookup? Lookup { get; set; }
@@ -72,7 +66,7 @@ namespace NoResponse.Models.Shared
         public OtherGroups OtherGroups { get; set; } = new();
 
         /// <summary>
-        /// True when evidence.read is explicitly denied. Submitted details, coverage, job status and decisions remain available. Collected records, profiles, findings, posts, media, discovered values and free-text decision notes are withheld.
+        /// True when evidence.read is explicitly denied. Submitted details, coverage, job status and decisions remain available. Collected records, profiles, posts, media, discovered values and free-text decision notes are withheld.
         /// </summary>
         [JsonProperty("evidence_restricted", Required = Newtonsoft.Json.Required.DisallowNull)]
         public bool? EvidenceRestricted { get; set; }

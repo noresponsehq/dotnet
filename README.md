@@ -14,7 +14,7 @@ There is no NuGet package yet. Clone the tag you want beside your solution and r
 
 ```bash
 # from the folder that holds your project folder
-git clone --branch v17.0.3 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
+git clone --branch v18.0.0 https://github.com/noresponsehq/dotnet.git noresponse-dotnet
 dotnet add MyApp reference noresponse-dotnet/src/NoResponse/NoResponse.csproj
 ```
 
@@ -25,7 +25,7 @@ In a repository of your own, add it as a submodule and check out the tag before 
 
 ```bash
 git submodule add https://github.com/noresponsehq/dotnet.git third_party/noresponse-dotnet
-git -C third_party/noresponse-dotnet checkout v17.0.3
+git -C third_party/noresponse-dotnet checkout v18.0.0
 git add third_party/noresponse-dotnet
 ```
 
@@ -254,8 +254,7 @@ app.MapPost("/webhooks/noresponse", async (HttpRequest request) =>
         if (webhookEvent.AccountDeletedEvent is { } erased) { /* account.deleted: you erased erased.Data.AccountId with Accounts.DeleteAsync */ }
         else if (webhookEvent.WorkspaceDeletedEvent is { } gone) { /* workspace.deleted: the workspace is deleted; the last event for gone.Data.Environment */ }
         else if (webhookEvent.WebhookEndpointDisabledEvent is { } disabled) { /* disabled.Data.EndpointId failed for 72 hours: fix it, verify it again */ }
-        else if (webhookEvent.ScreeningCompletedEvent is { } screened) { /* screening.completed: counts by band, no footprint and partial coverage; it names no person */ }
-        else if (webhookEvent.PersonFlaggedEvent is { } flagged) { /* person.flagged: the person's highest band and match state, never what was posted */ }
+        else if (webhookEvent.ScreeningCompletedEvent is { } screened) { /* screening.completed: counts of people screened, no footprint and partial coverage; it names no person */ }
         else if (webhookEvent.PersonDecidedEvent is { } decided) { /* person.decided: cleared, watch or escalated; keep the latest DecidedAt per person */ }
         else if (webhookEvent.AccountRiskChangedEvent is { } changed) { /* account.risk_changed, the one event to act on: this verifier alone does not enforce it: use LateResults.HandleRiskChangeAsync (below) as this endpoint's receiver */ }
         else if (webhookEvent.AssessmentUpdatedEvent?.Data.AssessmentExpired is { } expired) { /* forget expired.AssessmentId: GET now answers 404 */ }

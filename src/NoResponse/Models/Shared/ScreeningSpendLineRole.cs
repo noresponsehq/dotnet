@@ -8,6 +8,9 @@ namespace NoResponse.Models.Shared
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    /// What the implementation did. analyser appears only on spend recorded before the engine stopped analysing posts.
+    /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class ScreeningSpendLineRole : IEquatable<ScreeningSpendLineRole>, IOpenEnum<string>
     {

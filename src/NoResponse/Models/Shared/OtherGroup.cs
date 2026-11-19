@@ -51,12 +51,6 @@ namespace NoResponse.Models.Shared
         public bool? NoProfileToCheck { get; set; }
 
         /// <summary>
-        /// That person's most severe band in that group, or null.
-        /// </summary>
-        [JsonProperty("highest_band", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = NullValueHandling.Include)]
-        public HighestBand? HighestBand { get; set; }
-
-        /// <summary>
         /// The latest reviewer decision in that group, or null before any.
         /// </summary>
         [JsonProperty("decision", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = NullValueHandling.Include)]

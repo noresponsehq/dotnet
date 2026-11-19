@@ -9,7 +9,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// account_added and account_removed: an account or profile appeared or disappeared. breach_added and breach_removed: a breach record appeared or disappeared. identifier_added and identifier_removed: an email, phone, username, name or account id on an account the person already held. field_changed: another field on such an account. finding_added: a new finding. posts_added: new posts, counted in count.
+    /// account_added and account_removed: an account or profile appeared or disappeared. breach_added and breach_removed: a breach record appeared or disappeared. identifier_added and identifier_removed: an email, phone, username, name or account id on an account the person already held. field_changed: another field on such an account. posts_added: new posts, counted in count.
     /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class PersonChangeKind : IEquatable<PersonChangeKind>, IOpenEnum<string>
@@ -21,7 +21,6 @@ namespace NoResponse.Models.Shared
         public static readonly PersonChangeKind IdentifierAdded = new PersonChangeKind("identifier_added");
         public static readonly PersonChangeKind IdentifierRemoved = new PersonChangeKind("identifier_removed");
         public static readonly PersonChangeKind FieldChanged = new PersonChangeKind("field_changed");
-        public static readonly PersonChangeKind FindingAdded = new PersonChangeKind("finding_added");
         public static readonly PersonChangeKind PostsAdded = new PersonChangeKind("posts_added");
 
         private static readonly Dictionary<string, PersonChangeKind> _knownValues =
@@ -33,7 +32,6 @@ namespace NoResponse.Models.Shared
                 ["identifier_added"] = IdentifierAdded,
                 ["identifier_removed"] = IdentifierRemoved,
                 ["field_changed"] = FieldChanged,
-                ["finding_added"] = FindingAdded,
                 ["posts_added"] = PostsAdded
             };
 

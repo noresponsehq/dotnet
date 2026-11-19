@@ -53,12 +53,6 @@ WebhookEvent.CreateAuditEvent(/* values here */);
 WebhookEvent.CreateScreeningCompleted(/* values here */);
 ```
 
-### PersonFlagged
-
-```csharp
-WebhookEvent.CreatePersonFlagged(/* values here */);
-```
-
 ### PersonDecided
 
 ```csharp

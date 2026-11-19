@@ -12,12 +12,6 @@ namespace NoResponse.Models.Shared
     public class Investigation
     {
         /// <summary>
-        /// The most severe finding's band, or null when nothing was flagged.
-        /// </summary>
-        [JsonProperty("highest_band", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = NullValueHandling.Include)]
-        public HighestBand? HighestBand { get; set; }
-
-        /// <summary>
         /// The denominator of a screening: accounts found, how many could be read, items read and the period they span, so a clean result is distinct from a person nobody could see.
         /// </summary>
         [JsonProperty("coverage", Required = Newtonsoft.Json.Required.Always)]

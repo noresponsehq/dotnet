@@ -162,13 +162,17 @@ namespace NoResponse
         /// List a group's people.
         /// </summary>
         /// <remarks>
-        /// The roster in upload order, with each person's role, match state, highest finding band and decision. Filter by band (or none), decision (or undecided) and role (or unstated). The people scope grants this operation. Explicit evidence.read restrictions override default evidence access. The groups scope is also accepted for existing integrations. The API key selects the workspace and environment.
+        /// The roster in upload order, with each person's role, match state and decision. Filter by decision (or undecided) and role (or unstated). The people scope grants this operation. Explicit evidence.read restrictions override default evidence access. The groups scope is also accepted for existing integrations. The API key selects the workspace and environment.
         /// </remarks>
-        /// <param name="request">A <see cref="ListPeopleRequest"/> parameter.</param>
+        /// <param name="groupId">Description not available.</param>
+        /// <param name="limit">At most this many people.</param>
+        /// <param name="after">Read people after this one.</param>
+        /// <param name="decision">Only people with this decision; undecided for none yet.</param>
+        /// <param name="role">Only people with this role; unstated for people whose role was not given.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="ListPeopleResponse"/> object when completed.</returns>
-        /// <exception cref="ArgumentNullException">The required parameter <paramref name="request"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The required parameter <paramref name="groupId"/> is null.</exception>
         /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
         /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
@@ -180,7 +184,11 @@ namespace NoResponse
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<ListPeopleResponse> ListPeopleAsync(
-            ListPeopleRequest request,
+            string groupId,
+            long? limit = 100,
+            string? after = null,
+            ListPeopleDecision? decision = null,
+            ListPeopleRole? role = null,
             RetryConfig? retryConfig = null,
             CancellationToken? cancellationToken = null
         );
@@ -189,7 +197,7 @@ namespace NoResponse
         /// Add or update a batch of people.
         /// </summary>
         /// <remarks>
-        /// Adds 1 to 500 workspace people to this group, at most 512 KiB. An explicit person_id or external_id reuses the named workspace person. A reference-only row keeps submitted details; an identity supplied with that reference replaces those details. A shared email or phone only suggests matches and does not merge people. Each person's match, band and coverage in the group come from their latest investigation; a changed identity sets aside investigations started before the change, and prior investigation history remains available. Identities are encrypted under the workspace key. Idempotency-Key is required: the same key and body return the original import result with Idempotent-Replayed: true while its people remain retained. An expired or deleted imported person answers 404; expired or deleted match suggestions are omitted. A different body answers 409 idempotency_key_reused. A group holds at most 20000 people. The people_write scope grants this operation; groups is also accepted. Suggested matches require people-read access. The API key selects the workspace and environment.
+        /// Adds 1 to 500 workspace people to this group, at most 512 KiB. An explicit person_id or external_id reuses the named workspace person. A reference-only row keeps submitted details; an identity supplied with that reference replaces those details. A shared email or phone only suggests matches and does not merge people. Each person's match and coverage in the group come from their latest investigation; a changed identity sets aside investigations started before the change, and prior investigation history remains available. Identities are encrypted under the workspace key. Idempotency-Key is required: the same key and body return the original import result with Idempotent-Replayed: true while its people remain retained. An expired or deleted imported person answers 404; expired or deleted match suggestions are omitted. A different body answers 409 idempotency_key_reused. A group holds at most 20000 people. The people_write scope grants this operation; groups is also accepted. Suggested matches require people-read access. The API key selects the workspace and environment.
         /// </remarks>
         /// <param name="groupId">Description not available.</param>
         /// <param name="body">A <see cref="PersonBatchRequest"/> parameter.</param>
@@ -526,11 +534,15 @@ namespace NoResponse
         /// <remarks>
         /// Returns one page for export. Each returned person is durably audited as person.exported with the actor, group, person ID and request ID. Requires both people read access and exports. Explicit evidence restrictions also hide free-text decision notes. No raw evidence enters audit logs. Follow next_after until absent for a complete export. The API key selects the workspace and environment.
         /// </remarks>
-        /// <param name="request">A <see cref="ExportPeopleRequest"/> parameter.</param>
+        /// <param name="groupId">Description not available.</param>
+        /// <param name="limit">At most this many people.</param>
+        /// <param name="after">Read people after this one.</param>
+        /// <param name="decision">Only people with this decision; undecided for none yet.</param>
+        /// <param name="role">Only people with this role; unstated for people whose role was not given.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="ExportPeopleResponse"/> object when completed.</returns>
-        /// <exception cref="ArgumentNullException">The required parameter <paramref name="request"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The required parameter <paramref name="groupId"/> is null.</exception>
         /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
         /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
@@ -542,7 +554,11 @@ namespace NoResponse
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public Task<ExportPeopleResponse> ExportPeopleAsync(
-            ExportPeopleRequest request,
+            string groupId,
+            long? limit = 100,
+            string? after = null,
+            ListPeopleDecision? decision = null,
+            ListPeopleRole? role = null,
             RetryConfig? retryConfig = null,
             CancellationToken? cancellationToken = null
         );
@@ -1913,13 +1929,17 @@ namespace NoResponse
         /// List a group's people.
         /// </summary>
         /// <remarks>
-        /// The roster in upload order, with each person's role, match state, highest finding band and decision. Filter by band (or none), decision (or undecided) and role (or unstated). The people scope grants this operation. Explicit evidence.read restrictions override default evidence access. The groups scope is also accepted for existing integrations. The API key selects the workspace and environment.
+        /// The roster in upload order, with each person's role, match state and decision. Filter by decision (or undecided) and role (or unstated). The people scope grants this operation. Explicit evidence.read restrictions override default evidence access. The groups scope is also accepted for existing integrations. The API key selects the workspace and environment.
         /// </remarks>
-        /// <param name="request">A <see cref="ListPeopleRequest"/> parameter.</param>
+        /// <param name="groupId">Description not available.</param>
+        /// <param name="limit">At most this many people.</param>
+        /// <param name="after">Read people after this one.</param>
+        /// <param name="decision">Only people with this decision; undecided for none yet.</param>
+        /// <param name="role">Only people with this role; unstated for people whose role was not given.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="ListPeopleResponse"/> object when completed.</returns>
-        /// <exception cref="ArgumentNullException">The required parameter <paramref name="request"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The required parameter <paramref name="groupId"/> is null.</exception>
         /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
         /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
@@ -1931,12 +1951,24 @@ namespace NoResponse
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<ListPeopleResponse> ListPeopleAsync(
-            ListPeopleRequest request,
+            string groupId,
+            long? limit = 100,
+            string? after = null,
+            ListPeopleDecision? decision = null,
+            ListPeopleRole? role = null,
             RetryConfig? retryConfig = null,
             CancellationToken? cancellationToken = null
         )
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (groupId == null) throw new ArgumentNullException(nameof(groupId));
+
+            var request = new ListPeopleRequest() {
+                GroupId = groupId,
+                Limit = limit,
+                After = after,
+                Decision = decision,
+                Role = role,
+            };
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
             var urlString = URLBuilder.Build(baseUrl, "/v1/groups/{group_id}/people", request, null);
@@ -2185,7 +2217,7 @@ namespace NoResponse
         /// Add or update a batch of people.
         /// </summary>
         /// <remarks>
-        /// Adds 1 to 500 workspace people to this group, at most 512 KiB. An explicit person_id or external_id reuses the named workspace person. A reference-only row keeps submitted details; an identity supplied with that reference replaces those details. A shared email or phone only suggests matches and does not merge people. Each person's match, band and coverage in the group come from their latest investigation; a changed identity sets aside investigations started before the change, and prior investigation history remains available. Identities are encrypted under the workspace key. Idempotency-Key is required: the same key and body return the original import result with Idempotent-Replayed: true while its people remain retained. An expired or deleted imported person answers 404; expired or deleted match suggestions are omitted. A different body answers 409 idempotency_key_reused. A group holds at most 20000 people. The people_write scope grants this operation; groups is also accepted. Suggested matches require people-read access. The API key selects the workspace and environment.
+        /// Adds 1 to 500 workspace people to this group, at most 512 KiB. An explicit person_id or external_id reuses the named workspace person. A reference-only row keeps submitted details; an identity supplied with that reference replaces those details. A shared email or phone only suggests matches and does not merge people. Each person's match and coverage in the group come from their latest investigation; a changed identity sets aside investigations started before the change, and prior investigation history remains available. Identities are encrypted under the workspace key. Idempotency-Key is required: the same key and body return the original import result with Idempotent-Replayed: true while its people remain retained. An expired or deleted imported person answers 404; expired or deleted match suggestions are omitted. A different body answers 409 idempotency_key_reused. A group holds at most 20000 people. The people_write scope grants this operation; groups is also accepted. Suggested matches require people-read access. The API key selects the workspace and environment.
         /// </remarks>
         /// <param name="groupId">Description not available.</param>
         /// <param name="body">A <see cref="PersonBatchRequest"/> parameter.</param>
@@ -5256,11 +5288,15 @@ namespace NoResponse
         /// <remarks>
         /// Returns one page for export. Each returned person is durably audited as person.exported with the actor, group, person ID and request ID. Requires both people read access and exports. Explicit evidence restrictions also hide free-text decision notes. No raw evidence enters audit logs. Follow next_after until absent for a complete export. The API key selects the workspace and environment.
         /// </remarks>
-        /// <param name="request">A <see cref="ExportPeopleRequest"/> parameter.</param>
+        /// <param name="groupId">Description not available.</param>
+        /// <param name="limit">At most this many people.</param>
+        /// <param name="after">Read people after this one.</param>
+        /// <param name="decision">Only people with this decision; undecided for none yet.</param>
+        /// <param name="role">Only people with this role; unstated for people whose role was not given.</param>
         /// <param name="retryConfig">The retry configuration to use for this operation.</param>
         /// <param name="cancellationToken">An optional cancellation token to signal when the operation should be aborted.</param>
         /// <returns>An awaitable task that returns a <see cref="ExportPeopleResponse"/> object when completed.</returns>
-        /// <exception cref="ArgumentNullException">The required parameter <paramref name="request"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The required parameter <paramref name="groupId"/> is null.</exception>
         /// <exception cref="OperationCanceledException">The operation was aborted via the provided cancellation token.</exception>
         /// <exception cref="HttpRequestException">The HTTP request failed due to network issues.</exception>
         /// <exception cref="ResponseValidationException">The response body could not be deserialized.</exception>
@@ -5272,12 +5308,24 @@ namespace NoResponse
         /// <exception cref="RateLimitException">The workspace's rate or concurrency limit is exhausted. Retry-After says when to retry; the provider applies its own fallback meanwhile. Thrown when the API returns a 429 response.</exception>
         /// <exception cref="APIStatusException">Default API Exception. Thrown when the API returns a 4XX or 5XX response.</exception>
         public async Task<ExportPeopleResponse> ExportPeopleAsync(
-            ExportPeopleRequest request,
+            string groupId,
+            long? limit = 100,
+            string? after = null,
+            ListPeopleDecision? decision = null,
+            ListPeopleRole? role = null,
             RetryConfig? retryConfig = null,
             CancellationToken? cancellationToken = null
         )
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (groupId == null) throw new ArgumentNullException(nameof(groupId));
+
+            var request = new ExportPeopleRequest() {
+                GroupId = groupId,
+                Limit = limit,
+                After = after,
+                Decision = decision,
+                Role = role,
+            };
 
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
             var urlString = URLBuilder.Build(baseUrl, "/v1/groups/{group_id}/export", request, null);

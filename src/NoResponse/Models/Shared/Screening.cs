@@ -65,9 +65,6 @@ namespace NoResponse.Models.Shared
         [JsonProperty("people_done", Required = Newtonsoft.Json.Required.Always)]
         public long PeopleDone { get; set; } = default!;
 
-        [JsonProperty("people_flagged", Required = Newtonsoft.Json.Required.Always)]
-        public long PeopleFlagged { get; set; } = default!;
-
         [JsonProperty("people_failed", Required = Newtonsoft.Json.Required.Always)]
         public long PeopleFailed { get; set; } = default!;
 

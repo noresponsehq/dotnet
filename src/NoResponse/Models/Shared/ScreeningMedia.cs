@@ -39,12 +39,6 @@ namespace NoResponse.Models.Shared
         public string? CoverOf { get; set; }
 
         /// <summary>
-        /// true on a video the analyser read from its cover frame (the image whose cover_of names it) and its caption alone. Left out otherwise.
-        /// </summary>
-        [JsonProperty("frame_only", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public bool? FrameOnly { get; set; }
-
-        /// <summary>
         /// The caption or alt text.
         /// </summary>
         [JsonProperty("text", Required = Newtonsoft.Json.Required.DisallowNull)]

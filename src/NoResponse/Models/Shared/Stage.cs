@@ -8,6 +8,9 @@ namespace NoResponse.Models.Shared
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    /// ai_typing and analysis appear only on searches recorded before the engine stopped analysing results.
+    /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class Stage : IEquatable<Stage>, IOpenEnum<string>
     {

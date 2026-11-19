@@ -21,24 +21,6 @@ namespace NoResponse.Models.Shared
         public long ItemsRead { get; set; } = default!;
 
         /// <summary>
-        /// Items read that the analyser could not analyse. Above zero, the person is partial: a finding may be missing from them.
-        /// </summary>
-        [JsonProperty("items_not_analysed", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public long? ItemsNotAnalysed { get; set; }
-
-        /// <summary>
-        /// items_not_analysed split by reason, each reason once with at least one item.
-        /// </summary>
-        [JsonProperty("not_analysed_by_reason", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public List<ScreeningNotAnalysedCount>? NotAnalysedByReason { get; set; }
-
-        /// <summary>
-        /// Videos the analyser read from their cover frame and caption alone, without their sound or later frames. They count as analysed and do not make the person partial. Left out when none.
-        /// </summary>
-        [JsonProperty("items_frame_only", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public long? ItemsFrameOnly { get; set; }
-
-        /// <summary>
         /// The oldest item read on any platform.
         /// </summary>
         [JsonProperty("period_from", Required = Newtonsoft.Json.Required.DisallowNull)]

@@ -11,6 +11,9 @@ namespace NoResponse.Models.Shared
 
     public class StageTime
     {
+        /// <summary>
+        /// ai_typing and analysis appear only on searches recorded before the engine stopped analysing results.
+        /// </summary>
         [JsonProperty("stage", Required = Newtonsoft.Json.Required.Always)]
         public Stage Stage { get; set; } = default!;
 

@@ -9,7 +9,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// One rule ranks every change: identity changes (accounts, breaches, identifiers) are high, profile fields and findings are medium, new posts are low.
+    /// One rule ranks every change: identity changes (accounts, breaches, identifiers) are high, profile fields are medium, new posts are low.
     /// </summary>
     [JsonConverter(typeof(OpenEnumConverter))]
     public class Significance : IEquatable<Significance>, IOpenEnum<string>

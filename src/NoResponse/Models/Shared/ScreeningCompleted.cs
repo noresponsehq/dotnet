@@ -6,7 +6,7 @@ namespace NoResponse.Models.Shared
     using NoResponse.Utils;
 
     /// <summary>
-    /// A screening of a group finished. It counts only the people this screening set out to reach, not who they are: read the roster with GET /v1/workspaces/{workspace_id}/groups/{environment}/{group_id}/people, filtered by band, to act on them. people_screened + partial_coverage = people_total, people_flagged is the sum of by_band, no_footprint counts screened people with no flag whose accounts were not found, and no_profile_to_check those the screening had nothing to look up for on any requested platform. A cancelled screening sends no event.
+    /// A screening of a group finished. It counts only the people this screening set out to reach, not who they are: read the roster with GET /v1/workspaces/{workspace_id}/groups/{environment}/{group_id}/people to act on them. people_screened + partial_coverage = people_total, no_footprint counts screened people whose accounts were not found, and no_profile_to_check those the screening had nothing to look up for on any requested platform. A cancelled screening sends no event.
     /// </summary>
     public class ScreeningCompleted
     {
@@ -41,25 +41,13 @@ namespace NoResponse.Models.Shared
         public long PeopleTotal { get; set; } = default!;
 
         /// <summary>
-        /// People the screening covered, flagged or not.
+        /// People the screening covered.
         /// </summary>
         [JsonProperty("people_screened", Required = Newtonsoft.Json.Required.Always)]
         public long PeopleScreened { get; set; } = default!;
 
         /// <summary>
-        /// Screened people with a finding: the sum of by_band.
-        /// </summary>
-        [JsonProperty("people_flagged", Required = Newtonsoft.Json.Required.Always)]
-        public long PeopleFlagged { get; set; } = default!;
-
-        /// <summary>
-        /// Screened people by the band of their most severe finding.
-        /// </summary>
-        [JsonProperty("by_band", Required = Newtonsoft.Json.Required.Always)]
-        public ScreeningCompletedByBand ByBand { get; set; } = new();
-
-        /// <summary>
-        /// Screened people with no finding whose accounts were not found (match_state none_found). A clean result for someone with no visible accounts is not the same as a clean result for someone whose accounts were read.
+        /// Screened people whose accounts were not found (match_state none_found). A clean result for someone with no visible accounts is not the same as a clean result for someone whose accounts were read.
         /// </summary>
         [JsonProperty("no_footprint", Required = Newtonsoft.Json.Required.Always)]
         public long NoFootprint { get; set; } = default!;
