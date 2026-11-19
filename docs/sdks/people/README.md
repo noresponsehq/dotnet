@@ -13,6 +13,7 @@ Workspace people, submitted identity, source evidence and expiry.
 * [JudgeRecord](#judgerecord) - Join one of a workspace person's records to them, or reject it.
 * [StartSearch](#startsearch) - Search again on a value of one of a workspace person's records.
 * [RunSearch](#runsearch) - Run a counted password or hash search on a workspace person.
+* [ReviewChange](#reviewchange) - Mark a change on a workspace person reviewed.
 
 ## List
 
@@ -322,6 +323,53 @@ var res = await sdk.People.RunSearchAsync(
 ### Response
 
 **[RunWorkspacePersonSearchResponse](../../Models/Operations/RunWorkspacePersonSearchResponse.md)**
+
+### Errors
+
+| Error Type                                         | Status Code                                        | Content Type                                       |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
+| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
+| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
+| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
+| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
+| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
+| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
+
+## ReviewChange
+
+Marks one change between a person's investigations reviewed, so it sorts below the unreviewed ones. Reviewing again keeps the first reviewer and time. Reviewing a change is not a decision on the person. The body is an empty object. Each review is audited as person.change_reviewed. The decisions scope grants this operation. Explicit evidence.read restrictions withhold before and after. The groups scope is also accepted for existing integrations. The API key selects the workspace and environment.
+
+### Example Usage
+
+<!-- UsageSnippet language="csharp" operationID="reviewWorkspacePersonChange" method="post" path="/v1/people/{person_id}/changes/{change_id}/review" -->
+```csharp
+using NoResponse;
+using NoResponse.Models.Shared;
+using System;
+
+var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
+
+var res = await sdk.People.ReviewChangeAsync(
+    personId: "per_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
+    changeId: "chg_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
+    body: new ScreeningCancelRequest() {}
+);
+
+// handle response
+```
+
+### Parameters
+
+| Parameter                                                               | Type                                                                    | Required                                                                | Description                                                             | Example                                                                 |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `PersonId`                                                              | *string*                                                                | :heavy_check_mark:                                                      | N/A                                                                     | per_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                          |
+| `ChangeId`                                                              | *string*                                                                | :heavy_check_mark:                                                      | N/A                                                                     | chg_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                          |
+| `Body`                                                                  | [ScreeningCancelRequest](../../Models/Shared/ScreeningCancelRequest.md) | :heavy_check_mark:                                                      | N/A                                                                     |                                                                         |
+
+### Response
+
+**[ReviewWorkspacePersonChangeResponse](../../Models/Operations/ReviewWorkspacePersonChangeResponse.md)**
 
 ### Errors
 

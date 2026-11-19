@@ -130,5 +130,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("written_profile", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = NullValueHandling.Include)]
         public WrittenProfile? WrittenProfile { get; set; }
+
+        /// <summary>
+        /// What changed between each settled investigation of this person and the one before it, unreviewed first, then most significant, then newest. The first investigation records no changes. When evidence.read is denied, before and after are withheld.
+        /// </summary>
+        [JsonProperty("changes", Required = Newtonsoft.Json.Required.Always)]
+        public List<PersonChange> Changes { get; set; } = default!;
     }
 }
