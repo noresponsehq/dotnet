@@ -720,7 +720,6 @@ Queues a screening of every person no screening has reached. One screening of a 
 using NoResponse;
 using NoResponse.Models.Shared;
 using System;
-using System.Collections.Generic;
 
 var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
@@ -728,9 +727,6 @@ var res = await sdk.Groups.StartScreeningAsync(
     groupId: "grp_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
     body: new ScreeningRequest() {
         Depth = ScreeningDepth.Standard,
-        Platforms = new List<string>() {
-            "bluesky",
-        },
     },
     idempotencyKey: "account-acct_7f3a9c"
 );

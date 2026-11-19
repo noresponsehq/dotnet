@@ -66,16 +66,12 @@ Starts an investigation against a retained workspace person, independently of gr
 using NoResponse;
 using NoResponse.Models.Shared;
 using System;
-using System.Collections.Generic;
 
 var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
 
 var res = await sdk.Investigations.CreateAsync(
     body: new InvestigationRequest() {
         Depth = ScreeningDepth.Standard,
-        Platforms = new List<string>() {
-            "x",
-        },
         PersonId = "per_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
     },
     idempotencyKey: "investigation-case-1042-first"
