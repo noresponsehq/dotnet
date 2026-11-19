@@ -10,7 +10,7 @@ namespace NoResponse.Models.Shared
     using System.Linq;
 
     /// <summary>
-    /// Screens the group's people no screening has reached and everyone on watch or escalated.
+    /// Screens the group's people no screening has reached.
     /// </summary>
     public class ScreeningRequest
     {

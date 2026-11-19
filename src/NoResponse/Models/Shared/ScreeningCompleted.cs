@@ -35,7 +35,7 @@ namespace NoResponse.Models.Shared
         public string? ErrorCode { get; set; }
 
         /// <summary>
-        /// Every person the screening set out to reach: those no screening had reached and those on watch or escalated.
+        /// Every person the screening set out to reach: those no screening had reached.
         /// </summary>
         [JsonProperty("people_total", Required = Newtonsoft.Json.Required.Always)]
         public long PeopleTotal { get; set; } = default!;

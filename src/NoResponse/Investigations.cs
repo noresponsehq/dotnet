@@ -110,7 +110,7 @@ namespace NoResponse
         /// Record an investigation decision.
         /// </summary>
         /// <remarks>
-        /// Record an investigation decision. The API key determines the workspace and environment.
+        /// Record an investigation decision. Deprecated: decisions are leaving people and groups. The console no longer records them and no screening reads them. This route is removed in the next contract release; stop calling it. The API key determines the workspace and environment.
         /// </remarks>
         /// <param name="investigationId">Description not available.</param>
         /// <param name="body">A <see cref="PersonReviewRequest"/> parameter.</param>
@@ -1024,7 +1024,7 @@ namespace NoResponse
         /// Record an investigation decision.
         /// </summary>
         /// <remarks>
-        /// Record an investigation decision. The API key determines the workspace and environment.
+        /// Record an investigation decision. Deprecated: decisions are leaving people and groups. The console no longer records them and no screening reads them. This route is removed in the next contract release; stop calling it. The API key determines the workspace and environment.
         /// </remarks>
         /// <param name="investigationId">Description not available.</param>
         /// <param name="body">A <see cref="PersonReviewRequest"/> parameter.</param>
