@@ -36,6 +36,12 @@ namespace NoResponse.Models.Shared
         public List<RecordRemaining>? Remaining { get; set; }
 
         /// <summary>
+        /// Identifiers you gave that lead to different people. Absent when they agree.
+        /// </summary>
+        [JsonProperty("conflicts", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<RecordConflict>? Conflicts { get; set; }
+
+        /// <summary>
         /// When the lookups ran.
         /// </summary>
         [JsonProperty("looked_at", Required = Newtonsoft.Json.Required.Always)]

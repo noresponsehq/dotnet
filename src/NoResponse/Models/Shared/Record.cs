@@ -85,5 +85,11 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("path", Required = Newtonsoft.Json.Required.DisallowNull)]
         public List<string>? Path { get; set; }
+
+        /// <summary>
+        /// For a record that is not the person's, the other person it belongs with: records that share this number share strong values, such as an email or a full name with a phone, and score as one person against each other. Absent on the person's own records and on a record that matches nobody else. A value that more than 20 strangers hold groups nobody.
+        /// </summary>
+        [JsonProperty("other_person", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public long? OtherPerson { get; set; }
     }
 }
