@@ -27,7 +27,7 @@ namespace NoResponse.Models.Shared
         public string Domain { get; set; } = default!;
 
         [JsonProperty("identifier", Required = Newtonsoft.Json.Required.Always)]
-        public Identifier Identifier { get; set; } = default!;
+        public RiskDetailsEventIdentifier Identifier { get; set; } = default!;
 
         /// <summary>
         /// Per-signal outcome. A source that timed out, was blocked or errored reports blocked, unavailable or inconclusive with a reason and is listed in incomplete_sources; not_found is a definite absence.

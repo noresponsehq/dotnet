@@ -17,4 +17,6 @@ var custom = Identifier.Of("custom_value");
 | Name       | Value      |
 | ---------- | ---------- |
 | `Email`    | email      |
+| `Phone`    | phone      |
 | `Username` | username   |
+| `Name`     | name       |

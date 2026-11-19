@@ -18,6 +18,12 @@ namespace NoResponse.Models.Shared
         public List<ScreeningLookupCheck> Checks { get; set; } = default!;
 
         /// <summary>
+        /// Each source asked, with what it answered and when. answered_at is absent while the source has not answered.
+        /// </summary>
+        [JsonProperty("answers", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public List<ScreeningLookupAnswer>? Answers { get; set; }
+
+        /// <summary>
         /// A few typed facts per identifier: an assessment's risk.summary, and a screened person's lookup summary. Every fact is optional: absent means the evidence did not answer and makes no claim, while false or 0 is a definite answer.
         /// </summary>
         [JsonProperty("summary", Required = Newtonsoft.Json.Required.DisallowNull)]

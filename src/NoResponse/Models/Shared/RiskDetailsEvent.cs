@@ -33,6 +33,6 @@ namespace NoResponse.Models.Shared
         public FootprintFamily Family { get; set; } = default!;
 
         [JsonProperty("identifier", Required = Newtonsoft.Json.Required.Always)]
-        public Identifier Identifier { get; set; } = default!;
+        public RiskDetailsEventIdentifier Identifier { get; set; } = default!;
     }
 }

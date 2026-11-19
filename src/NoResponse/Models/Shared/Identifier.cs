@@ -12,12 +12,16 @@ namespace NoResponse.Models.Shared
     public class Identifier : IEquatable<Identifier>, IOpenEnum<string>
     {
         public static readonly Identifier Email = new Identifier("email");
+        public static readonly Identifier Phone = new Identifier("phone");
         public static readonly Identifier Username = new Identifier("username");
+        public static readonly Identifier Name = new Identifier("name");
 
         private static readonly Dictionary<string, Identifier> _knownValues =
             new Dictionary<string, Identifier>() {
                 ["email"] = Email,
-                ["username"] = Username
+                ["phone"] = Phone,
+                ["username"] = Username,
+                ["name"] = Name
             };
 
         private static readonly ConcurrentDictionary<string, Identifier> _values =
