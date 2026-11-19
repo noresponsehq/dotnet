@@ -14,12 +14,14 @@ namespace NoResponse.Models.Shared
         public static readonly EnrichmentKind Username = new EnrichmentKind("username");
         public static readonly EnrichmentKind Email = new EnrichmentKind("email");
         public static readonly EnrichmentKind Phone = new EnrichmentKind("phone");
+        public static readonly EnrichmentKind PersonName = new EnrichmentKind("person_name");
 
         private static readonly Dictionary<string, EnrichmentKind> _knownValues =
             new Dictionary<string, EnrichmentKind>() {
                 ["username"] = Username,
                 ["email"] = Email,
-                ["phone"] = Phone
+                ["phone"] = Phone,
+                ["person_name"] = PersonName
             };
 
         private static readonly ConcurrentDictionary<string, EnrichmentKind> _values =

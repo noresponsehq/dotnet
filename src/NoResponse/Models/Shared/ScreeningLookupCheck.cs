@@ -15,7 +15,7 @@ namespace NoResponse.Models.Shared
     public class ScreeningLookupCheck
     {
         [JsonProperty("identifier", Required = Newtonsoft.Json.Required.Always)]
-        public IdentifierSearchKind Identifier { get; set; } = default!;
+        public Identifier Identifier { get; set; } = default!;
 
         /// <summary>
         /// An evidence lane: accounts (account presence for email and username), phone, breach, domain (the email domain's registration) and ip.

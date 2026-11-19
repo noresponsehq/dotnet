@@ -10,6 +10,7 @@ namespace NoResponse.Models.Shared
         [JsonProperty("username")] Username,
         [JsonProperty("email")] Email,
         [JsonProperty("phone")] Phone,
+        [JsonProperty("person_name")] PersonName,
     }
 
     public static class EnrichmentChangeKindExtension

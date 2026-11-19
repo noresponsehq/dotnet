@@ -27,7 +27,7 @@ namespace NoResponse.Models.Shared
         public double? MinLikelihood { get; set; }
 
         /// <summary>
-        /// The kinds of value enrichment searches: distinctive usernames, and email addresses and phone numbers, which belong to one person each.
+        /// The kinds of value enrichment searches: distinctive usernames, email addresses and phone numbers, which belong to one person each, and distinctive person names, searched in the breach data.
         /// </summary>
         [JsonProperty("kinds", Required = Newtonsoft.Json.Required.DisallowNull)]
         public List<EnrichmentChangeKind>? Kinds { get; set; }

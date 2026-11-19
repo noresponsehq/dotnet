@@ -14,8 +14,9 @@ var custom = EnrichmentKind.Of("custom_value");
 
 ## Values
 
-| Name       | Value      |
-| ---------- | ---------- |
-| `Username` | username   |
-| `Email`    | email      |
-| `Phone`    | phone      |
+| Name         | Value        |
+| ------------ | ------------ |
+| `Username`   | username     |
+| `Email`      | email        |
+| `Phone`      | phone        |
+| `PersonName` | person_name  |
