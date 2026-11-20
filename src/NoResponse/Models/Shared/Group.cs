@@ -27,6 +27,18 @@ namespace NoResponse.Models.Shared
         public string Name { get; set; } = default!;
 
         /// <summary>
+        /// What the group's people share: an event, an organisation, a place or another attribute.
+        /// </summary>
+        [JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        public GroupType Type { get; set; } = default!;
+
+        /// <summary>
+        /// The attribute its people share. Empty when none was given.
+        /// </summary>
+        [JsonProperty("attribute", Required = Newtonsoft.Json.Required.Always)]
+        public string Attribute { get; set; } = default!;
+
+        /// <summary>
         /// Optional event start; null for an ongoing group.
         /// </summary>
         [JsonProperty("starts_at", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = NullValueHandling.Include)]

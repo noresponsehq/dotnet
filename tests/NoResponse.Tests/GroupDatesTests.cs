@@ -17,7 +17,7 @@ public class GroupDatesTests
         Assert.Equal(JTokenType.Null, cleared["ends_at"]!.Type);
         update.StartsAt = "2026-12-03T09:00:00Z";
         Assert.Contains("2026-12-03T09:00:00Z", Utilities.SerializeJSON(update));
-        var group = Newtonsoft.Json.JsonConvert.DeserializeObject<Group>("{\"id\":\"grp_example\",\"environment\":\"test\",\"name\":\"Harbour building\",\"starts_at\":null,\"ends_at\":null,\"principals\":[],\"topics\":[],\"people\":0,\"version\":1,\"created_by\":\"test\",\"created_at\":\"2026-11-15T10:00:00Z\",\"updated_at\":\"2026-11-15T10:00:00Z\"}");
+        var group = Newtonsoft.Json.JsonConvert.DeserializeObject<Group>("{\"id\":\"grp_example\",\"environment\":\"test\",\"name\":\"Harbour building\",\"type\":\"event\",\"attribute\":\"\",\"starts_at\":null,\"ends_at\":null,\"principals\":[],\"topics\":[],\"people\":0,\"version\":1,\"created_by\":\"test\",\"created_at\":\"2026-11-15T10:00:00Z\",\"updated_at\":\"2026-11-15T10:00:00Z\"}");
         Assert.Null(group!.StartsAt);
         Assert.Null(group.EndsAt);
         var other = Newtonsoft.Json.JsonConvert.DeserializeObject<OtherGroup>("{\"group_id\":\"grp_building\",\"group_name\":\"Harbour building\",\"group_starts_at\":null,\"person_id\":\"per_example\",\"matched_on\":[\"person_id\"],\"match_state\":\"unscreened\",\"decision\":null}");

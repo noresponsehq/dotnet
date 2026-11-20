@@ -85,6 +85,8 @@ var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORES
 var res = await sdk.Groups.CreateAsync(
     body: new GroupRequest() {
         Name = "Annual shareholder meeting",
+        Type = GroupType.Organisation,
+        Attribute = "Example Fund",
         StartsAt = "2026-01-01T00:00:00Z",
         EndsAt = "2026-01-02T00:00:00Z",
         Venue = "Example Convention Centre",
@@ -190,6 +192,7 @@ var res = await sdk.Groups.UpdateAsync(
     groupId: "grp_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
     body: new GroupUpdate() {
         Name = "Annual shareholder meeting",
+        Attribute = "Example Fund",
         StartsAt = "2026-01-01T00:00:00Z",
         EndsAt = "2026-01-02T00:00:00Z",
         Venue = "Example Convention Centre",

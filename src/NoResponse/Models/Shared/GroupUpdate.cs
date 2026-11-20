@@ -18,6 +18,12 @@ namespace NoResponse.Models.Shared
         public string? Name { get; set; }
 
         /// <summary>
+        /// The attribute its people share. Omit to keep the current value.
+        /// </summary>
+        [JsonProperty("attribute", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? Attribute { get; set; }
+
+        /// <summary>
         /// Optional event start; null for an ongoing group. Omit to keep the current value; send null to clear it.
         /// </summary>
         [JsonProperty("starts_at", Required = Newtonsoft.Json.Required.Default, NullValueHandling = NullValueHandling.Include)]

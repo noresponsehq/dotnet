@@ -4,7 +4,10 @@ namespace NoResponse.Models.Shared
     using Newtonsoft.Json;
     using NoResponse.Models.Shared;
     using NoResponse.Utils;
+    using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Creates an ongoing group or an event with optional dates.
@@ -16,6 +19,18 @@ namespace NoResponse.Models.Shared
         /// </summary>
         [JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
         public string Name { get; set; } = default!;
+
+        /// <summary>
+        /// What the group's people share: an event, an organisation, a place or another attribute.
+        /// </summary>
+        [JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public GroupType? Type { get; set; }
+
+        /// <summary>
+        /// The attribute its people share, such as the employer's or the place's name.
+        /// </summary>
+        [JsonProperty("attribute", Required = Newtonsoft.Json.Required.DisallowNull)]
+        public string? Attribute { get; set; }
 
         /// <summary>
         /// Optional event start; null for an ongoing group.
