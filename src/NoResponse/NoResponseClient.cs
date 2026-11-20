@@ -16,7 +16,7 @@ namespace NoResponse
     /// NoResponse API: Workspace people, source-grounded investigations, group screening and signup assessment recommendations.
     /// </summary>
     /// <remarks>
-    /// NoResponse is an identity and people risk engine. Retain workspace people, investigate their identifiers, read complete source evidence and preserve investigation history. Groups organize people for screening and context-specific decisions. Account creation, login and purchase assessments use the same engine. People-read access includes evidence by default; explicit evidence restrictions retain submitted details, job status, coverage and decision summaries. Keep the API key on your server.
+    /// NoResponse is an identity and people risk engine. Retain workspace people, investigate their identifiers, read complete source evidence and preserve investigation history. Groups organize people for screening and context-specific decisions. Account creation, login and purchase assessments use the same engine. People-read access includes evidence by default; explicit evidence restrictions retain submitted details, job status and coverage. Keep the API key on your server.
     /// </remarks>
     public interface INoResponseClient
     {
@@ -121,7 +121,7 @@ namespace NoResponse
         public IPeople People { get; }
 
         /// <summary>
-        /// Person investigation jobs, retained results and contextual decisions.
+        /// Person investigation jobs and retained results.
         /// </summary>
         public IInvestigations Investigations { get; }
     }
@@ -130,7 +130,7 @@ namespace NoResponse
     /// NoResponse API: Workspace people, source-grounded investigations, group screening and signup assessment recommendations.
     /// </summary>
     /// <remarks>
-    /// NoResponse is an identity and people risk engine. Retain workspace people, investigate their identifiers, read complete source evidence and preserve investigation history. Groups organize people for screening and context-specific decisions. Account creation, login and purchase assessments use the same engine. People-read access includes evidence by default; explicit evidence restrictions retain submitted details, job status, coverage and decision summaries. Keep the API key on your server.
+    /// NoResponse is an identity and people risk engine. Retain workspace people, investigate their identifiers, read complete source evidence and preserve investigation history. Groups organize people for screening and context-specific decisions. Account creation, login and purchase assessments use the same engine. People-read access includes evidence by default; explicit evidence restrictions retain submitted details, job status and coverage. Keep the API key on your server.
     /// </remarks>
     public class NoResponseClient : INoResponseClient
     {

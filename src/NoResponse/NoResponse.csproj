@@ -3,12 +3,12 @@
   <PropertyGroup>
     <IsPackable>true</IsPackable>
     <PackageId>NoResponse</PackageId>
-    <Version>19.0.6</Version>
+    <Version>20.0.0</Version>
     <TargetFramework>net8.0</TargetFramework>
     <Authors>NoResponse</Authors>
     <Copyright>Copyright (c) NoResponse 2026</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <Description>NoResponse is an identity and people risk engine. Retain workspace people, investigate their identifiers, read complete source evidence and preserve investigation history. Groups organize people for screening and context-specific decisions. Account creation, login and purchase assessments use the same engine. People-read access includes evidence by default; explicit evidence restrictions retain submitted details, job status, coverage and decision summaries. Keep the API key on your server.</Description>
+    <Description>NoResponse is an identity and people risk engine. Retain workspace people, investigate their identifiers, read complete source evidence and preserve investigation history. Groups organize people for screening and context-specific decisions. Account creation, login and purchase assessments use the same engine. People-read access includes evidence by default; explicit evidence restrictions retain submitted details, job status and coverage. Keep the API key on your server.</Description>
   </PropertyGroup>
 
   <PropertyGroup>

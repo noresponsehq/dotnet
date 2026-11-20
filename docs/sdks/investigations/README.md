@@ -2,14 +2,13 @@
 
 ## Overview
 
-Person investigation jobs, retained results and contextual decisions.
+Person investigation jobs and retained results.
 
 ### Available Operations
 
 * [List](#list) - List investigation history.
 * [Create](#create) - Start an investigation for a person.
 * [Get](#get) - Read an investigation and its evidence.
-* [Review](#review) - Record an investigation decision.
 * [Cancel](#cancel) - Cancel an investigation
 
 ## List
@@ -105,7 +104,7 @@ var res = await sdk.Investigations.CreateAsync(
 
 ## Get
 
-Returns this investigation's status, coverage, source records, posts, media and contextual review history. Full evidence is returned by default; explicit evidence.read denial keeps submitted person details, status, coverage and decision summaries and hides collected evidence and free-text notes. The read is durably audited as person.viewed. The API key selects the workspace and environment. Missing, foreign or expired results answer 404.
+Returns this investigation's status, coverage, source records, posts and media. Full evidence is returned by default; explicit evidence.read denial keeps submitted person details, status and coverage, and hides collected evidence. The read is durably audited as person.viewed. The API key selects the workspace and environment. Missing, foreign or expired results answer 404.
 
 ### Example Usage
 
@@ -131,54 +130,6 @@ var res = await sdk.Investigations.GetAsync(investigationId: "inv_01JA2Z8K6Q4V7W
 ### Response
 
 **[GetInvestigationResponse](../../Models/Operations/GetInvestigationResponse.md)**
-
-### Errors
-
-| Error Type                                         | Status Code                                        | Content Type                                       |
-| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
-| NoResponse.Models.Errors.BadRequestException       | 400                                                | application/problem+json                           |
-| NoResponse.Models.Errors.AuthenticationException   | 401                                                | application/problem+json                           |
-| NoResponse.Models.Errors.PermissionDeniedException | 403                                                | application/problem+json                           |
-| NoResponse.Models.Errors.NotFoundException         | 404                                                | application/problem+json                           |
-| NoResponse.Models.Errors.ConflictException         | 409                                                | application/problem+json                           |
-| NoResponse.Models.Errors.RateLimitException        | 429                                                | application/problem+json                           |
-| NoResponse.Models.Errors.APIStatusException        | 4XX, 5XX                                           | \*/\*                                              |
-
-## Review
-
-Record an investigation decision. Deprecated: decisions are leaving people and groups. The console no longer records them and no screening reads them. This route is removed in the next contract release; stop calling it. The API key determines the workspace and environment.
-
-### Example Usage
-
-<!-- UsageSnippet language="csharp" operationID="reviewInvestigation" method="post" path="/v1/investigations/{investigation_id}/reviews" -->
-```csharp
-using NoResponse;
-using NoResponse.Models.Shared;
-using System;
-
-var sdk = new NoResponseClient(apiKey: Environment.GetEnvironmentVariable("NORESPONSE_API_KEY"));
-
-var res = await sdk.Investigations.ReviewAsync(
-    investigationId: "inv_01JA2Z8K6Q4V7W9XBCDEFGHJKM",
-    body: new PersonReviewRequest() {
-        Decision = PersonDecision.Watch,
-        Note = "Known to the venue team.",
-    }
-);
-
-// handle response
-```
-
-### Parameters
-
-| Parameter                                                         | Type                                                              | Required                                                          | Description                                                       | Example                                                           |
-| ----------------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------- |
-| `InvestigationId`                                                 | *string*                                                          | :heavy_check_mark:                                                | N/A                                                               | inv_01JA2Z8K6Q4V7W9XBCDEFGHJKM                                    |
-| `Body`                                                            | [PersonReviewRequest](../../Models/Shared/PersonReviewRequest.md) | :heavy_check_mark:                                                | N/A                                                               |                                                                   |
-
-### Response
-
-**[ReviewInvestigationResponse](../../Models/Operations/ReviewInvestigationResponse.md)**
 
 ### Errors
 

@@ -23,21 +23,6 @@ namespace NoResponse.Models.Shared
         [JsonProperty("spend", Required = Newtonsoft.Json.Required.Always)]
         public ScreeningSpend Spend { get; set; } = new();
 
-        /// <summary>
-        /// The latest reviewer decision, or null before any.
-        /// </summary>
-        [JsonProperty("decision", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = NullValueHandling.Include)]
-        public PersonDecision? Decision { get; set; }
-
-        [JsonProperty("decision_note", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public string? DecisionNote { get; set; }
-
-        [JsonProperty("decided_by", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public string? DecidedBy { get; set; }
-
-        [JsonProperty("decided_at", Required = Newtonsoft.Json.Required.DisallowNull)]
-        public string? DecidedAt { get; set; }
-
         [JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
         public string Id { get; set; } = default!;
 

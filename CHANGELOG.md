@@ -1,5 +1,14 @@
 # Changelog
 
+## 20.0.0
+
+* `Sdk.People.Get()`:  `response.evidenceInvestigation` **Changed** (Breaking ⚠️)
+* `Sdk.Investigations.List()`:  `response.items[]` **Changed** (Breaking ⚠️)
+* `Sdk.Investigations.Create()`:  `response` **Changed** (Breaking ⚠️)
+* `Sdk.Investigations.Get()`:  `response` **Changed** (Breaking ⚠️)
+* `Sdk.Investigations.Cancel()`:  `response` **Changed** (Breaking ⚠️)
+* `Sdk.Investigations.Review()`: **Removed** (Breaking ⚠️)
+
 ## 19.0.6
 
 No changes detected.
